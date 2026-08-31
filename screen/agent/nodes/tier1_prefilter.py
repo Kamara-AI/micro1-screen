@@ -16,7 +16,6 @@ later. A single failure triggers hard_rejected=True and a STRONG_NO Decision.
 import time
 from typing import Any
 
-from screen.core.config import settings
 from screen.core.exceptions import StateTransitionError
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import make_trajectory_entry

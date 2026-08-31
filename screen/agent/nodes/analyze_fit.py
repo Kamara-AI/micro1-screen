@@ -34,6 +34,8 @@ from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.analysis import FitAnalysis
+from screen.schemas.candidate import CandidateProfile
+from screen.schemas.evidence import EvidenceBundle
 from screen.schemas.state import ScreeningState
 
 logger = get_logger(__name__)
@@ -160,7 +162,7 @@ def _call_analyze_fit_llm(
     return result
 
 
-def _render_evidence_for_llm(evidence_bundle: Any) -> str:
+def _render_evidence_for_llm(evidence_bundle: EvidenceBundle) -> str:
     """
     WHY: Structured text rendering of the EvidenceBundle for the LLM.
     Provides the quality-tiered evidence picture without exposing raw CV text.
@@ -211,7 +213,7 @@ def _render_evidence_for_llm(evidence_bundle: Any) -> str:
     return "\n".join(lines)
 
 
-def _render_profile_summary_for_llm(candidate_profile: Any) -> str:
+def _render_profile_summary_for_llm(candidate_profile: CandidateProfile) -> str:
     """
     WHY: Compact profile rendering for the fit analysis context. Less verbose
     than the evidence extraction rendering — at this point we need the shape

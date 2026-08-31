@@ -350,11 +350,13 @@ def comparative_rank_node(state: ScreeningState) -> dict[str, Any]:
     trajectory_ranks = _rank_list(trajectory_scores)
     builder_ranks = _rank_list(builder_scores)
 
-    # Overall rank = composite across all dimensions (equal weight)
+    # Overall rank = FitAnalysis.composite_fit_score (authoritative weighted blend)
+    # blended with confidence (15%) which reflects evidence quality beyond fit alone.
+    # WHY: Uses FitAnalysis.composite_fit_score (the authoritative weighted blend)
+    # rather than redefining weights here. Confidence adds a small signal (15%)
+    # since it reflects evidence quality beyond fit dimensions alone.
     composite_scores = [
-        (technical_scores[i] * 0.35 + velocity_scores[i] * 0.25
-         + trajectory_scores[i] * 0.15 + builder_scores[i] * 0.10
-         + confidence_scores[i] * 0.15)
+        all_fits[i].composite_fit_score * 0.85 + confidence_scores[i] * 0.15
         for i in range(len(batch_results))
     ]
     overall_ranks = _rank_list(composite_scores)
@@ -428,6 +430,10 @@ def comparative_rank_node(state: ScreeningState) -> dict[str, Any]:
         total_processing_time_ms=total_time_ms,
         cohort_insight=cohort_insight,
     )
+
+    # Clear batch after ranking is complete to prevent stale accumulation on re-runs
+    with _batch_store_lock:
+        _batch_store.pop(batch_id, None)
 
     trajectory_entry = make_trajectory_entry(
         node=node_name,

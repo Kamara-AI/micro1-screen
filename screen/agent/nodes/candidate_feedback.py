@@ -34,7 +34,9 @@ from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
-from screen.schemas.decision import CandidateFeedback
+from screen.schemas.analysis import FitAnalysis
+from screen.schemas.decision import CandidateFeedback, Decision
+from screen.schemas.evidence import EvidenceBundle
 from screen.schemas.state import ScreeningState
 
 logger = get_logger(__name__)
@@ -133,7 +135,7 @@ def _call_candidate_feedback_llm(
     return result
 
 
-def _render_evidence_snapshot(evidence_bundle: Any) -> str:
+def _render_evidence_snapshot(evidence_bundle: EvidenceBundle) -> str:
     """
     WHY: The feedback LLM needs to know what POSITIVE evidence exists
     (to write the genuine_strength) and what gaps were found (for the gap message).
@@ -157,7 +159,7 @@ def _render_evidence_snapshot(evidence_bundle: Any) -> str:
     return "\n".join(lines)
 
 
-def _render_gap_signals(fit_analysis: Any, decision: Any) -> str:
+def _render_gap_signals(fit_analysis: FitAnalysis, decision: Decision) -> str:
     """
     WHY: Gap signals tell the feedback LLM exactly what was missing — so it can
     write a specific, honest gap message instead of a generic one.

@@ -28,6 +28,7 @@ from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
+from screen.schemas.candidate import CandidateProfile
 from screen.schemas.evidence import SIGNAL_WEIGHTS, EvidenceBundle
 from screen.schemas.state import ScreeningState
 
@@ -147,7 +148,7 @@ def _call_extract_evidence_llm(
     return result
 
 
-def _render_profile_for_llm(candidate_profile: Any) -> str:
+def _render_profile_for_llm(candidate_profile: CandidateProfile) -> str:
     """
     WHY: We pass a structured text rendering of CandidateProfile to the LLM
     rather than raw JSON. This is more readable for the model and ensures we

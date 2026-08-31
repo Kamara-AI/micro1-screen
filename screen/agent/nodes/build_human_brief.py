@@ -31,7 +31,9 @@ from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
-from screen.schemas.decision import HumanBrief
+from screen.schemas.analysis import FitAnalysis
+from screen.schemas.decision import Decision, HumanBrief
+from screen.schemas.evidence import EvidenceBundle
 from screen.schemas.state import ScreeningState
 
 logger = get_logger(__name__)
@@ -127,7 +129,7 @@ def _call_build_brief_llm(
     return result
 
 
-def _render_decision_for_brief(decision: Any) -> str:
+def _render_decision_for_brief(decision: Decision) -> str:
     """WHY: Compact decision summary for the brief context."""
     lines = [
         f"VERDICT: {decision.verdict}",
@@ -141,7 +143,7 @@ def _render_decision_for_brief(decision: Any) -> str:
     return "\n".join(lines)
 
 
-def _render_evidence_for_brief(evidence_bundle: Any) -> str:
+def _render_evidence_for_brief(evidence_bundle: EvidenceBundle) -> str:
     """WHY: Evidence summary focused on what the human reviewer needs for the brief."""
     lines = [
         f"TOTAL WEIGHTED SCORE: {evidence_bundle.total_weighted_score:.2f}",
@@ -170,7 +172,7 @@ def _render_evidence_for_brief(evidence_bundle: Any) -> str:
     return "\n".join(lines)
 
 
-def _render_fit_for_brief(fit_analysis: Any) -> str:
+def _render_fit_for_brief(fit_analysis: FitAnalysis) -> str:
     """WHY: Fit summary showing scores and key flags for the brief context."""
     lines = [
         f"COMPOSITE FIT: {fit_analysis.composite_fit_score:.2f}",
@@ -255,7 +257,7 @@ def build_human_brief_node(state: ScreeningState) -> dict[str, Any]:
     cost_usd = estimate_token_cost(
         prompt_tokens=prompt_token_estimate,
         completion_tokens=completion_token_estimate,
-        model_tier=2,
+        model_tier=3,
     )
 
     num_questions = len(human_brief.suggested_interview_questions)

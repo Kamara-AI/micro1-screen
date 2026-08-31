@@ -12,25 +12,21 @@ to find specific artefact types. Every claim carries a weight. The weight
 system is the formula that makes our confidence % defensible.
 """
 
+from enum import StrEnum
 from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class SignalTier(str):
+class SignalTier(StrEnum):
     """
-    WHY: Signal tiers encode evidence quality. A verified claim (Tier A) is
-    worth 3x a vague claim (Tier C). A contradiction (Tier D) penalises
-    confidence by more than a positive claim can offset.
-
-    This prevents a resume full of vague claims from scoring as high as
-    a resume with a few specific, internally consistent achievements.
+    WHY: Signal tiers encode evidence quality as an enum so they can be used
+    as both type annotations and runtime values without confusion.
     """
-
-    VERIFIED = "A"      # Public, cross-referenceable — weight: +1.0
-    STATED = "B"        # Specific, plausible, uncontradicted — weight: +0.7
-    VAGUE = "C"         # Generic, unspecific ("worked on projects") — weight: +0.3
-    CONTRADICTED = "D"  # Conflicts with another claim — weight: -1.5
+    VERIFIED = "A"
+    STATED = "B"
+    VAGUE = "C"
+    CONTRADICTED = "D"
 
 
 # Weight map — deterministic, not LLM-determined

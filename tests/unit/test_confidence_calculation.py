@@ -27,35 +27,15 @@ from screen.schemas.evidence import Claim, EvidenceBundle, SIGNAL_WEIGHTS, Silen
 def _calculate_confidence(
     evidence_bundle: EvidenceBundle,
     fit_analysis: FitAnalysis,
-    max_possible_score: float = 5.0,
 ) -> float:
-    """
-    WHY: Pure function that encodes the confidence formula so it can be tested
-    independently of the LangGraph node wiring.
-
-    HOW:
-      1. Compute raw evidence quality: (total_weighted_score - silence_penalty)
-      2. Normalise to [0, 1] by dividing by max_possible_score (configurable).
-         Default 5.0 ≈ 5 Tier-A verified claims, a realistic ceiling.
-      3. Blend: confidence_raw = evidence_score * 0.60 + fit_score * 0.40
-      4. Clamp to [0.0, 1.0] then convert to percentage.
-
-    Args:
-        evidence_bundle: The extracted and scored evidence.
-        fit_analysis:    The multi-dimensional fit analysis.
-        max_possible_score: Normalisation ceiling for the evidence score.
-
-    Returns:
-        Confidence percentage in [0.0, 100.0].
-    """
+    """Mirrors make_decision_node confidence calculation exactly."""
     raw_score = evidence_bundle.total_weighted_score - evidence_bundle.silence_penalty
-    evidence_score_normalised = max(0.0, min(1.0, raw_score / max_possible_score))
-
+    num_claims = max(len(evidence_bundle.claims), 1)
+    per_claim_score = raw_score / num_claims
+    normalised = (per_claim_score + 1.5) / 2.5
+    evidence_score = max(0.0, min(1.0, normalised))
     fit_score = fit_analysis.composite_fit_score
-
-    confidence_raw = evidence_score_normalised * 0.60 + fit_score * 0.40
-    confidence_pct = max(0.0, min(100.0, confidence_raw * 100.0))
-    return round(confidence_pct, 2)
+    return round((evidence_score * 0.6 + fit_score * 0.4) * 100, 1)
 
 
 # ── Test Helpers ──────────────────────────────────────────────────────────────
@@ -114,8 +94,8 @@ class TestConfidenceFormula:
 
     def test_high_evidence_quality_and_high_fit_produces_high_confidence(self) -> None:
         """
-        Four Tier-A claims (score 4.0) and all-high fit scores (≈0.86) should
-        yield a confidence well above the 65% YES threshold.
+        Four Tier-A claims: raw=4.0, per_claim=1.0, normalised=1.0, evidence_score=1.0.
+        Fit ≈ 0.86. confidence = (1.0*0.6 + 0.86*0.4)*100 ≈ 94.4% — well above 65%.
         """
         bundle = _make_bundle(claims=[
             _make_claim("A"),
@@ -124,34 +104,34 @@ class TestConfidenceFormula:
             _make_claim("A"),
         ])
         fit = _make_fit(technical=0.9, experience=0.85, learning=0.85, builder=0.8)
-        confidence = _calculate_confidence(bundle, fit, max_possible_score=5.0)
+        confidence = _calculate_confidence(bundle, fit)
         assert confidence >= 65.0, f"Expected ≥65%, got {confidence}%"
 
     def test_critical_contradiction_tanks_confidence_below_escalation_threshold(self) -> None:
         """
         A bundle with one positive A-claim and one D-claim (net score 1.0-1.5=-0.5)
         plus mediocre fit should produce low confidence below 45%.
+        raw=-0.5, num_claims=2, per_claim=-0.25, normalised=(-0.25+1.5)/2.5=0.5,
+        evidence_score=0.5. fit=0.3. confidence=(0.5*0.6+0.3*0.4)*100=42.0%.
         """
         bundle = _make_bundle(
             claims=[_make_claim("A"), _make_claim("D")],
             has_critical=True,
         )
         fit = _make_fit(technical=0.3, experience=0.3, learning=0.3, builder=0.3)
-        confidence = _calculate_confidence(bundle, fit, max_possible_score=5.0)
-        # evidence_score = max(0, -0.5 / 5.0) = 0.0; fit = 0.3
-        # confidence = 0*0.6 + 0.3*0.4 = 0.12 → 12%
+        confidence = _calculate_confidence(bundle, fit)
         assert confidence < 45.0, f"Expected <45%, got {confidence}%"
 
     def test_many_vague_claims_do_not_produce_high_confidence(self) -> None:
         """
         Ten Tier-C claims (score 3.0) with mediocre fit must not exceed STRONG_YES
         threshold (80%). Quantity of vague claims must not substitute for quality.
+        raw=3.0, per_claim=0.3, normalised=(0.3+1.5)/2.5=0.72, evidence=0.72.
+        fit=0.5. confidence=(0.72*0.6+0.5*0.4)*100=63.2%.
         """
         bundle = _make_bundle(claims=[_make_claim("C") for _ in range(10)])
         fit = _make_fit(technical=0.5, experience=0.5, learning=0.5, builder=0.5)
-        confidence = _calculate_confidence(bundle, fit, max_possible_score=5.0)
-        # evidence = min(1, 3.0/5.0) = 0.6; fit = 0.5
-        # confidence = 0.6*0.6 + 0.5*0.4 = 0.36 + 0.2 = 0.56 → 56%
+        confidence = _calculate_confidence(bundle, fit)
         assert confidence < 80.0, f"Expected <80%, got {confidence}%"
 
     def test_single_verified_claim_outweighs_three_vague_claims(self) -> None:
@@ -205,41 +185,46 @@ class TestConfidenceFormula:
 
     def test_confidence_is_capped_at_100_pct(self) -> None:
         """
-        Even with maximum possible evidence score (= max_possible_score Tier-A claims)
-        and perfect fit (1.0 on all dimensions), confidence must not exceed 100%.
+        Even with maximum possible evidence score (5 Tier-A claims, per_claim=1.0,
+        evidence_score=1.0) and perfect fit (1.0 on all dimensions), confidence
+        must not exceed 100%.
         """
         bundle = _make_bundle(claims=[_make_claim("A") for _ in range(5)])
         fit = _make_fit(technical=1.0, experience=1.0, learning=1.0, builder=1.0)
-        confidence = _calculate_confidence(bundle, fit, max_possible_score=5.0)
+        confidence = _calculate_confidence(bundle, fit)
         assert confidence <= 100.0
 
     def test_confidence_is_floored_at_0_pct(self) -> None:
         """
         Extreme negative evidence (many Tier-D claims) with zero fit scores
         must floor at 0%, never going negative.
+        raw=-15.0, per_claim=-1.5, normalised=0.0, evidence_score=0.0. fit=0.0.
+        confidence=0.0.
         """
         bundle = _make_bundle(claims=[_make_claim("D") for _ in range(10)])
         fit = _make_fit(technical=0.0, experience=0.0, learning=0.0, builder=0.0)
-        confidence = _calculate_confidence(bundle, fit, max_possible_score=5.0)
+        confidence = _calculate_confidence(bundle, fit)
         assert confidence >= 0.0
         assert confidence == 0.0
 
     def test_confidence_formula_is_60_40_blend_of_evidence_and_fit(self) -> None:
         """
-        With evidence_normalised=0.6 and fit=0.5:
-          confidence = (0.6 * 0.60 + 0.5 * 0.40) * 100 = (0.36 + 0.20) * 100 = 56.0%
+        With 3 Tier-C claims: raw=0.9, per_claim=0.3, normalised=(0.3+1.5)/2.5=0.72,
+        evidence_score=0.72. fit=0.5 (all dims at 0.5).
+          confidence = (0.72 * 0.60 + 0.5 * 0.40) * 100 = (0.432 + 0.20) * 100 = 63.2%
 
-        This test locks down the exact 60/40 blend ratio.
+        This test locks down the exact 60/40 blend ratio using the per-claim normalisation.
         """
-        # 3 Tier-C claims = score 0.9; with max=1.5, normalised = 0.6
+        # 3 Tier-C claims: raw=0.9, per_claim=0.3, normalised=0.72
         bundle = _make_bundle(claims=[_make_claim("C"), _make_claim("C"), _make_claim("C")])
         # fit: 0.5*0.35 + 0.5*0.25 + 0.5*0.25 + 0.5*0.15 = 0.5 composite
         fit = _make_fit(technical=0.5, experience=0.5, learning=0.5, builder=0.5)
 
-        # max_possible_score=1.5 → 0.9/1.5 = 0.6 normalised evidence
-        confidence = _calculate_confidence(bundle, fit, max_possible_score=1.5)
+        confidence = _calculate_confidence(bundle, fit)
 
-        expected = (0.6 * 0.60 + 0.5 * 0.40) * 100  # = 56.0
+        # per_claim = 0.3, normalised = (0.3 + 1.5) / 2.5 = 0.72
+        # confidence = (0.72 * 0.60 + 0.5 * 0.40) * 100 = 63.2
+        expected = round((0.72 * 0.60 + 0.5 * 0.40) * 100, 1)
         assert confidence == pytest.approx(expected, abs=0.1)
 
     def test_formula_is_deterministic_same_inputs_same_output(self) -> None:

@@ -34,7 +34,6 @@ class ScreeningInput(BaseModel):
         ...,
         description="Raw CV/resume text. Plain text preferred; HTML/markdown accepted.",
         min_length=50,
-        description_=None,
     )
     job_description: str = Field(
         ...,

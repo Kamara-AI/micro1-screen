@@ -19,9 +19,12 @@ and extracts Decision from the final state. If SCREEN is not yet importable
 for SCREEN results and still runs the full baseline comparison.
 """
 
+import os
+os.environ.setdefault("GEMINI_API_KEY", "eval-placeholder-not-real")
+os.environ.setdefault("ENV", "dev")
+
 import asyncio
 import json
-import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path

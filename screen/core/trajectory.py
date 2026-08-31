@@ -36,18 +36,15 @@ def estimate_token_cost(
     model_tier: int,
 ) -> float:
     """
-    WHY: Every node that calls an LLM reports its estimated cost.
-    This makes SCREEN's economics transparent — a key differentiator
-    from every other tool in the market.
+    WHY: Reports estimated LLM cost per node call for transparent economics.
 
-    HOW: Token counts come from the LLM response metadata. We multiply by
-    the per-token rate for the model tier used. Returns USD.
-
-    Note: These are estimates — actual billing may differ slightly.
+    HOW: Approximates token count from text length (1 token ≈ 4 chars).
+    Tier 1 uses Flash pricing, Tiers 2 and 3 use Pro pricing.
+    In production, replace with actual token metadata from LLM response.usage.
     """
     if model_tier == 1:
         cost_per_1k = settings.cost_per_1k_tokens_flash
-    else:
+    else:  # Tier 2 and Tier 3 both use Pro model pricing
         cost_per_1k = settings.cost_per_1k_tokens_pro
 
     total_tokens = prompt_tokens + completion_tokens

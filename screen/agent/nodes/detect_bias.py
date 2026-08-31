@@ -37,6 +37,7 @@ from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.analysis import FitAnalysis
+from screen.schemas.evidence import EvidenceBundle
 from screen.schemas.state import ScreeningState
 
 logger = get_logger(__name__)

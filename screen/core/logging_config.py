@@ -22,36 +22,23 @@ import structlog
 
 def setup_logging(log_level: str = "INFO") -> None:
     """
-    WHY: Called once at application entry point to configure the global structlog
-    pipeline. All subsequent get_logger() calls inherit this configuration.
-
-    HOW: Sets up structlog with JSON rendering for prod/staging (machine-readable)
-    and pretty console rendering for dev (human-readable).
+    WHY: Configures structlog with ConsoleRenderer for dev and JSON for prod.
+    The current implementation uses PrintLoggerFactory which outputs directly
+    without needing stdlib formatter wiring.
     """
     log_level_int = getattr(logging, log_level.upper(), logging.INFO)
-
-    # Configure stdlib logging so third-party libraries (LangChain, etc.) are captured
-    logging.basicConfig(
-        format="%(message)s",
-        stream=sys.stdout,
-        level=log_level_int,
-    )
-
-    # structlog processor chain
-    shared_processors: list[Any] = [
-        structlog.contextvars.merge_contextvars,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.add_logger_name,
-        structlog.processors.TimeStamper(fmt="iso", utc=False),
-        structlog.processors.StackInfoRenderer(),
-    ]
+    logging.basicConfig(stream=sys.stdout, level=log_level_int)
 
     structlog.configure(
-        processors=shared_processors
-        + [
-            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        processors=[
+            structlog.contextvars.merge_contextvars,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.add_logger_name,
+            structlog.processors.TimeStamper(fmt="iso", utc=False),
+            structlog.processors.StackInfoRenderer(),
+            structlog.dev.ConsoleRenderer(),
         ],
-        logger_factory=structlog.stdlib.LoggerFactory(),
+        logger_factory=structlog.PrintLoggerFactory(),
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )

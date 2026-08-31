@@ -8,28 +8,23 @@ dimension. The decision node blends them with evidence quality to produce
 the final confidence %.
 """
 
+from enum import StrEnum
 from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class CareerShape(str):
+class CareerShape(StrEnum):
     """
-    WHY: Career shape is more predictive than any single role title. An
-    accelerating career (fast promotions, expanding scope) signals differently
-    from a plateau (same level 8+ years). Both can be right for a role —
-    depends on what the company needs.
-
-    These map directly to the elite recruiter "career trajectory analyst" mental
-    model from our research synthesis.
+    WHY: Career shape is more predictive than any single role title.
+    Using StrEnum allows use as both type annotation and runtime value.
     """
-
-    ASCENDING = "ascending"        # Steady promotions, increasing scope
-    ACCELERATING = "accelerating"  # Unusually fast advancement — verify: real or title inflation?
-    PLATEAU = "plateau"            # Same level 8+ years — specialist or stuck?
-    LATERAL = "lateral"            # Cross-functional moves without clear ascent
-    DESCENDING = "descending"      # Director → Manager — strategic or concerning?
-    NON_LINEAR = "non_linear"      # Multiple domain pivots — learning agility signal
+    ASCENDING = "ascending"
+    ACCELERATING = "accelerating"
+    PLATEAU = "plateau"
+    LATERAL = "lateral"
+    DESCENDING = "descending"
+    NON_LINEAR = "non_linear"
 
 
 class LearningVelocityEvidence(BaseModel):

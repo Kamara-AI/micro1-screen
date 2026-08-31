@@ -38,13 +38,15 @@ from screen.core.config import settings
 from screen.core.exceptions import StateTransitionError
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import make_trajectory_entry
+from screen.schemas.analysis import FitAnalysis
 from screen.schemas.decision import Decision
+from screen.schemas.evidence import EvidenceBundle
 from screen.schemas.state import ScreeningState
 
 logger = get_logger(__name__)
 
 
-def _compute_evidence_score(evidence_bundle: Any) -> float:
+def _compute_evidence_score(evidence_bundle: EvidenceBundle) -> float:
     """
     WHY: Evidence score normalisation maps the raw weighted sum (which can range
     from negative to large positive) into the 0.0–1.0 range needed for the
@@ -99,8 +101,8 @@ def _map_confidence_to_verdict(confidence_pct: float) -> str:
 
 
 def _select_primary_evidence(
-    evidence_bundle: Any,
-    fit_analysis: Any,
+    evidence_bundle: EvidenceBundle,
+    fit_analysis: FitAnalysis,
     verdict: str,
     confidence_pct: float,
 ) -> list[str]:
@@ -244,7 +246,7 @@ def make_decision_node(state: ScreeningState) -> dict[str, Any]:
 
     elif (
         evidence_bundle.has_unverifiable_high_stakes_claim
-        and confidence_pct > 70
+        and confidence_pct > settings.yes_threshold
         and settings.escalate_on_unverifiable_high_confidence
     ):
         verdict = "ESCALATE"
