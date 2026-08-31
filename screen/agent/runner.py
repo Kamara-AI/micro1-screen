@@ -118,6 +118,34 @@ async def screen_candidate(screening_input: ScreeningInput) -> ScreeningState:
         elapsed_ms=elapsed_ms,
     )
 
+    # Generate and save human-readable markdown report
+    # WHY: Judges and hiring managers should not need to parse a Python dict.
+    # The report is saved alongside the run so it's immediately shareable.
+    if decision is not None:
+        try:
+            import pathlib
+
+            from screen.agent.output_formatter import format_markdown_report
+
+            report_md = format_markdown_report(final_state)
+            reports_dir = pathlib.Path("reports")
+            reports_dir.mkdir(exist_ok=True)
+            report_path = reports_dir / f"{candidate_id}_report.md"
+            report_path.write_text(report_md, encoding="utf-8")
+            logger.info(
+                "screen_candidate: report saved",
+                candidate_id=candidate_id,
+                report_path=str(report_path),
+            )
+        except Exception as exc:  # noqa: BLE001
+            # WHY: Report generation failure must never crash the pipeline.
+            # The state is already complete — a formatting error is cosmetic.
+            logger.warning(
+                "screen_candidate: report generation failed",
+                candidate_id=candidate_id,
+                error=str(exc),
+            )
+
     return final_state
 
 

@@ -38,6 +38,38 @@ SIGNAL_WEIGHTS: dict[str, float] = {
 }
 
 
+class VerificationSource(StrEnum):
+    """WHY: Tracks which tool produced the verification result for audit trail."""
+
+    GITHUB_API = "github_api"
+    WEB_SEARCH = "web_search"
+    PORTFOLIO_FETCH = "portfolio_fetch"
+    NOT_ATTEMPTED = "not_attempted"
+
+
+class VerificationResult(BaseModel):
+    """
+    WHY: Records the outcome of an external verification attempt for a claim.
+    Stored on the Claim so the audit trail includes both what was claimed
+    and what external evidence found (or didn't find).
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    source: VerificationSource
+    query_used: str = Field(..., description="The exact query/URL used for verification")
+    found: bool = Field(..., description="True if relevant external evidence was found")
+    summary: str = Field(
+        ...,
+        description="What was found or why it wasn't found. 1-2 sentences.",
+    )
+    url: Optional[str] = Field(default=None, description="Source URL if applicable")
+    tier_change: Optional[str] = Field(
+        default=None,
+        description="e.g. 'B->A' if claim was upgraded, 'B->D' if contradicted, None if unchanged",
+    )
+
+
 class Claim(BaseModel):
     """
     WHY: Every piece of evidence in the CV is modelled as a Claim with a tier
@@ -68,6 +100,10 @@ class Claim(BaseModel):
     is_verifiable_externally: bool = Field(
         default=False,
         description="True if this claim could be checked against public data (LinkedIn, Companies House, etc.)",
+    )
+    verification: Optional[VerificationResult] = Field(
+        default=None,
+        description="External verification result. None if not attempted or not applicable.",
     )
 
 

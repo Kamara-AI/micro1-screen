@@ -21,11 +21,11 @@ import time
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
+from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.candidate import CandidateProfile
@@ -101,11 +101,10 @@ Output the complete EvidenceBundle. Be thorough — a thin evidence bundle is
 less defensible than a complete one with many C-tier claims accurately classified."""
 
 # ── LLM Setup ──────────────────────────────────────────────────────────────────
-_llm = ChatGoogleGenerativeAI(
-    model=settings.gemini_model_tier2,
-    google_api_key=settings.gemini_api_key,
-    temperature=settings.llm_temperature,
-)
+# WHY tier2: evidence extraction requires multi-hop reasoning about claim credibility,
+# contradiction detection, and silence pattern recognition. Flash models miss
+# subtle contradictions — this is where SCREEN differentiates from ATS.
+_llm = build_llm("tier2")
 _structured_llm = _llm.with_structured_output(EvidenceBundle)
 
 
@@ -290,7 +289,7 @@ def extract_evidence_node(state: ScreeningState) -> dict[str, Any]:
             f"verdict: {evidence_bundle.builder_maintainer_verdict}"
         ),
         evidence_keys=evidence_keys[:20],  # Cap at 20 keys for log readability
-        model_used=settings.gemini_model_tier2,
+        model_used=get_active_model("tier2"),
         cost_usd=cost_usd,
     )
 

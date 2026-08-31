@@ -26,11 +26,11 @@ import time
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
+from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.analysis import FitAnalysis
@@ -114,11 +114,9 @@ BIAS PREVENTION — you MUST NOT:
 Output a complete FitAnalysis with ALL fields populated. Every score must have a rationale."""
 
 # ── LLM Setup ──────────────────────────────────────────────────────────────────
-_llm = ChatGoogleGenerativeAI(
-    model=settings.gemini_model_tier2,
-    google_api_key=settings.gemini_api_key,
-    temperature=settings.llm_temperature,
-)
+# WHY tier2: analyze_fit requires comparative scoring across multiple evidence
+# claims against JD criteria — a genuine reasoning task, not extraction.
+_llm = build_llm("tier2")
 _structured_llm = _llm.with_structured_output(FitAnalysis)
 
 
@@ -329,7 +327,7 @@ def analyze_fit_node(state: ScreeningState) -> dict[str, Any]:
             f"shape: {fit_analysis.career_shape}"
         ),
         evidence_keys=[f"dim:technical", "dim:experience", "dim:velocity", "dim:builder"],
-        model_used=settings.gemini_model_tier2,
+        model_used=get_active_model("tier2"),
         cost_usd=cost_usd,
     )
 

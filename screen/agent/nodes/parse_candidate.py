@@ -17,11 +17,11 @@ import time
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
+from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.candidate import CandidateProfile
@@ -66,11 +66,9 @@ DO NOT:
 Output ONLY the structured CandidateProfile. Do not add commentary."""
 
 # ── LLM Setup ──────────────────────────────────────────────────────────────────
-_llm = ChatGoogleGenerativeAI(
-    model=settings.gemini_model_tier1,
-    google_api_key=settings.gemini_api_key,
-    temperature=settings.llm_temperature,
-)
+# WHY tier1: parse_candidate is structured extraction, not reasoning. Flash-class
+# models handle JSON extraction reliably at a fraction of Pro cost.
+_llm = build_llm("tier1")
 _structured_llm = _llm.with_structured_output(CandidateProfile)
 
 
@@ -167,7 +165,7 @@ def parse_candidate_node(state: ScreeningState) -> dict[str, Any]:
             f"education level: {candidate_profile.highest_education_level}"
         ),
         evidence_keys=[f"role:{r.company}" for r in candidate_profile.roles],
-        model_used=settings.gemini_model_tier1,
+        model_used=get_active_model("tier1"),
         cost_usd=cost_usd,
     )
 

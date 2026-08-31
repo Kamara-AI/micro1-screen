@@ -28,12 +28,12 @@ import time
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
+from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.analysis import FitAnalysis
@@ -110,11 +110,10 @@ IMPORTANT: Do not be overly sensitive. Flag actual bias instances, not theoretic
 A false positive bias flag is harmful — it triggers an unnecessary escalation."""
 
 # ── LLM Setup ──────────────────────────────────────────────────────────────────
-_llm = ChatGoogleGenerativeAI(
-    model=settings.gemini_model_tier2,
-    google_api_key=settings.gemini_api_key,
-    temperature=settings.llm_temperature,
-)
+# WHY tier2: bias detection requires recognising subtle linguistic proxy patterns
+# (e.g., adjectives that correlate with demographic assumptions). Flash models
+# miss implicit patterns — a false negative here triggers discriminatory outcomes.
+_llm = build_llm("tier2")
 _structured_llm = _llm.with_structured_output(_BiasAuditResult)
 
 
@@ -291,7 +290,7 @@ def detect_bias_node(state: ScreeningState) -> dict[str, Any]:
         ),
         output_summary=bias_summary,
         evidence_keys=[f"bias_flag:{i}" for i in range(len(audit_result.bias_flags))],
-        model_used=settings.gemini_model_tier2,
+        model_used=get_active_model("tier2"),
         cost_usd=cost_usd,
     )
 

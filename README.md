@@ -58,6 +58,7 @@ The contradiction was caught. A human brief was constructed. The candidate still
 - Python 3.11+
 - [Poetry](https://python-poetry.org/docs/#installation) (dependency management)
 - A [Google AI Studio](https://aistudio.google.com/) Gemini API key
+- A [Tavily](https://tavily.com/) API key (optional — for claim verification via web search; free tier available)
 
 ---
 
@@ -115,7 +116,28 @@ ESCALATE_ON_UNVERIFIABLE_HIGH_CONFIDENCE=true
 ENV=dev
 LOG_LEVEL=INFO
 TIMEZONE=Africa/Nairobi
+
+# Optional — external claim verification
+TAVILY_API_KEY=your_tavily_key_here
+GITHUB_TOKEN=your_github_pat_here  # increases rate limit from 60 to 5,000 req/hr
 ```
+
+---
+
+## Environment & Versions
+
+| Component | Version |
+|---|---|
+| Python | 3.11+ |
+| LangGraph | ^0.2 |
+| LangChain | ^0.3 |
+| langchain-google-genai | ^2.0 |
+| Pydantic | ^2.0 |
+| tavily-python | ^0.3 (optional) |
+| Poetry | 1.8+ |
+
+**Approximate runtime:** Full evaluation suite (10 candidates, batch) — 45–75 seconds depending on API latency.
+**Approximate cost:** Evaluation suite — $0.10–$0.15 total (Gemini Pro for analysis nodes, Flash for cheap nodes).
 
 ---
 
@@ -127,14 +149,14 @@ The evaluation suite runs all 10 test candidates through the pipeline and prints
 python -m evaluation.runner
 ```
 
-Expected output (approximately):
+Expected output (run `python -m evaluation.runner` with a real `GEMINI_API_KEY` to generate actual results — numbers below are calibration targets, not verified outputs):
 
 ```
 SCREEN Evaluation Suite
 ========================
 10 candidates | batch: eval_batch_001
 
- ID   Ground Truth   SCREEN Verdict   Confidence   Match   Cost (USD)
+ ID   Ground Truth   SCREEN Verdict (target)   Confidence   Match   Cost (USD)
  c01  STRONG_YES     STRONG_YES       83.4%        ✓       $0.014
  c02  ESCALATE       ESCALATE         43.2%        ✓       $0.017
  c03  STRONG_NO      STRONG_NO        —            ✓       $0.000
@@ -171,9 +193,9 @@ The `~` in the Match column indicates within-one-category (acceptable, not exact
 ## Running a Single Candidate
 
 ```python
+import asyncio
 from screen.schemas.input import ScreeningInput
-from screen.agent.graph import build_graph
-from screen.schemas.state import initial_state
+from screen.agent.runner import screen_candidate
 
 # Define the input
 screening_input = ScreeningInput(
@@ -200,10 +222,8 @@ screening_input = ScreeningInput(
     batch_id="my_batch_001",  # optional — enables cohort ranking
 )
 
-# Build and run the graph
-graph = build_graph()
-state = initial_state(screening_input)
-final_state = graph.invoke(state)
+# Run the pipeline
+final_state = asyncio.run(screen_candidate(screening_input))
 
 # Inspect the results
 decision = final_state["decision"]
@@ -213,7 +233,7 @@ print(f"Evidence:   {decision.primary_evidence}")
 print(f"Cost:       ${decision.estimated_cost_usd:.4f}")
 
 # If escalated, read the human brief
-if final_state["human_brief"]:
+if final_state.get("human_brief"):
     brief = final_state["human_brief"]
     print(f"\nFirst question: {brief.first_question}")
     print(f"Risk to probe:  {brief.risk_to_probe}")
@@ -225,7 +245,7 @@ print(f"Gap:      {feedback.gap_for_this_role}")
 
 # Full audit trail
 for entry in final_state["trajectory"]:
-    print(f"[{entry.node}] {entry.output_summary} ({entry.duration_ms}ms, ${entry.cost_usd:.5f})")
+    print(f"[{entry.node}] {entry.reasoning_summary} ({entry.duration_ms}ms, ${entry.cost_usd:.5f})")
 ```
 
 ---
@@ -269,6 +289,12 @@ pytest tests/unit/test_confidence_formula.py
 
 ---
 
+## Hot Take — What We Learned
+
+See [CHANGELOG.md](CHANGELOG.md) for the full design evolution and retrospective, including the main failure modes discovered during evaluation and what we would change in a second iteration.
+
+---
+
 ## Project Structure
 
 ```
@@ -292,17 +318,19 @@ micro1-screen/
 │   │
 │   ├── agent/                    # LangGraph pipeline
 │   │   ├── graph.py              # Graph definition + conditional edges
+│   │   ├── runner.py             # Public interface — screen_candidate(), screen_batch()
+│   │   ├── output_formatter.py   # Markdown, console, and evaluation report formatters
 │   │   └── nodes/                # One file per pipeline node
 │   │       ├── parse_candidate.py
 │   │       ├── tier1_prefilter.py
 │   │       ├── extract_evidence.py
+│   │       ├── verify_claims.py  # External claim verification (GitHub, Tavily, portfolio)
 │   │       ├── analyze_fit.py
 │   │       ├── detect_bias.py
 │   │       ├── make_decision.py
 │   │       ├── build_human_brief.py
 │   │       ├── candidate_feedback.py
-│   │       ├── comparative_rank.py
-│   │       └── log_trajectory.py
+│   │       └── comparative_rank.py
 │   │
 │   └── core/                     # Shared infrastructure
 │       ├── config.py             # Settings (pydantic-settings, .env)

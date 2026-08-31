@@ -27,11 +27,11 @@ import time
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
+from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.analysis import FitAnalysis
@@ -91,11 +91,10 @@ Do not mention internal codes (STRONG_NO, tier levels, etc.) — write for the c
 Output a complete CandidateFeedback object."""
 
 # ── LLM Setup ──────────────────────────────────────────────────────────────────
-_llm = ChatGoogleGenerativeAI(
-    model=settings.gemini_model_tier1,  # Flash — feedback doesn't need Pro reasoning
-    google_api_key=settings.gemini_api_key,
-    temperature=settings.llm_temperature,
-)
+# WHY tier1: candidate_feedback has a defined structure (strength + gap + encouragement).
+# It is controlled generation against a template, not open-ended reasoning.
+# Flash-class models produce equally good output at a fraction of mid-tier cost.
+_llm = build_llm("tier1")
 _structured_llm = _llm.with_structured_output(CandidateFeedback)
 
 
@@ -293,7 +292,7 @@ def candidate_feedback_node(state: ScreeningState) -> dict[str, Any]:
             f"encouragement: {has_encouragement}"
         ),
         evidence_keys=["feedback:genuine_strength", "feedback:gap_for_this_role"],
-        model_used=settings.gemini_model_tier1,
+        model_used=get_active_model("tier1"),
         cost_usd=cost_usd,
     )
 

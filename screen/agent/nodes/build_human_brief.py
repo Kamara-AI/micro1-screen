@@ -24,11 +24,11 @@ import time
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
 from screen.core.exceptions import LLMCallError, StateTransitionError
+from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
 from screen.core.trajectory import estimate_token_cost, make_trajectory_entry
 from screen.schemas.analysis import FitAnalysis
@@ -84,11 +84,10 @@ disqualify this candidate. Surface it early in the interview. Be specific.
 Output the complete HumanBrief. It must be actionable and honest."""
 
 # ── LLM Setup ──────────────────────────────────────────────────────────────────
-_llm = ChatGoogleGenerativeAI(
-    model=settings.gemini_model_tier3,
-    google_api_key=settings.gemini_api_key,
-    temperature=settings.llm_temperature,
-)
+# WHY tier3: the human brief is synthesised narrative for a hiring manager.
+# It requires coherent reasoning across contradictions, verified claims, and
+# bias flags — and must read as something a human would sign their name to.
+_llm = build_llm("tier3")
 _structured_llm = _llm.with_structured_output(HumanBrief)
 
 
@@ -279,7 +278,7 @@ def build_human_brief_node(state: ScreeningState) -> dict[str, Any]:
             f"{num_tasks} tasks | {num_questions} questions"
         ),
         evidence_keys=["human_brief:what_we_know", "human_brief:verification_tasks"],
-        model_used=settings.gemini_model_tier3,
+        model_used=get_active_model("tier3"),
         cost_usd=cost_usd,
     )
 
