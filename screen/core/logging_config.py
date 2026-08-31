@@ -29,12 +29,15 @@ def setup_logging(log_level: str = "INFO") -> None:
     log_level_int = getattr(logging, log_level.upper(), logging.INFO)
     logging.basicConfig(stream=sys.stdout, level=log_level_int)
 
+    # WHY: add_logger_name requires a stdlib Logger with a .name attribute.
+    # PrintLoggerFactory produces a PrintLogger which has no .name — that
+    # processor is removed. The module name is bound at get_logger(name) call
+    # time via structlog's context system instead.
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
             structlog.stdlib.add_log_level,
-            structlog.stdlib.add_logger_name,
-            structlog.processors.TimeStamper(fmt="iso", utc=False),
+            structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
             structlog.processors.StackInfoRenderer(),
             structlog.dev.ConsoleRenderer(),
         ],

@@ -9,12 +9,69 @@ fails any one of these cannot proceed regardless of how strong their profile is.
 
 HOW: The node reads hard_requirements from ScreeningInput and checks each one
 against the candidate's skills_stated and role descriptions. The matching is
-heuristic (substring + keyword) — more sophisticated matching can be layered on
-later. A single failure triggers hard_rejected=True and a STRONG_NO Decision.
+heuristic (substring + keyword + year comparison) — more sophisticated matching
+can be layered on later. A single failure triggers hard_rejected=True and a
+STRONG_NO Decision.
+
+YEAR REQUIREMENTS: Requirements like "minimum 5 years" are NOT checked via keyword
+match — they are checked numerically against CandidateProfile.total_years_experience.
+If total_years_experience is None (parse_candidate couldn't calculate from dates),
+the year requirement is treated as satisfied so the candidate gets full LLM analysis.
+The structural_precheck node (which runs before parse_candidate) handles the case
+where the candidate's OWN stated years contradict the requirement.
 """
 
+import re
 import time
 from typing import Any
+
+# WHY: Same patterns as structural_precheck — detect minimum year requirements.
+# These are applied NUMERICALLY against total_years_experience from the parsed profile.
+_REQUIRED_YEARS_PATTERNS = [
+    re.compile(r"minimum\s+\d+\+?\s+years?", re.IGNORECASE),
+    re.compile(r"at\s+least\s+\d+\+?\s+years?", re.IGNORECASE),
+    re.compile(r"\d+\+\s+years?", re.IGNORECASE),            # "5+ years"
+    re.compile(r"\d+\+?\s+years?\s+(?:minimum|required)", re.IGNORECASE),
+]
+_REQUIRED_YEARS_WITH_CAPTURE = [
+    re.compile(r"minimum\s+(\d+)\+?\s+years?", re.IGNORECASE),
+    re.compile(r"at\s+least\s+(\d+)\+?\s+years?", re.IGNORECASE),
+    re.compile(r"(\d+)\+\s+years?", re.IGNORECASE),
+    re.compile(r"(\d+)\+?\s+years?\s+(?:minimum|required)", re.IGNORECASE),
+]
+
+# WHY: 1-year buffer mirrors structural_precheck. If the LLM calculated 4.2 years
+# from CV dates and the requirement is 5, that's close enough for LLM reasoning.
+# The prefilter is a hard gate for clear gaps, not a sub-year precision tool.
+_YEAR_BUFFER = 1
+
+
+def _extract_min_years(requirement: str) -> int | None:
+    """Return the minimum years extracted from a requirement string, or None."""
+    for pattern in _REQUIRED_YEARS_WITH_CAPTURE:
+        match = pattern.search(requirement)
+        if match:
+            return int(match.group(1))
+    return None
+
+
+def _strip_year_phrases(requirement: str) -> str:
+    """
+    WHY: Requirements like "minimum 10 years java" have both a year threshold and
+    a skill keyword. After the year check, we need to check the residual keyword
+    ("java") separately. Stripping the year phrase extracts that residual.
+    """
+    stripped = requirement
+    for pattern in _REQUIRED_YEARS_PATTERNS:
+        stripped = pattern.sub("", stripped)
+    # Also strip common qualifiers left behind ("of experience", "of", "in")
+    stripped = re.sub(
+        r"\b(?:of\s+experience|of\s+professional\s+experience|experience\s+in|in\s+the\s+field|of)\b",
+        "",
+        stripped,
+        flags=re.IGNORECASE,
+    )
+    return stripped.strip(" ,;")  # Remove trailing punctuation/whitespace
 
 from screen.core.exceptions import StateTransitionError
 from screen.core.logging_config import get_logger
@@ -34,13 +91,41 @@ def _requirement_satisfied(
     WHY: Isolated matching logic keeps the node function clean and makes this
     heuristic independently testable.
 
-    HOW: Checks the requirement keyword against:
-    1. skills_stated list (exact and case-insensitive substring)
-    2. All role achievement bullet points (keyword presence)
-    3. Role titles (for seniority/title requirements)
+    HOW:
+    1. If requirement contains a minimum year threshold: check numerically against
+       total_years_experience. Pass through (True) if experience data is absent —
+       LLM analysis should handle data gaps, not the prefilter.
+    2. Otherwise: keyword substring match against skills_stated, role titles,
+       role achievements, and education fields.
 
     Returns (satisfied: bool, reason: str) so callers know WHY a requirement failed.
     """
+    # ── Year-based requirements: numeric check, then residual keyword check ───
+    # WHY: "Minimum 5 years of professional experience" will NEVER appear as a
+    # skill or role title — substring matching would always falsely reject here.
+    # "Minimum 10 years java" is compound: year threshold + skill. We check both:
+    # 1. Year threshold numerically against total_years_experience.
+    # 2. Residual keyword (e.g. "java") via the normal substring check below.
+    min_years = _extract_min_years(requirement)
+    if min_years is not None:
+        # ── Check year threshold ──────────────────────────────────────────────
+        if candidate_profile.total_years_experience is not None:
+            if candidate_profile.total_years_experience < (min_years - _YEAR_BUFFER):
+                return False, (
+                    f"Year requirement not met: {candidate_profile.total_years_experience:.1f} years "
+                    f"< {min_years} years minimum"
+                )
+        # Year check passed (or no experience data — let LLM reason about it).
+        # Now check residual keyword if any remains after stripping the year phrase.
+        residual = _strip_year_phrases(requirement)
+        if not residual:
+            # Purely year-based requirement — year check above is the only gate.
+            return True, (
+                f"Year requirement: {'met' if candidate_profile.total_years_experience is not None else 'unverifiable — passing to LLM'}"
+            )
+        # Fall through to keyword check with residual (e.g. "java" from "minimum 10 years java")
+        requirement = residual  # Replace requirement with residual for keyword matching below
+
     req_lower = requirement.lower()
 
     # Check skills_stated

@@ -47,7 +47,7 @@ _OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 # The X-Title header appears in the OpenRouter dashboard — useful for cost tracking.
 _OPENROUTER_HEADERS = {
     "HTTP-Referer": "https://github.com/Kamara-AI/micro1-screen",
-    "X-Title": "SCREEN — micro1 Hackathon 2026",
+    "X-Title": "SCREEN - micro1 Hackathon 2026",  # ASCII only — HTTP headers cannot contain em dashes
 }
 
 

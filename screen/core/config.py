@@ -76,28 +76,33 @@ class Settings(BaseSettings):
     #     Same tier as tier 2 because quality of reasoning still matters here.
     #
     # WHY these specific defaults:
-    #   OpenRouter tier1: google/gemini-flash-1.5 — fastest, cheapest capable model
-    #   OpenRouter tier2/3: anthropic/claude-3.5-haiku — better structured output
-    #     compliance and reasoning depth than gpt-4o-mini at comparable cost;
-    #     significantly cheaper than claude-3.5-sonnet or gpt-4o.
+    #   OpenRouter tier1: google/gemini-2.5-flash-lite — $0.10/M tokens, cheapest
+    #     capable flash model on OpenRouter as of 2026-08. Structured extraction
+    #     (parse_candidate) and template generation (candidate_feedback) do not
+    #     need deep reasoning — a fast flash model is the right tool.
+    #   OpenRouter tier2/3: openai/gpt-4o-mini — $0.15/M tokens. Strong structured
+    #     output compliance, reliable multi-hop reasoning, and cheaper than any
+    #     Anthropic Haiku variant on OpenRouter. Used for extract_evidence,
+    #     analyze_fit, detect_bias, make_decision, build_human_brief.
     #   OpenAI tier1/2/3: gpt-4o-mini — capable across all tasks, widely available,
     #     no model-switching complexity when OpenAI is the fallback provider.
     #   Gemini tier1/2/3: flash/pro split — matches original design intent.
     #
     # All are config-settable — operators can tune cost vs quality per tier.
+    # Use exact openrouter.ai/models slug format (NOT Anthropic date-suffix format).
 
     # OpenRouter model slugs (use exact openrouter.ai/models slug format)
     openrouter_model_tier1: str = Field(
-        default="google/gemini-flash-1.5",
-        description="OpenRouter tier 1 — fast extraction and generation",
+        default="google/gemini-2.5-flash-lite",
+        description="OpenRouter tier 1 — fast extraction and generation ($0.10/M tokens)",
     )
     openrouter_model_tier2: str = Field(
-        default="anthropic/claude-3.5-haiku",
-        description="OpenRouter tier 2 — reasoning, analysis, contradiction detection",
+        default="openai/gpt-4o-mini",
+        description="OpenRouter tier 2 — reasoning, analysis, contradiction detection ($0.15/M tokens)",
     )
     openrouter_model_tier3: str = Field(
-        default="anthropic/claude-3.5-haiku",
-        description="OpenRouter tier 3 — synthesis and narrative brief writing",
+        default="openai/gpt-4o-mini",
+        description="OpenRouter tier 3 — synthesis and narrative brief writing ($0.15/M tokens)",
     )
 
     # OpenAI model names (direct API)
