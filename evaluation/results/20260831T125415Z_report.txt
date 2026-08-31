@@ -1,0 +1,50 @@
+================================================================================
+SCREEN vs BASELINE — EVALUATION REPORT
+================================================================================
+
+ACCURACY
+  SCREEN exact match:      60%  (12/20)
+  Baseline exact match:    55%  (11/20)
+  SCREEN directional:      75%  (15/20)
+  Baseline directional:    70%  (14/20)
+  Delta (exact):           +5%
+
+ESCALATION HANDLING
+  Ground truth escalations: 2/20
+  SCREEN escalations:       2 (precision=50%, recall=50%)
+  Baseline escalations:     0 (precision=100%, recall=0%)
+
+CALIBRATION (Brier-based, 1.0 = perfect, 0.75 = random)
+  SCREEN calibration score: 0.791
+  Baseline: N/A (no structured confidence output)
+
+ECONOMICS
+  SCREEN avg cost/candidate: $0.0050
+  Baseline avg cost/candidate: $0.0001
+  Cost multiplier: 35.7x
+
+PER-CANDIDATE RESULTS
+Candidate ID         Ground Truth SCREEN       Baseline     SCR OK     BAS OK     SCR Conf  
+--------------------------------------------------------------------------------------------
+e01_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        95%       
+e02_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        86%       
+e03_strong_yes       STRONG_YES   STRONG_YES   YES          YES        NO         93%       
+e04_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        96%       
+e05_yes              YES          YES          YES          YES        YES        77%       
+e06_yes              YES          YES          YES          YES        YES        80%       
+e07_yes              YES          YES          YES          YES        YES        76%       
+e08_yes              YES          STRONG_YES   YES          NO         YES        88%       
+e09_ambiguous        AMBIGUOUS    AMBIGUOUS    NO           YES        NO         48%       
+e10_ambiguous        AMBIGUOUS    YES          YES          NO         NO         67%       
+e11_ambiguous        AMBIGUOUS    ESCALATE     YES          NO         NO         69%       
+e12_no               NO           YES          NO           NO         YES        67%       
+e13_no               STRONG_NO    STRONG_NO    NO           YES        NO         100%      
+e14_no               NO           AMBIGUOUS    NO           NO         YES        62%       
+e15_no               NO           AMBIGUOUS    NO           NO         YES        59%       
+e16_no               NO           AMBIGUOUS    NO           NO         YES        63%       
+e17_strong_no        STRONG_NO    STRONG_NO    NO           YES        NO         100%      
+e18_strong_no        STRONG_NO    STRONG_NO    YES          YES        NO         100%      
+e19_date_contradiction ESCALATE     ESCALATE     YES          YES        NO         72%       
+e20_skill_conflict   ESCALATE     AMBIGUOUS    YES          NO         NO         61%       
+
+================================================================================

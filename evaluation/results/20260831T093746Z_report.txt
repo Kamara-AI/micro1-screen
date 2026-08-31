@@ -1,0 +1,40 @@
+================================================================================
+SCREEN vs BASELINE — EVALUATION REPORT
+================================================================================
+
+ACCURACY
+  SCREEN exact match:      0%  (0/10)
+  Baseline exact match:    30%  (3/10)
+  SCREEN directional:      0%  (0/10)
+  Baseline directional:    60%  (6/10)
+  Delta (exact):           -30%
+
+ESCALATION HANDLING
+  Ground truth escalations: 2/10
+  SCREEN escalations:       0 (precision=100%, recall=0%)
+  Baseline escalations:     0 (precision=100%, recall=0%)
+
+CALIBRATION (Brier-based, 1.0 = perfect, 0.75 = random)
+  SCREEN calibration score: 1.000
+  Baseline: N/A (no structured confidence output)
+
+ECONOMICS
+  SCREEN avg cost/candidate: $0.0000
+  Baseline avg cost/candidate: $0.0001
+  Cost multiplier: 0.0x
+
+PER-CANDIDATE RESULTS
+Candidate ID         Ground Truth SCREEN       Baseline     SCR OK     BAS OK     SCR Conf  
+--------------------------------------------------------------------------------------------
+c01_strong_yes       STRONG_YES   UNKNOWN      YES          NO         NO         0%        
+c02_strong_no        STRONG_NO    UNKNOWN      NO           NO         NO         0%        
+c03_date_contradiction ESCALATE     UNKNOWN      STRONG_YES   NO         NO         0%        
+c04_skill_conflict   ESCALATE     UNKNOWN      YES          NO         NO         0%        
+c05_non_linear_path  YES          UNKNOWN      STRONG_YES   NO         NO         0%        
+c06_builder_signal   STRONG_YES   UNKNOWN      STRONG_YES   NO         YES        0%        
+c07_weak_looks_strong NO           UNKNOWN      YES          NO         NO         0%        
+c08_strong_looks_weak YES          UNKNOWN      YES          NO         YES        0%        
+c09_incomplete_cv    AMBIGUOUS    UNKNOWN      YES          NO         NO         0%        
+c10_employment_gap   YES          UNKNOWN      YES          NO         YES        0%        
+
+================================================================================

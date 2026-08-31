@@ -1,0 +1,530 @@
+{
+  "timestamp": "20260831T133338Z",
+  "n_candidates": 20,
+  "ground_truths": [
+    "STRONG_YES",
+    "STRONG_YES",
+    "STRONG_YES",
+    "STRONG_YES",
+    "YES",
+    "YES",
+    "YES",
+    "YES",
+    "AMBIGUOUS",
+    "AMBIGUOUS",
+    "AMBIGUOUS",
+    "NO",
+    "STRONG_NO",
+    "NO",
+    "NO",
+    "NO",
+    "STRONG_NO",
+    "STRONG_NO",
+    "ESCALATE",
+    "ESCALATE"
+  ],
+  "candidate_ids": [
+    "e01_strong_yes",
+    "e02_strong_yes",
+    "e03_strong_yes",
+    "e04_strong_yes",
+    "e05_yes",
+    "e06_yes",
+    "e07_yes",
+    "e08_yes",
+    "e09_ambiguous",
+    "e10_ambiguous",
+    "e11_ambiguous",
+    "e12_no",
+    "e13_no",
+    "e14_no",
+    "e15_no",
+    "e16_no",
+    "e17_strong_no",
+    "e18_strong_no",
+    "e19_date_contradiction",
+    "e20_skill_conflict"
+  ],
+  "screen": [
+    {
+      "candidate_id": "e01_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 96.3,
+      "cost_usd": 0.006441,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Led a team of 25 field operations coordinators and warehouse supervisors across 5 distribution counties at Unga Group Ltd. [Role at Unga Group Ltd, 2019-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Expanded distribution network from 2 to 5 counties (Nairobi, Kiambu, Machakos, Nakuru, Meru) over 3 years at Unga Group Ltd. [Role at Unga Group Ltd, 2019-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Improved fill rate from 71% to 94% through route optimisation and 3PL SLA renegotiation at Unga Group Ltd. [Role at Unga Group Ltd, 2019-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e02_strong_yes",
+      "verdict": "ESCALATE",
+      "confidence_pct": 86.4,
+      "cost_usd": 0.005929,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to have advanced MS Excel skills, but there is no evidence of this skill being applied in their work history.",
+        "Silence flag (high): Quantified outcomes for senior role",
+        "Probe required: Clarify the contradiction regarding advanced MS Excel skills and how they have been applied in previous roles."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e03_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 93.0,
+      "cost_usd": 0.006087,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a team of 20 warehouse supervisors, logistics coordinators, and field distribution officers at Kenya Breweries Ltd. [Role at Kenya Breweries Ltd, 2021-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Owned end-to-end distribution across 4 counties: Nakuru, Baringo, Laikipia, Nyandarua. [Role at Kenya Breweries Ltd, 2021-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Sustained a fill rate above 96% for 38 consecutive months. [Role at Kenya Breweries Ltd, 2021-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e04_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 98.0,
+      "cost_usd": 0.005525,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Led a team of 30 field operations coordinators, warehouse supervisors, and 3PL account managers at Unilever Kenya Ltd. [Role at Unilever Kenya Ltd, 2018-03 \u2014 Present, bullet 1]",
+        "Tier A evidence: Owned a KES 1.2B annual distribution budget and delivered 2.3% under plan for 3 consecutive years. [Role at Unilever Kenya Ltd, 2018-03 \u2014 Present, bullet 2]",
+        "Tier A evidence: Launched 3 new distribution routes from scratch, achieving break-even in 8 months against a 14-month target. [Role at Unilever Kenya Ltd, 2018-03 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e05_yes",
+      "verdict": "ESCALATE",
+      "confidence_pct": 78.8,
+      "cost_usd": 0.005801000000000001,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to have advanced MS Excel skills, but there is no evidence of this skill being applied in their work history.",
+        "Silence flag (high): Supervision language indicating team size for senior role",
+        "Probe required: Clarify the candidate's experience managing teams and why they did not explicitly mention team size in their role descriptions."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e06_yes",
+      "verdict": "YES",
+      "confidence_pct": 83.9,
+      "cost_usd": 0.005659999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Led a team of 12 logistics coordinators, warehouse officers, and field distribution agents at Medisel Kenya Ltd. [Role at Medisel Kenya Ltd, 2020-04 \u2014 Present, bullet 1]",
+        "Tier A evidence: Maintained cold-chain compliance at 99.1% across temperature-sensitive pharmaceutical product lines. [Role at Medisel Kenya Ltd, 2020-04 \u2014 Present, bullet 2]",
+        "Tier A evidence: Reduced stock-outs across 214 client facilities from 11% to 3.2% through safety-stock recalibration. [Role at Medisel Kenya Ltd, 2020-04 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e07_yes",
+      "verdict": "YES",
+      "confidence_pct": 77.0,
+      "cost_usd": 0.005671000000000001,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Leads a team of 11 warehouse and distribution staff at the Eldoret regional hub. [Role at Twiga Foods Ltd, 2021-08 \u2014 Present, bullet 2]",
+        "Tier A evidence: Tracks daily KPIs including fill rate, shrinkage rate, on-time dispatch, and vehicle utilization. [Role at Twiga Foods Ltd, 2021-08 \u2014 Present, bullet 4]",
+        "Tier A evidence: Commanded a 15-person logistics platoon supporting a 450-person battalion at Kenya Army. [Role at Kenya Army, 2018-06 \u2014 2021-07, bullet 1]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e08_yes",
+      "verdict": "ESCALATE",
+      "confidence_pct": 76.1,
+      "cost_usd": 0.005906,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to have advanced Excel skills, but there is no evidence of this skill being applied in their work history.",
+        "Silence flag (high): Supervision language indicating team management",
+        "Probe required: Clarify the candidate's advanced Excel skills and how they have been applied in their roles."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e09_ambiguous",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 24.3,
+      "cost_usd": 0.005334,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Weak signal \u2014 Tier C: Oversees hotel operations including vendor management, facilities, and guest services at Sarova Hotels and Resorts.",
+        "Weak signal \u2014 Tier C: Leads operations team across multiple departments at Sarova Hotels and Resorts.",
+        "Red flag: No experience in supply chain or FMCG operations, which is critical for the role."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e10_ambiguous",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 47.5,
+      "cost_usd": 0.005631000000000001,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Quantified outcomes for senior role",
+        "Probe required: Clarify the candidate's direct management experience, particularly regarding team size and specific KPIs tracked."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e11_ambiguous",
+      "verdict": "YES",
+      "confidence_pct": 70.5,
+      "cost_usd": 0.005746,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a team of 16 staff in operations at Strathmore University [Role at Strathmore University, 2020-01-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Achieved an 11% cost reduction in procurement budget through competitive tendering [Role at Strathmore University, 2020-01-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Implemented an asset tracking system that reduced asset loss incidents by 44% [Role at Strathmore University, 2020-01-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e12_no",
+      "verdict": "NO",
+      "confidence_pct": 30.7,
+      "cost_usd": 0.005242,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Weak signal \u2014 Tier B: Managed vendor relationships for d\u00e9cor, catering, AV equipment, and entertainment.",
+        "Weak signal \u2014 Tier B: Oversaw event budgets ranging from KES 500K to KES 8M per event.",
+        "Red flag: Candidate has no supply chain or FMCG operations experience, which is critical for the role."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e13_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 4,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'degree in business administration, operations management, supply chain, or related field'",
+        "No bachelor-level or higher degree found in education history \u2014 role requires a university degree",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e14_no",
+      "verdict": "NO",
+      "confidence_pct": 32.0,
+      "cost_usd": 0.0051459999999999995,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Weak signal \u2014 Tier B: Implements operational risk controls for the Equitel mobile banking platform.",
+        "Weak signal \u2014 Tier B: Manages SLA compliance for payment processing with 99.7% uptime maintained.",
+        "Red flag: Candidate lacks any direct supply chain or FMCG operations experience, which is critical for the role."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e15_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 51.2,
+      "cost_usd": 0.005458,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Supervision language indicating direct management of a team of 10+ people",
+        "Probe required: Clarify the candidate's experience with supply chain management and their ability to transition from health operations to FMCG operations."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e16_no",
+      "verdict": "NO",
+      "confidence_pct": 40.3,
+      "cost_usd": 0.0049299999999999995,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Weak signal \u2014 Tier B: Designed a quality monitoring scorecard adopted across the department at Airtel Kenya.",
+        "Weak signal \u2014 Tier B: Possesses skills in Contact Centre Operations, Workforce Management, IVR Configuration, FCR Optimisation, CSAT Management, Agent Coaching, Quality Assurance, SLA Management, Genesys, and Avaya.",
+        "Red flag: No experience in FMCG or supply chain operations, which is critical for the role."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e17_strong_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: '5+ years operations or supply chain management experience'",
+        "Year requirement not met: 1.9 years < 5 years minimum",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e18_strong_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'degree in business administration, operations management, supply chain, or related field'",
+        "No bachelor-level or higher degree found in education history \u2014 role requires a university degree",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e19_date_contradiction",
+      "verdict": "ESCALATE",
+      "confidence_pct": 74.3,
+      "cost_usd": 0.0055049999999999995,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to have been working at FreshRoute Logistics since January 2020, but the company was founded in March 2022, which is impossible.",
+        "Silence flag (high): Supervision language indicating team management",
+        "Probe required: Clarify the timeline of employment at FreshRoute Logistics Ltd and resolve the contradiction regarding the company's founding date."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "e20_skill_conflict",
+      "verdict": "YES",
+      "confidence_pct": 65.8,
+      "cost_usd": 0.0062180000000000004,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Graduated with a BCom in Logistics and Supply Chain Management from USIU-Africa. [Education section, USIU-Africa]",
+        "Tier B evidence: Led a team of 8 logistics assistants and distribution clerks at Mastermind Tobacco Kenya Ltd. [Role at Mastermind Tobacco Kenya Ltd, 2021-03 \u2014 Present, bullet 1]",
+        "Tier B evidence: Tracked daily dispatch volumes using Excel dashboards shared with depot managers. [Role at Mastermind Tobacco Kenya Ltd, 2021-03 \u2014 Present, bullet 2]"
+      ],
+      "error": null
+    }
+  ],
+  "baseline": [
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "**Verdict:** STRONG_YES\n\n**Reasoning:** James Ochieng Otieno is an exceptionally strong candidate for the Senior Operations Manager role. His current position as Senior Distribution Manager at Unga Group Ltd directly aligns with the job requirements, demonstrating extensive experience in managing large teams (25 vs. 15-20), expanding distribution networks (5 counties vs. 3 new regions), and improving key operational KPIs such as fill rate, cost-per-unit-delivered, and shrinkage. His experience with SAP WM and MM, along with managing 3PL contracts and budgets, further strengthens his suitability. The candidate also possesses direct experience in FMCG operations and has a proven track record of successful expansion and process improvement, making him an ideal fit.",
+      "raw_response": "**Verdict:** STRONG_YES\n\n**Reasoning:** James Ochieng Otieno is an exceptionally strong candidate for the Senior Operations Manager role. His current position as Senior Distribution Manager at Unga Group Ltd directly aligns with the job requirements, demonstrating extensive experience in managing large teams (25 vs. 15-20), expanding distribution networks (5 counties vs. 3 new regions), and improving key operational KPIs such as fill rate, cost-per-unit-delivered, and shrinkage. His experience with SAP WM and MM, along with managing 3PL contracts and budgets, further strengthens his suitability. The candidate also possesses direct experience in FMCG operations and has a proven track record of successful expansion and process improvement, making him an ideal fit.",
+      "latency_ms": 3591,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e01_strong_yes"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "**Verdict:** STRONG_YES\n\n**Reasoning:** Mercy possesses extensive experience directly relevant to the Senior Operations Manager role. Her 5+ years in logistics operations management, including leading a team of 18 and opening two greenfield warehouses, directly aligns with the job requirements. Furthermore, her experience managing FMCG clients, negotiating 3PL contracts, and optimizing last-mile delivery routes are highly valuable. Her BSc in Logistics and Supply Chain Management and familiarity with Odoo ERP further strengthen her candidacy.",
+      "raw_response": "**Verdict:** STRONG_YES\n\n**Reasoning:** Mercy possesses extensive experience directly relevant to the Senior Operations Manager role. Her 5+ years in logistics operations management, including leading a team of 18 and opening two greenfield warehouses, directly aligns with the job requirements. Furthermore, her experience managing FMCG clients, negotiating 3PL contracts, and optimizing last-mile delivery routes are highly valuable. Her BSc in Logistics and Supply Chain Management and familiarity with Odoo ERP further strengthen her candidacy.",
+      "latency_ms": 3896,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e02_strong_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nDavid Kiprop Mutai is a strong candidate for the Senior Operations Manager role. He has extensive experience (over 4 years) as an Operations Manager at Kenya Breweries Ltd, where he managed a team of 20, oversaw end-to-end distribution across multiple counties, and consistently met and exceeded key performance indicators such as fill rate and on-time delivery. His experience in managing budgets, reporting to senior leadership on expansion milestones, and his skills in 3PL partner management and team leadership directly align with the job requirements. Furthermore, his background in a large manufacturing environment and his mention of SAP MM are valuable assets.",
+      "raw_response": "YES\n\nDavid Kiprop Mutai is a strong candidate for the Senior Operations Manager role. He has extensive experience (over 4 years) as an Operations Manager at Kenya Breweries Ltd, where he managed a team of 20, oversaw end-to-end distribution across multiple counties, and consistently met and exceeded key performance indicators such as fill rate and on-time delivery. His experience in managing budgets, reporting to senior leadership on expansion milestones, and his skills in 3PL partner management and team leadership directly align with the job requirements. Furthermore, his background in a large manufacturing environment and his mention of SAP MM are valuable assets.",
+      "latency_ms": 2495,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e03_strong_yes"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "STRONG_YES\n\nBeatrice Auma Odhiambo is an exceptionally strong candidate for the Senior Operations Manager role. Her extensive experience at Unilever, directly managing a team of 30 and overseeing a KES 1.2B distribution budget, aligns perfectly with the job requirements. She has a proven track record of launching new distribution routes from scratch, managing 3PL partnerships, and achieving key performance indicators like fill rate, all of which are critical for Zawadi Foods' expansion. Her experience with SAP and reporting to a COO further strengthens her suitability.",
+      "raw_response": "STRONG_YES\n\nBeatrice Auma Odhiambo is an exceptionally strong candidate for the Senior Operations Manager role. Her extensive experience at Unilever, directly managing a team of 30 and overseeing a KES 1.2B distribution budget, aligns perfectly with the job requirements. She has a proven track record of launching new distribution routes from scratch, managing 3PL partnerships, and achieving key performance indicators like fill rate, all of which are critical for Zawadi Foods' expansion. Her experience with SAP and reporting to a COO further strengthens her suitability.",
+      "latency_ms": 2383,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e04_strong_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nPeter Njoroge Mwangi has 4+ years of experience as an Operations Manager at Keroche Breweries, where he managed a team of 8 and oversaw distribution operations. He has a proven track record of improving on-time delivery rates and managing 3PL partners, directly aligning with the core responsibilities of the Senior Operations Manager role. His experience in the Rift Valley region is also a plus, given the job's focus on expanding distribution into new regions.",
+      "raw_response": "YES\n\nPeter Njoroge Mwangi has 4+ years of experience as an Operations Manager at Keroche Breweries, where he managed a team of 8 and oversaw distribution operations. He has a proven track record of improving on-time delivery rates and managing 3PL partners, directly aligning with the core responsibilities of the Senior Operations Manager role. His experience in the Rift Valley region is also a plus, given the job's focus on expanding distribution into new regions.",
+      "latency_ms": 2352,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e05_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nGrace Atieno Omondi has 5+ years of relevant operations and supply chain management experience, exceeding the minimum requirement. She has a proven track record of managing teams larger than 10 people and experience in negotiating 3PL contracts and managing distribution operations. Her background in logistics and distribution, including last-mile delivery and fleet utilization, aligns well with the responsibilities outlined in the job description.",
+      "raw_response": "YES\n\nGrace Atieno Omondi has 5+ years of relevant operations and supply chain management experience, exceeding the minimum requirement. She has a proven track record of managing teams larger than 10 people and experience in negotiating 3PL contracts and managing distribution operations. Her background in logistics and distribution, including last-mile delivery and fleet utilization, aligns well with the responsibilities outlined in the job description.",
+      "latency_ms": 2427,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e06_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nSamuel Koech has 4 years of experience as an Operations Supervisor at Twiga Foods, where he managed a team of 11 and tracked relevant KPIs like fill rate and shrinkage. His previous role in the Kenya Army involved commanding a 15-person logistics platoon and managing fleet operations, demonstrating leadership and budget control. While his experience is not directly in FMCG manufacturing, his background in logistics, team management, and distribution aligns well with the requirements of the Senior Operations Manager role.",
+      "raw_response": "YES\n\nSamuel Koech has 4 years of experience as an Operations Supervisor at Twiga Foods, where he managed a team of 11 and tracked relevant KPIs like fill rate and shrinkage. His previous role in the Kenya Army involved commanding a 15-person logistics platoon and managing fleet operations, demonstrating leadership and budget control. While his experience is not directly in FMCG manufacturing, his background in logistics, team management, and distribution aligns well with the requirements of the Senior Operations Manager role.",
+      "latency_ms": 2686,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e07_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nDiana Kamau has 6+ years of experience in supply chain management, exceeding the 5-year requirement. She has a proven track record of managing teams of over 10 people (14 supply chain officers, warehouse supervisors, and logistics coordinators) and experience managing significant product throughput (KES 1.1B). Her experience includes managing 3PL partners for distribution corridors that align with the job's regional expansion focus (Nairobi Metro, Coast, and Western). She also demonstrates strong KPI management skills with a focus on fill rate and cost reduction, and her FMCG experience at Kapa Oil Refineries Ltd is a significant advantage.",
+      "raw_response": "YES\n\nDiana Kamau has 6+ years of experience in supply chain management, exceeding the 5-year requirement. She has a proven track record of managing teams of over 10 people (14 supply chain officers, warehouse supervisors, and logistics coordinators) and experience managing significant product throughput (KES 1.1B). Her experience includes managing 3PL partners for distribution corridors that align with the job's regional expansion focus (Nairobi Metro, Coast, and Western). She also demonstrates strong KPI management skills with a focus on fill rate and cost reduction, and her FMCG experience at Kapa Oil Refineries Ltd is a significant advantage.",
+      "latency_ms": 2557,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e08_yes"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO\n\nFelix's experience is primarily in hotel and banking operations, which are significantly different from the FMCG manufacturing and distribution sector required for this role. While he has operations management and team leadership experience, it lacks the specific supply chain, logistics, and 3PL management expertise needed for designing and running operational infrastructure for regional expansion in an FMCG context. His experience does not align with the core responsibilities of managing warehousing, last-mile distribution, or FMCG-specific KPIs.",
+      "raw_response": "NO\n\nFelix's experience is primarily in hotel and banking operations, which are significantly different from the FMCG manufacturing and distribution sector required for this role. While he has operations management and team leadership experience, it lacks the specific supply chain, logistics, and 3PL management expertise needed for designing and running operational infrastructure for regional expansion in an FMCG context. His experience does not align with the core responsibilities of managing warehousing, last-mile distribution, or FMCG-specific KPIs.",
+      "latency_ms": 2800,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e09_ambiguous"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nCarol Njoki Mwangi has 5+ years of experience in operations and supply chain management, meeting the primary requirement. Her current role as Operations Manager at Bidco Africa Ltd involves managing distribution operations, overseeing warehouse operations, and handling 3PL relationships, which directly aligns with the responsibilities of the Senior Operations Manager role. She also has experience managing teams, though the exact size is not specified, it is implied to be substantial given her managerial role. Her educational background in Business Management is also relevant.",
+      "raw_response": "YES\n\nCarol Njoki Mwangi has 5+ years of experience in operations and supply chain management, meeting the primary requirement. Her current role as Operations Manager at Bidco Africa Ltd involves managing distribution operations, overseeing warehouse operations, and handling 3PL relationships, which directly aligns with the responsibilities of the Senior Operations Manager role. She also has experience managing teams, though the exact size is not specified, it is implied to be substantial given her managerial role. Her educational background in Business Management is also relevant.",
+      "latency_ms": 3472,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e10_ambiguous"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nJoseph Waweru Ngugi has 5+ years of operations management experience, exceeding the requirement. He has a proven track record of managing a team of 16 staff, which is well above the 10+ requirement. His experience in managing procurement budgets, implementing asset tracking, and overseeing transport fleets demonstrates relevant operational skills. While his experience is not directly in FMCG, his role as a Supply Chain Analyst for companies in the FMCG sector and his MBA in Operations Management make him a strong candidate.",
+      "raw_response": "YES\n\nJoseph Waweru Ngugi has 5+ years of operations management experience, exceeding the requirement. He has a proven track record of managing a team of 16 staff, which is well above the 10+ requirement. His experience in managing procurement budgets, implementing asset tracking, and overseeing transport fleets demonstrates relevant operational skills. While his experience is not directly in FMCG, his role as a Supply Chain Analyst for companies in the FMCG sector and his MBA in Operations Management make him a strong candidate.",
+      "latency_ms": 2848,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e11_ambiguous"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - While Alice has operations and team management experience, her background is entirely within the hospitality sector (hotels and restaurants). The role requires specific experience in FMCG/consumer goods manufacturing and supply chain logistics, including warehousing, last-mile distribution, and managing 3PL partnerships, which are not present in her CV. Her experience in managing events and F&B service staff does not directly translate to the operational demands of a manufacturing and distribution expansion.",
+      "raw_response": "NO - While Alice has operations and team management experience, her background is entirely within the hospitality sector (hotels and restaurants). The role requires specific experience in FMCG/consumer goods manufacturing and supply chain logistics, including warehousing, last-mile distribution, and managing 3PL partnerships, which are not present in her CV. Her experience in managing events and F&B service staff does not directly translate to the operational demands of a manufacturing and distribution expansion.",
+      "latency_ms": 3086,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e12_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate's experience is primarily in documentation and support roles within logistics, not in direct operations management or team leadership. They lack the required 5+ years of operations/supply chain management experience and proven experience managing a team of 10+ people. The CV does not demonstrate experience in designing or running operational infrastructure, negotiating 3PL contracts, or building/tracking KPIs as required by the role.",
+      "raw_response": "NO - The candidate's experience is primarily in documentation and support roles within logistics, not in direct operations management or team leadership. They lack the required 5+ years of operations/supply chain management experience and proven experience managing a team of 10+ people. The CV does not demonstrate experience in designing or running operational infrastructure, negotiating 3PL contracts, or building/tracking KPIs as required by the role.",
+      "latency_ms": 2496,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e13_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO\n\nVivian's experience is primarily in banking operations, specifically payment and treasury. While she has managed teams and dealt with operational controls and reporting, her background does not align with the core requirements of managing physical supply chains, warehousing, last-mile distribution, or 3PL partnerships in an FMCG context. The job description emphasizes designing and running operational infrastructure for physical goods distribution, which is not demonstrated in Vivian's CV.",
+      "raw_response": "NO\n\nVivian's experience is primarily in banking operations, specifically payment and treasury. While she has managed teams and dealt with operational controls and reporting, her background does not align with the core requirements of managing physical supply chains, warehousing, last-mile distribution, or 3PL partnerships in an FMCG context. The job description emphasizes designing and running operational infrastructure for physical goods distribution, which is not demonstrated in Vivian's CV.",
+      "latency_ms": 2595,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e14_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO.\n\nWhile Anne has significant experience in operations and team management, her background is primarily in public health and development programs, not in the FMCG sector. The job requires specific experience in designing and running operational infrastructure for distribution, managing 3PL partnerships, and tracking KPIs relevant to manufacturing and logistics, which are not evident in her CV. Her experience with commodity distribution is related but not directly transferable to the complexities of FMCG supply chains.",
+      "raw_response": "NO.\n\nWhile Anne has significant experience in operations and team management, her background is primarily in public health and development programs, not in the FMCG sector. The job requires specific experience in designing and running operational infrastructure for distribution, managing 3PL partnerships, and tracking KPIs relevant to manufacturing and logistics, which are not evident in her CV. Her experience with commodity distribution is related but not directly transferable to the complexities of FMCG supply chains.",
+      "latency_ms": 2571,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e15_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - While Kevin has strong experience in operations and team management, his background is exclusively in call centre environments. The role requires specific experience in physical supply chain operations, including warehousing, last-mile distribution, and managing 3PL partnerships, which is not evident in his CV. His skills and achievements are focused on customer service metrics rather than the operational logistics and supply chain KPIs mentioned in the job description.",
+      "raw_response": "NO - While Kevin has strong experience in operations and team management, his background is exclusively in call centre environments. The role requires specific experience in physical supply chain operations, including warehousing, last-mile distribution, and managing 3PL partnerships, which is not evident in his CV. His skills and achievements are focused on customer service metrics rather than the operational logistics and supply chain KPIs mentioned in the job description.",
+      "latency_ms": 2566,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e16_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate does not meet the minimum experience requirement of 5+ years in operations or supply chain management. Their experience is limited to graduate trainee and intern roles, totaling less than 2 years of practical work. Additionally, they have not managed a team of 10+ people directly, which is a key requirement for this senior position.",
+      "raw_response": "NO - The candidate does not meet the minimum experience requirement of 5+ years in operations or supply chain management. Their experience is limited to graduate trainee and intern roles, totaling less than 2 years of practical work. Additionally, they have not managed a team of 10+ people directly, which is a key requirement for this senior position.",
+      "latency_ms": 3456,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e17_strong_no"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nStephen Kamau Njuguna has 5 years of experience in warehouse operations and logistics coordination, meeting the minimum requirement. He has directly managed a team of 14, exceeding the requirement of 10+. His experience at Pwani Oil Products Ltd, an FMCG manufacturer, is highly relevant, and he has a proven track record of improving efficiency and accuracy. While he lacks direct experience in opening new distribution routes from scratch, his existing skills and experience make him a strong candidate.",
+      "raw_response": "YES\n\nStephen Kamau Njuguna has 5 years of experience in warehouse operations and logistics coordination, meeting the minimum requirement. He has directly managed a team of 14, exceeding the requirement of 10+. His experience at Pwani Oil Products Ltd, an FMCG manufacturer, is highly relevant, and he has a proven track record of improving efficiency and accuracy. While he lacks direct experience in opening new distribution routes from scratch, his existing skills and experience make him a strong candidate.",
+      "latency_ms": 2186,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e18_strong_no"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nRuth Akinyi Odhiambo appears to be a strong candidate for the Senior Operations Manager role. She has over 5 years of operations management experience, exceeding the minimum requirement. Her current role as Operations Manager at FreshRoute Logistics directly involves managing a team of 15, overseeing FMCG distribution, and managing budgets, all of which align well with the job description. Furthermore, her experience coordinating distribution and managing delivery vehicles at Twiga Foods demonstrates relevant skills in last-mile logistics and KPI tracking.",
+      "raw_response": "YES\n\nRuth Akinyi Odhiambo appears to be a strong candidate for the Senior Operations Manager role. She has over 5 years of operations management experience, exceeding the minimum requirement. Her current role as Operations Manager at FreshRoute Logistics directly involves managing a team of 15, overseeing FMCG distribution, and managing budgets, all of which align well with the job description. Furthermore, her experience coordinating distribution and managing delivery vehicles at Twiga Foods demonstrates relevant skills in last-mile logistics and KPI tracking.",
+      "latency_ms": 1547,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e19_date_contradiction"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nPaul Njoroge Muthee has over 5 years of experience in logistics and supply chain management, exceeding the 5+ years requirement. He has direct experience managing teams, although his current team size of 8 is smaller than the 10+ direct reports mentioned in the job description. His experience at Premier Flour Mills Ltd is relevant to the FMCG sector, and he possesses strong ERP skills (SAP, Oracle, Odoo) which are listed as \"nice to have.\" While he hasn't explicitly opened new distribution routes from scratch, his background in coordinating logistics and managing distribution aligns well with the role's responsibilities.",
+      "raw_response": "YES\n\nPaul Njoroge Muthee has over 5 years of experience in logistics and supply chain management, exceeding the 5+ years requirement. He has direct experience managing teams, although his current team size of 8 is smaller than the 10+ direct reports mentioned in the job description. His experience at Premier Flour Mills Ltd is relevant to the FMCG sector, and he possesses strong ERP skills (SAP, Oracle, Odoo) which are listed as \"nice to have.\" While he hasn't explicitly opened new distribution routes from scratch, his background in coordinating logistics and managing distribution aligns well with the role's responsibilities.",
+      "latency_ms": 1452,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "e20_skill_conflict"
+    }
+  ]
+}

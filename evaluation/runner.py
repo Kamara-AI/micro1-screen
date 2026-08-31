@@ -20,7 +20,6 @@ for SCREEN results and still runs the full baseline comparison.
 """
 
 import os
-os.environ.setdefault("GEMINI_API_KEY", "eval-placeholder-not-real")
 os.environ.setdefault("ENV", "dev")
 
 import asyncio
@@ -37,6 +36,9 @@ from rich.text import Text
 from rich import box
 
 from evaluation.candidates import ALL_CANDIDATES
+from evaluation.candidates.batch2 import ALL_CANDIDATES_B2
+from evaluation.candidates.batch3 import ALL_CANDIDATES_B3
+from evaluation.candidates.batch4 import ALL_CANDIDATES_B4
 from evaluation.baseline import run_baseline_async
 from evaluation.metrics import (
     verdict_accuracy,
@@ -382,6 +384,7 @@ async def run_evaluation(
     run_screen: bool = True,
     run_baseline: bool = True,
     save: bool = True,
+    batch: str = "1",
 ) -> dict:
     """
     WHY: The top-level async orchestrator. Separated from the main guard so it
@@ -410,7 +413,14 @@ async def run_evaluation(
             - results_dir: str path to where results were saved (or None)
     """
     console = Console()
-    candidates = ALL_CANDIDATES
+    if batch == "2":
+        candidates = ALL_CANDIDATES_B2
+    elif batch == "3":
+        candidates = ALL_CANDIDATES_B3
+    elif batch == "4":
+        candidates = ALL_CANDIDATES_B4
+    else:
+        candidates = ALL_CANDIDATES
     n = len(candidates)
 
     ground_truths = [c["ground_truth_verdict"] for c in candidates]
@@ -520,11 +530,13 @@ if __name__ == "__main__":
     do_screen = "--no-screen" not in args
     do_baseline = "--no-baseline" not in args
     do_save = "--no-save" not in args
+    do_batch = "4" if "--batch4" in args else ("3" if "--batch3" in args else ("2" if "--batch2" in args else "1"))
 
     asyncio.run(
         run_evaluation(
             run_screen=do_screen,
             run_baseline=do_baseline,
             save=do_save,
+            batch=do_batch,
         )
     )

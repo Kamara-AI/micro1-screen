@@ -1,0 +1,270 @@
+{
+  "timestamp": "20260831T101352Z",
+  "n_candidates": 10,
+  "ground_truths": [
+    "STRONG_YES",
+    "STRONG_NO",
+    "ESCALATE",
+    "ESCALATE",
+    "YES",
+    "STRONG_YES",
+    "NO",
+    "YES",
+    "AMBIGUOUS",
+    "YES"
+  ],
+  "candidate_ids": [
+    "c01_strong_yes",
+    "c02_strong_no",
+    "c03_date_contradiction",
+    "c04_skill_conflict",
+    "c05_non_linear_path",
+    "c06_builder_signal",
+    "c07_weak_looks_strong",
+    "c08_strong_looks_weak",
+    "c09_incomplete_cv",
+    "c10_employment_gap"
+  ],
+  "screen": [
+    {
+      "candidate_id": "c01_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 95.2,
+      "cost_usd": 0.006968000000000001,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Redesigned the real-time fraud scoring service to handle 40K TPS, enabling Monzo to process peak load without throttling for the first time. [Role at Monzo Bank, 2022-01-01 \u2014 2024-08-27, bullet 1]",
+        "Tier A evidence: Led a 4-person squad to migrate 11 legacy card-processing microservices from Python 2.7 to Python 3.11, reducing production incident rate by 34% over 6 months post-migration. [Role at Monzo Bank, 2022-01-01 \u2014 2024-08-27, bullet 2]",
+        "Tier A evidence: Architected a new event-sourced ledger reconciliation service in Go, cutting overnight batch reconciliation time from 4h 20m to 23 minutes. [Role at Monzo Bank, 2022-01-01 \u2014 2024-08-27, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c02_strong_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: '8+ years of software engineering experience'",
+        "Year requirement not met: 2.0 years < 8 years minimum",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c03_date_contradiction",
+      "verdict": "ESCALATE",
+      "confidence_pct": 82.7,
+      "cost_usd": 0.005977,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to have joined DataSync in 2018, but the company was founded in 2019, creating a critical contradiction.",
+        "Silence flag (high): Architectural decisions or ownership of data pipeline design",
+        "Probe required: Clarify the timeline of experience at DataSync to resolve the critical contradiction."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c04_skill_conflict",
+      "verdict": "ESCALATE",
+      "confidence_pct": 39.3,
+      "cost_usd": 0.009946,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to be an expert in Python but does not provide any evidence of using Python in their work history.",
+        "Silence flag (high): Quantified outcomes for senior role",
+        "Probe required: What specific experience do you have with Kubernetes in a production environment?"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c05_non_linear_path",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 84.6,
+      "cost_usd": 0.00723,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Owns the patient appointment booking flow at AfyaDigital, used by 12,000 monthly active patients across 3 counties. [Role at AfyaDigital, 2023-03 \u2014 Present, bullet 1]",
+        "Tier A evidence: Reduced appointment no-show rate from 34% to 21% by building an SMS reminder feature integrated with Africa's Talking API at AfyaDigital. [Role at AfyaDigital, 2023-03 \u2014 Present, bullet 2]",
+        "Tier A evidence: Built an admin dashboard for clinic coordinators at AfyaDigital, cutting weekly reporting time from 4 hours to 20 minutes. [Role at AfyaDigital, 2023-03 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c06_builder_signal",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 92.2,
+      "cost_usd": 0.006618000000000001,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Built the first version of the merchant API from scratch using Node.js and PostgreSQL, onboarding the first 50 merchants in 6 weeks. [Role at Lipa Later, 2022-11 \u2014 Present, bullet 1]",
+        "Tier A evidence: Architected the instalment calculation engine that powers over 35,000 active loan accounts. [Role at Lipa Later, 2022-11 \u2014 Present, bullet 2]",
+        "Tier A evidence: Led a 3-person squad through a 4-month platform migration from a monolith to a service-oriented architecture with zero downtime. [Role at Lipa Later, 2022-11 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c07_weak_looks_strong",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: '8+ years software engineering'",
+        "Year requirement not met: 6.7 years < 8 years minimum",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c08_strong_looks_weak",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 84.0,
+      "cost_usd": 0.006636,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed daily fulfilment operations for the Nairobi hub, handling 800\u20131,200 orders per day with a team of 14 warehouse staff. [Role at Jumia Kenya, 2022-03 \u2014 Present, bullet 1]",
+        "Tier A evidence: Reduced order picking error rate from 4.2% to 1.1% by redesigning the bin-labelling system and introducing a scan-verify step without requiring tech investment. [Role at Jumia Kenya, 2022-03 \u2014 Present, bullet 2]",
+        "Tier A evidence: Built and deployed 'RouteBot', a Python script that auto-generates optimized daily delivery routes, saving 2.5 hours of manual work per day. [Role at Jumia Kenya, 2022-03 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c09_incomplete_cv",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 60.2,
+      "cost_usd": 0.004514,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Quantified outcomes for projects",
+        "Probe required: Clarify the specific contributions made in previous roles, especially regarding ownership of projects."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c10_employment_gap",
+      "verdict": "ESCALATE",
+      "confidence_pct": 82.8,
+      "cost_usd": 0.006758,
+      "processing_time_ms": 0,
+      "escalation_category": "bias_flag_detected",
+      "primary_evidence": [
+        "Silence flag (high): Architectural decisions or ownership of high-availability systems",
+        "Probe required: What specific experience do you have with high-availability systems?"
+      ],
+      "error": null
+    }
+  ],
+  "baseline": [
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "STRONG_YES\n\nAmara Osei-Bonsu is an exceptionally strong candidate for this role. They possess 8 years of backend engineering experience, exceeding the 5-year minimum, with a significant portion focused on payment infrastructure at prominent fintech companies like Stripe and Monzo. Their experience directly aligns with the core requirements, including designing and building APIs, improving system reliability and performance (e.g., increasing TPS for fraud scoring and reducing reconciliation time), and working with regulated financial data. Furthermore, their proficiency in both Python and Go, coupled with their experience mentoring engineers and contributing to architectural decisions, makes them a near-perfect fit for the responsibilities outlined in the job description.",
+      "raw_response": "STRONG_YES\n\nAmara Osei-Bonsu is an exceptionally strong candidate for this role. They possess 8 years of backend engineering experience, exceeding the 5-year minimum, with a significant portion focused on payment infrastructure at prominent fintech companies like Stripe and Monzo. Their experience directly aligns with the core requirements, including designing and building APIs, improving system reliability and performance (e.g., increasing TPS for fraud scoring and reducing reconciliation time), and working with regulated financial data. Furthermore, their proficiency in both Python and Go, coupled with their experience mentoring engineers and contributing to architectural decisions, makes them a near-perfect fit for the responsibilities outlined in the job description.",
+      "latency_ms": 2184,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c01_strong_yes"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate's experience is significantly below the requirements for a Staff Engineer role. They have only 1 year and 2 months of professional experience as a Junior Software Developer, with prior internships and freelance work. The job requires 8+ years of experience, including 3+ years at a senior level, and demonstrable experience designing large-scale distributed systems. The candidate's skills and project experience do not align with the deep expertise in Go, Rust, or Java, financial services, or leading architectural decisions for a large team.",
+      "raw_response": "NO - The candidate's experience is significantly below the requirements for a Staff Engineer role. They have only 1 year and 2 months of professional experience as a Junior Software Developer, with prior internships and freelance work. The job requires 8+ years of experience, including 3+ years at a senior level, and demonstrable experience designing large-scale distributed systems. The candidate's skills and project experience do not align with the deep expertise in Go, Rust, or Java, financial services, or leading architectural decisions for a large team.",
+      "latency_ms": 3158,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c02_strong_no"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "**Verdict:** STRONG_YES\n\n**Reasoning:** Priya Nair is an excellent fit for this role. She has 6 years of data engineering experience, exceeding the 4-year requirement. Her experience directly aligns with the core technologies mentioned, including production experience with Kafka and Spark Streaming, and Python proficiency. She has a proven track record of designing and operating high-throughput data pipelines (15TB/day), mentoring junior engineers, and managing cloud migrations on AWS, all of which are key requirements for this Senior Data Engineer position. Her experience with dbt is also a significant plus.",
+      "raw_response": "**Verdict:** STRONG_YES\n\n**Reasoning:** Priya Nair is an excellent fit for this role. She has 6 years of data engineering experience, exceeding the 4-year requirement. Her experience directly aligns with the core technologies mentioned, including production experience with Kafka and Spark Streaming, and Python proficiency. She has a proven track record of designing and operating high-throughput data pipelines (15TB/day), mentoring junior engineers, and managing cloud migrations on AWS, all of which are key requirements for this Senior Data Engineer position. Her experience with dbt is also a significant plus.",
+      "latency_ms": 2588,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c03_date_contradiction"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nFelix has 5 years of experience as a full-stack developer with a strong emphasis on cloud infrastructure and MLOps. He lists expertise in Kubernetes, Terraform, and ML pipelines (Kubeflow, MLflow), directly matching the core requirements of the role. His experience with multi-cloud environments (AWS, GCP) and container orchestration (Kubernetes) is also highly relevant. While his recent roles are more full-stack focused, his stated expertise and the specific technologies he lists indicate a strong foundational understanding and practical experience in the required areas.",
+      "raw_response": "YES\n\nFelix has 5 years of experience as a full-stack developer with a strong emphasis on cloud infrastructure and MLOps. He lists expertise in Kubernetes, Terraform, and ML pipelines (Kubeflow, MLflow), directly matching the core requirements of the role. His experience with multi-cloud environments (AWS, GCP) and container orchestration (Kubernetes) is also highly relevant. While his recent roles are more full-stack focused, his stated expertise and the specific technologies he lists indicate a strong foundational understanding and practical experience in the required areas.",
+      "latency_ms": 2674,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c04_skill_conflict"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "**Verdict:** STRONG_YES\n\n**Reasoning:**\nGrace Muthoni Kariuki is an exceptionally strong candidate for this role. Her 3 years of professional software development experience, with a significant portion focused on React Native and Node.js, directly aligns with the core technical requirements. Furthermore, her background as a primary school teacher and her stated passion for designing for learners is a perfect match for Elimu.io's mission. Her experience building patient-facing features in a health tech startup and her portfolio projects with real users demonstrate her ability to deliver impactful solutions in user-centric environments.",
+      "raw_response": "**Verdict:** STRONG_YES\n\n**Reasoning:**\nGrace Muthoni Kariuki is an exceptionally strong candidate for this role. Her 3 years of professional software development experience, with a significant portion focused on React Native and Node.js, directly aligns with the core technical requirements. Furthermore, her background as a primary school teacher and her stated passion for designing for learners is a perfect match for Elimu.io's mission. Her experience building patient-facing features in a health tech startup and her portfolio projects with real users demonstrate her ability to deliver impactful solutions in user-centric environments.",
+      "latency_ms": 1809,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c05_non_linear_path"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "**Verdict:** STRONG_YES\n\n**Reasoning:**\nJabari Kamau is an exceptionally strong candidate for this Staff Engineer role. His CV demonstrates a clear track record of \"zero-to-one\" builds, including founding his own startup and building core systems from scratch at Lipa Later and Twiga Foods. His experience with Node.js, architecting complex engines (instalment calculation, order dispatch), and migrating systems aligns perfectly with the role's requirements. Furthermore, his open-source contributions, particularly Huduma API which is used by fintechs and even Koa Health itself, showcase his ability to build impactful, widely adopted solutions and his understanding of regulated domains like payments. His founder experience and documented learnings are also highly valued by the company.",
+      "raw_response": "**Verdict:** STRONG_YES\n\n**Reasoning:**\nJabari Kamau is an exceptionally strong candidate for this Staff Engineer role. His CV demonstrates a clear track record of \"zero-to-one\" builds, including founding his own startup and building core systems from scratch at Lipa Later and Twiga Foods. His experience with Node.js, architecting complex engines (instalment calculation, order dispatch), and migrating systems aligns perfectly with the role's requirements. Furthermore, his open-source contributions, particularly Huduma API which is used by fintechs and even Koa Health itself, showcase his ability to build impactful, widely adopted solutions and his understanding of regulated domains like payments. His founder experience and documented learnings are also highly valued by the company.",
+      "latency_ms": 2710,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c06_builder_signal"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nVictor has 7+ years of experience, with significant leadership roles at Safaricom and Cellulant. His experience managing engineering functions, overseeing complex projects, and migrating systems to cloud infrastructure aligns well with the Principal Engineer role. He also possesses strong technical skills in relevant languages like Java and Python, and experience with microservices and cloud platforms like AWS, which are crucial for re-architecting a platform. While his current role is Director of Engineering, his past experience as a Senior Software Engineer and his technical skills suggest he can operate as a deeply technical individual contributor.",
+      "raw_response": "YES\n\nVictor has 7+ years of experience, with significant leadership roles at Safaricom and Cellulant. His experience managing engineering functions, overseeing complex projects, and migrating systems to cloud infrastructure aligns well with the Principal Engineer role. He also possesses strong technical skills in relevant languages like Java and Python, and experience with microservices and cloud platforms like AWS, which are crucial for re-architecting a platform. While his current role is Director of Engineering, his past experience as a Senior Software Engineer and his technical skills suggest he can operate as a deeply technical individual contributor.",
+      "latency_ms": 2499,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c07_weak_looks_strong"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nSadia has over 5 years of experience in logistics and supply chain operations, directly meeting the hard requirement. Her experience at Jumia and Sendy demonstrates a deep understanding of operational pain points, including route optimization and KPI tracking, which aligns perfectly with the role's focus on internal ops tooling. Furthermore, her self-taught Python skills and personal projects like \"RouteBot\" showcase her analytical background and proactive approach to building solutions, making her a strong candidate for this Junior PM position.",
+      "raw_response": "YES\n\nSadia has over 5 years of experience in logistics and supply chain operations, directly meeting the hard requirement. Her experience at Jumia and Sendy demonstrates a deep understanding of operational pain points, including route optimization and KPI tracking, which aligns perfectly with the role's focus on internal ops tooling. Furthermore, her self-taught Python skills and personal projects like \"RouteBot\" showcase her analytical background and proactive approach to building solutions, making her a strong candidate for this Junior PM position.",
+      "latency_ms": 2416,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c08_strong_looks_weak"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nMichael has 3+ years of professional software development experience, with specific mentions of Django and React in his skills. He also has experience in client communication and managing his own work, which aligns well with the job description's requirements for independent productivity and client interaction. His background as a Full Stack Developer at Innovate Solutions Ltd directly maps to the core responsibilities of the role.",
+      "raw_response": "YES\n\nMichael has 3+ years of professional software development experience, with specific mentions of Django and React in his skills. He also has experience in client communication and managing his own work, which aligns well with the job description's requirements for independent productivity and client interaction. His background as a Full Stack Developer at Innovate Solutions Ltd directly maps to the core responsibilities of the role.",
+      "latency_ms": 1315,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c09_incomplete_cv"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nElizabeth has strong experience in financial services and payment systems, with a proven track record of owning reliability improvements and working with high-availability systems. Her experience at Equity Bank and M-KOPA Solar, particularly in building and maintaining APIs, improving payment recovery rates, and migrating to event-driven architectures, aligns well with the requirements of the role. Her Python proficiency and experience with PostgreSQL are also key matches. While her career break is noted, her continued engagement with open-source contributions and certifications demonstrates a commitment to staying current.",
+      "raw_response": "YES\n\nElizabeth has strong experience in financial services and payment systems, with a proven track record of owning reliability improvements and working with high-availability systems. Her experience at Equity Bank and M-KOPA Solar, particularly in building and maintaining APIs, improving payment recovery rates, and migrating to event-driven architectures, aligns well with the requirements of the role. Her Python proficiency and experience with PostgreSQL are also key matches. While her career break is noted, her continued engagement with open-source contributions and certifications demonstrates a commitment to staying current.",
+      "latency_ms": 2453,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "c10_employment_gap"
+    }
+  ]
+}

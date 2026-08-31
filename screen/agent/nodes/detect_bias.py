@@ -77,6 +77,10 @@ BIAS TYPES TO LOOK FOR:
    "gap in employment raises questions", treating gap presence alone as negative.
    Correct pattern: A gap is ONLY material if there's specific evidence it indicates
    a problem (e.g., documented performance issue) — mere existence of a gap is neutral.
+   CRITICAL: If the analysis CORRECTLY handles the gap (acknowledges it is explained,
+   does not penalise it, treats the post-gap trajectory on its merits), do NOT flag
+   employment gap bias. Only flag if the analysis INCORRECTLY reduces the score or
+   adds negative sentiment BECAUSE of the gap, without specific evidence of a problem.
 
 4. OVERQUALIFICATION REFLEX
    Red pattern: Penalising strong experience WITHOUT a specific argument for why it

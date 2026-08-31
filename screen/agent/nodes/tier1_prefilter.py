@@ -55,11 +55,49 @@ def _extract_min_years(requirement: str) -> int | None:
     return None
 
 
+_GENERIC_EXPERIENCE_WORDS = frozenset({
+    "backend", "frontend", "fullstack", "full-stack", "full stack",
+    "software", "engineering", "engineer", "development", "developer",
+    "experience", "professional", "work", "working", "years", "year",
+    "technical", "technology", "programming", "coding", "related",
+    "relevant", "general", "overall", "total", "combined",
+})
+
+# WHY: Used to identify whether a requirement is specific enough for keyword matching.
+# Stopwords + vague descriptors that don't help distinguish a specific skill/cert.
+# If after removing these the requirement has >2 meaningful words, it's a descriptive
+# natural-language requirement that keyword matching can't reliably evaluate.
+_KEYWORD_STOPWORDS = frozenset({
+    # English stopwords
+    "and", "or", "the", "with", "have", "that", "this", "from", "they",
+    "been", "more", "will", "into", "than", "some", "such", "each", "when",
+    "then", "must", "should", "for", "any", "all", "has", "not", "can",
+    "are", "was", "were", "its", "our", "their", "your", "who", "which",
+    "about", "over", "also", "very", "both", "also", "its", "via", "per",
+    # Vague experience descriptors that don't help with keyword matching
+    "strong", "good", "solid", "proven", "demonstrated", "ability", "skills",
+    "skill", "knowledge", "experience", "background", "proficiency",
+    "understanding", "familiarity", "expertise", "awareness", "exposure",
+    "handling", "working", "related", "relevant", "preferred", "required",
+    "minimum", "least", "plus", "years", "year", "hands", "real", "world",
+    # Generic capability adjectives — describe a person trait, not a specific technology
+    "analytical", "strategic", "technical", "creative", "innovative",
+    "collaborative", "proactive", "detail", "oriented", "driven",
+    "motivated", "passionate", "curious", "adaptable", "versatile",
+    "communication", "organizational", "leadership", "interpersonal",
+    "problem", "solving", "critical", "thinking", "dynamic", "results",
+})
+
+
 def _strip_year_phrases(requirement: str) -> str:
     """
     WHY: Requirements like "minimum 10 years java" have both a year threshold and
     a skill keyword. After the year check, we need to check the residual keyword
     ("java") separately. Stripping the year phrase extracts that residual.
+
+    Returns empty string if the residual is purely generic experience descriptors
+    (e.g. "backend engineering", "software development") — these describe the
+    TYPE of experience, not a specific technology to match as a skill keyword.
     """
     stripped = requirement
     for pattern in _REQUIRED_YEARS_PATTERNS:
@@ -71,7 +109,17 @@ def _strip_year_phrases(requirement: str) -> str:
         stripped,
         flags=re.IGNORECASE,
     )
-    return stripped.strip(" ,;")  # Remove trailing punctuation/whitespace
+    stripped = stripped.strip(" ,;")
+
+    # WHY: If the residual is only generic words like "backend engineering" or
+    # "software development", there is no specific skill/technology to keyword-match.
+    # These are descriptors of the year requirement, not separate skill gates.
+    # Treat the residual as empty so the year check is the only gate.
+    residual_words = set(stripped.lower().split())
+    if residual_words.issubset(_GENERIC_EXPERIENCE_WORDS):
+        return ""
+
+    return stripped
 
 from screen.core.exceptions import StateTransitionError
 from screen.core.logging_config import get_logger
@@ -128,6 +176,36 @@ def _requirement_satisfied(
 
     req_lower = requirement.lower()
 
+    # ── Step 0b: Degree requirement gate (BEFORE all keyword matching) ────────
+    # WHY: "degree in business administration, operations management..." contains
+    # content words like "operations" that would match role titles in Step 2 and
+    # falsely pass the candidate through. We must intercept degree requirements
+    # here — before any substring or keyword matching — and gate on education only.
+    _req_words_early = [
+        w for w in re.split(r"\W+", req_lower)
+        if len(w) >= 3 and w not in _KEYWORD_STOPWORDS
+    ]
+    if "degree" in _req_words_early:
+        # WHY: Abbreviations like "ma" must be word-boundary matched — "ma" is a
+        # substring of "management", which would falsely pass a Certificate holder.
+        # Using \b ensures "ma" only matches as a standalone token, not mid-word.
+        _DEGREE_INDICATORS = [
+            "bsc", "b\\.sc", "ba", "b\\.a", "bba", "bcom", "b\\.com",
+            "msc", "m\\.sc", "mba", "ma", "m\\.a", "phd", "ph\\.d",
+            "bachelor", "bachelors", "masters", "master",
+            "doctorate", "honours", "hons", "degree",
+        ]
+        edu_text = " ".join(
+            ((edu.degree or "") + " " + (edu.field_of_study or "") + " " + edu.institution).lower()
+            for edu in candidate_profile.education
+        )
+        if any(re.search(r"\b" + ind + r"\b", edu_text) for ind in _DEGREE_INDICATORS):
+            return True, "Degree-level qualification found in education history"
+        return False, (
+            "No bachelor-level or higher degree found in education history — "
+            "role requires a university degree"
+        )
+
     # Check skills_stated
     for skill in candidate_profile.skills_stated:
         if req_lower in skill.lower() or skill.lower() in req_lower:
@@ -147,6 +225,48 @@ def _requirement_satisfied(
             return True, f"Requirement matched in education: {edu.degree}"
         if req_lower in (edu.field_of_study or "").lower():
             return True, f"Requirement matched in field of study: {edu.field_of_study}"
+
+    # ── Step 2: Individual keyword extraction ────────────────────────────────
+    # WHY: Full-phrase matching failed. Try extracting individual meaningful
+    # words from the requirement and scanning the full profile text.
+    # This handles cases like "Python or Go proficiency" where "python" is in
+    # skills_stated but the LLM may have returned it as "Python (expert)" — the
+    # full phrase won't substring-match but individual word "python" will.
+    profile_text = " ".join([
+        " ".join(candidate_profile.skills_stated),
+        " ".join(r.title for r in candidate_profile.roles),
+        " ".join(ach for r in candidate_profile.roles for ach in r.achievements),
+        " ".join(
+            (edu.degree or "") + " " + (edu.field_of_study or "")
+            for edu in candidate_profile.education
+        ),
+    ]).lower()
+
+    req_words = [
+        w for w in re.split(r"\W+", req_lower)
+        if len(w) >= 3 and w not in _KEYWORD_STOPWORDS
+    ]
+
+    for word in req_words:
+        if word in profile_text:
+            return True, f"Keyword '{word}' from requirement found in profile"
+
+
+    # ── Step 3b: Descriptive requirement passthrough ──────────────────────────
+    # WHY: No keyword matched. Before hard-rejecting, check whether this
+    # requirement is specific enough for keyword matching to be reliable.
+    # Two cases pass through to LLM:
+    # (a) 0 meaningful words — the requirement is fully generic (e.g. "strong
+    #     analytical background") after stopword filtering; there is no specific
+    #     technology or credential to match, so keyword rejection would be wrong.
+    # (b) >2 meaningful words — a descriptive natural-language phrase (e.g.
+    #     "experience with financial systems or regulated data") that requires
+    #     semantic reasoning. Hard-rejecting here would be ATS-level keyword filtering.
+    if len(req_words) == 0 or len(req_words) > 2:
+        return True, (
+            "Descriptive/generic requirement (0 or ≥3 content words after filtering) — "
+            "not reliably evaluable by keyword matching; passing to LLM analysis"
+        )
 
     return False, f"No evidence of '{requirement}' found in profile"
 

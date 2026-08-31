@@ -1,0 +1,50 @@
+================================================================================
+SCREEN vs BASELINE — EVALUATION REPORT
+================================================================================
+
+ACCURACY
+  SCREEN exact match:      55%  (11/20)
+  Baseline exact match:    60%  (12/20)
+  SCREEN directional:      70%  (14/20)
+  Baseline directional:    70%  (14/20)
+  Delta (exact):           -5%
+
+ESCALATION HANDLING
+  Ground truth escalations: 2/20
+  SCREEN escalations:       1 (precision=100%, recall=50%)
+  Baseline escalations:     0 (precision=100%, recall=0%)
+
+CALIBRATION (Brier-based, 1.0 = perfect, 0.75 = random)
+  SCREEN calibration score: 0.688
+  Baseline: N/A (no structured confidence output)
+
+ECONOMICS
+  SCREEN avg cost/candidate: $0.0050
+  Baseline avg cost/candidate: $0.0001
+  Cost multiplier: 35.4x
+
+PER-CANDIDATE RESULTS
+Candidate ID         Ground Truth SCREEN       Baseline     SCR OK     BAS OK     SCR Conf  
+--------------------------------------------------------------------------------------------
+e01_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        94%       
+e02_strong_yes       STRONG_YES   YES          STRONG_YES   NO         YES        82%       
+e03_strong_yes       STRONG_YES   STRONG_YES   YES          YES        NO         95%       
+e04_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        95%       
+e05_yes              YES          YES          YES          YES        YES        82%       
+e06_yes              YES          YES          YES          YES        YES        80%       
+e07_yes              YES          YES          YES          YES        YES        83%       
+e08_yes              YES          STRONG_YES   YES          NO         YES        92%       
+e09_ambiguous        AMBIGUOUS    AMBIGUOUS    NO           YES        NO         57%       
+e10_ambiguous        AMBIGUOUS    AMBIGUOUS    YES          YES        NO         54%       
+e11_ambiguous        AMBIGUOUS    YES          YES          NO         NO         78%       
+e12_no               NO           YES          NO           NO         YES        74%       
+e13_no               NO           STRONG_NO    NO           NO         YES        100%      
+e14_no               NO           YES          NO           NO         YES        69%       
+e15_no               NO           YES          NO           NO         YES        73%       
+e16_no               NO           YES          NO           NO         YES        73%       
+e17_strong_no        STRONG_NO    STRONG_NO    NO           YES        NO         100%      
+e18_strong_no        STRONG_NO    STRONG_NO    YES          YES        NO         100%      
+e19_date_contradiction ESCALATE     ESCALATE     YES          YES        NO         72%       
+e20_skill_conflict   ESCALATE     YES          YES          NO         NO         66%       
+
+================================================================================

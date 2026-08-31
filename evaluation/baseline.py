@@ -9,10 +9,20 @@ We run the same 10 candidates through both SCREEN and the baseline and compare:
 - Evidence quality (does SCREEN cite evidence the baseline misses?)
 - Human escalation (does SCREEN correctly identify candidates needing human review?)
 
-HOW: A single call to ChatGoogleGenerativeAI with a structured prompt but NO
-structured output format — the LLM returns free text. We parse the verdict out of
-the text with a simple keyword scan, simulating the "copy-paste prompt into ChatGPT"
-approach that most hiring managers actually use.
+HOW: A single call via OpenRouter with a structured prompt but NO structured output
+format — the LLM returns free text. We parse the verdict out of the text with a
+simple keyword scan, simulating the "copy-paste prompt into ChatGPT" approach that
+most hiring managers actually use.
+
+WHY OpenRouter for the baseline: Same provider as SCREEN so the comparison is fair —
+any accuracy delta comes from the architecture (evidence extraction, contradiction
+detection, calibrated confidence), not from using a different API.
+
+WHY the same tier1 model: The baseline deliberately uses the cheapest capable model
+(same as SCREEN's tier1) to represent the naive single-prompt approach at comparable
+cost. The point is not to make the baseline look bad by giving it a weak model —
+it's to show that a sophisticated pipeline outperforms a single prompt even when
+both use the same model tier.
 
 This is deliberately naive — the point is to show what you get without SCREEN's
 evidence layer, contradiction detection, and calibrated confidence.
@@ -22,12 +32,21 @@ import re
 import time
 from typing import Optional
 
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
+
+from screen.core.config import settings
 
 
-# WHY: The model is intentionally the same tier as what SCREEN uses so that any
-# accuracy improvement comes from the architecture, not the model choice.
-_BASELINE_MODEL = "gemini-2.0-flash"
+_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+_OPENROUTER_HEADERS = {
+    "HTTP-Referer": "https://github.com/Kamara-AI/micro1-screen",
+    "X-Title": "SCREEN - micro1 Hackathon 2026",
+}
+
+# WHY: Same tier1 model as SCREEN (google/gemini-2.5-flash-lite) so the comparison
+# is fair — any accuracy delta is architecture, not model. If the operator overrides
+# OPENROUTER_MODEL_TIER1 in their .env, the baseline uses the same override.
+_BASELINE_MODEL = settings.openrouter_model_tier1
 
 _SYSTEM_PROMPT = """You are an AI assistant helping a recruiter pre-screen job candidates.
 You will be given a CV (resume) and a job description.
@@ -113,9 +132,12 @@ def run_baseline(cv_text: str, job_description: str) -> dict:
             - model (str): Model identifier used.
             - error (Optional[str]): Error message if the call failed.
     """
-    llm = ChatGoogleGenerativeAI(
+    llm = ChatOpenAI(
         model=_BASELINE_MODEL,
         temperature=0.1,
+        openai_api_key=settings.openrouter_api_key,
+        openai_api_base=_OPENROUTER_BASE_URL,
+        default_headers=_OPENROUTER_HEADERS,
         # WHY: No structured output — the whole point is to compare against
         # unstructured text generation, which is the naive baseline.
     )
@@ -152,9 +174,9 @@ def run_baseline(cv_text: str, job_description: str) -> dict:
         "model": _BASELINE_MODEL,
         "error": error,
         # WHY: Estimate cost from token count approximation.
-        # Gemini Flash is $0.075/1M input tokens + $0.30/1M output tokens.
+        # google/gemini-2.5-flash-lite is $0.10/1M input + $0.40/1M output tokens.
         # Rough estimate: prompt ~600 tokens, response ~200 tokens.
-        "cost_usd": (600 * 0.075 + 200 * 0.30) / 1_000_000,
+        "cost_usd": (600 * 0.10 + 200 * 0.40) / 1_000_000,
     }
 
 

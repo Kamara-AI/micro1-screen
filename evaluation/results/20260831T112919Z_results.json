@@ -1,0 +1,219 @@
+{
+  "timestamp": "20260831T112919Z",
+  "n_candidates": 8,
+  "ground_truths": [
+    "STRONG_YES",
+    "STRONG_NO",
+    "ESCALATE",
+    "ESCALATE",
+    "YES",
+    "NO",
+    "AMBIGUOUS",
+    "YES"
+  ],
+  "candidate_ids": [
+    "d01_strong_yes",
+    "d02_strong_no",
+    "d03_date_contradiction",
+    "d04_skill_conflict",
+    "d05_yes",
+    "d06_no",
+    "d07_ambiguous",
+    "d08_non_traditional_yes"
+  ],
+  "screen": [
+    {
+      "candidate_id": "d01_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 95.9,
+      "cost_usd": 0.007007,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Designed and deployed a gradient boosting scorecard (XGBoost) for BNPL credit limits on Kopa's MSME product, which is live in production and assessed KES 1.2B in credit decisions in the 12 months to June 2024. [Role at Kopa Digital, 2021-02-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Engineered 47 features from MPESA M-Ledger data and KPLC utility payment history, improving the Gini coefficient from 0.41 to 0.63 post-feature expansion. [Role at Kopa Digital, 2021-02-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Ran A/B tests across two model versions, resulting in a 14% increase in approvals with a statistically non-significant change in the 90-day default rate, and presented results to the credit committee for approval. [Role at Kopa Digital, 2021-02-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "d02_strong_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: '4+ years professional data science or ML experience'",
+        "Year requirement not met: 0.7 years < 4 years minimum",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "d03_date_contradiction",
+      "verdict": "ESCALATE",
+      "confidence_pct": 86.6,
+      "cost_usd": 0.005534,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to have worked at KreditAI before the company was founded.",
+        "Silence flag (high): Mentoring experience for junior data analysts",
+        "Probe required: Clarify the timeline of employment at KreditAI to resolve the critical contradiction."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "d04_skill_conflict",
+      "verdict": "ESCALATE",
+      "confidence_pct": 57.9,
+      "cost_usd": 0.006653,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims expertise in ML tools but does not demonstrate application in their roles.",
+        "Silence flag (high): Demonstrated experience building and deploying ML models to production",
+        "Probe required: What specific ML models have you built and deployed in production?"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "d05_yes",
+      "verdict": "YES",
+      "confidence_pct": 78.8,
+      "cost_usd": 0.006307999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Built a customer churn prediction model using LightGBM, deployed as a Python Flask microservice, resulting in an 18% drop in churn rate in 6 months. [Role at Jubilee Insurance Kenya, 2022-09 \u2014 Present, bullet 1]",
+        "Tier A evidence: Engineered features from 3 years of policy renewal, claims, and payment records using Python, covering over 90,000 policyholders. [Role at Jubilee Insurance Kenya, 2022-09 \u2014 Present, bullet 2]",
+        "Tier A evidence: Built a claims triage model that reduced average claims processing time by 12% over 4 months. [Role at Jubilee Insurance Kenya, 2022-09 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "d06_no",
+      "verdict": "ESCALATE",
+      "confidence_pct": 61.9,
+      "cost_usd": 0.007607999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims expertise in Python libraries for ML but does not demonstrate application in building or deploying models.",
+        "Silence flag (high): Experience building and deploying ML models to production",
+        "Probe required: Can you provide specific examples of ML models you have built and deployed?"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "d07_ambiguous",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 50.7,
+      "cost_usd": 0.004681,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Quantified outcomes for senior role",
+        "Probe required: What specific ML models have you built and deployed in production?"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "d08_non_traditional_yes",
+      "verdict": "YES",
+      "confidence_pct": 84.4,
+      "cost_usd": 0.006996,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Built and deployed a credit scoring REST API using Python (FastAPI + XGBoost) that evaluates creditworthiness from M-PESA transaction history and utility payment records. [Freelance ML Engineering at Independent project (Credit Scoring API), 2021-01-01 \u2014 2024-01-01, bullet 1]",
+        "Tier A evidence: The credit scoring API is used by 3 Kenyan SACCOs with a combined loan book of KES 340M. [Freelance ML Engineering at Independent project (Credit Scoring API), 2021-01-01 \u2014 2024-01-01, bullet 2]",
+        "Tier A evidence: Developed an open-source feature engineering library for M-PESA statement parsing, which has 280 GitHub stars. [Freelance ML Engineering at Independent project (Credit Scoring API), 2021-01-01 \u2014 2024-01-01, bullet 4]"
+      ],
+      "error": null
+    }
+  ],
+  "baseline": [
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "STRONG_YES\n\nWanjiku Kamau is an exceptionally strong candidate for this role. Her 6 years of experience directly align with the 4+ years required, and she has a proven track record of building and deploying credit risk models using relevant technologies like XGBoost and MLflow. Her expertise in alternative data sources (MPESA, utility payments, USSD logs) and experience in East African financial markets are precisely what PesaWise is looking for. Furthermore, her experience presenting to credit committees and mentoring junior analysts directly matches the responsibilities outlined in the job description.",
+      "raw_response": "STRONG_YES\n\nWanjiku Kamau is an exceptionally strong candidate for this role. Her 6 years of experience directly align with the 4+ years required, and she has a proven track record of building and deploying credit risk models using relevant technologies like XGBoost and MLflow. Her expertise in alternative data sources (MPESA, utility payments, USSD logs) and experience in East African financial markets are precisely what PesaWise is looking for. Furthermore, her experience presenting to credit committees and mentoring junior analysts directly matches the responsibilities outlined in the job description.",
+      "latency_ms": 1432,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d01_strong_yes"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate is a recent graduate with less than 1 year of professional experience, while the role requires 4+ years of experience. Their experience is primarily in data analysis and basic SQL, not in building and deploying production-level ML models for credit risk. The skills listed are also at a beginner to intermediate level, and they explicitly state scikit-learn is from coursework only.",
+      "raw_response": "NO - The candidate is a recent graduate with less than 1 year of professional experience, while the role requires 4+ years of experience. Their experience is primarily in data analysis and basic SQL, not in building and deploying production-level ML models for credit risk. The skills listed are also at a beginner to intermediate level, and they explicitly state scikit-learn is from coursework only.",
+      "latency_ms": 2367,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d02_strong_no"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "VERDICT: STRONG_YES\n\nREASONING:\nSamuel possesses 5 years of direct experience in credit risk modeling within Kenyan fintech and banking, aligning perfectly with the role's domain requirements. His experience building and deploying production-ready models using Python (scikit-learn, XGBoost, pandas) and SQL is explicitly stated and matches the core technical requirements. Furthermore, his background in engineering features from alternative data sources like MPESA and utility payments, coupled with his experience presenting to credit committees, makes him an exceptionally strong candidate for this specific position.",
+      "raw_response": "VERDICT: STRONG_YES\n\nREASONING:\nSamuel possesses 5 years of direct experience in credit risk modeling within Kenyan fintech and banking, aligning perfectly with the role's domain requirements. His experience building and deploying production-ready models using Python (scikit-learn, XGBoost, pandas) and SQL is explicitly stated and matches the core technical requirements. Furthermore, his background in engineering features from alternative data sources like MPESA and utility payments, coupled with his experience presenting to credit committees, makes him an exceptionally strong candidate for this specific position.",
+      "latency_ms": 1865,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d03_date_contradiction"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nGrace Muthoni is a strong candidate for the Senior Data Scientist role. She has over 5 years of experience in data analytics and business intelligence within the Kenyan banking and financial services sector, exceeding the 4+ years requirement. Her technical skills include Python, scikit-learn, XGBoost, gradient boosting, and neural networks, all of which are explicitly mentioned in the job description. Furthermore, her experience at KCB Bank, where she prepared reports for the Head of Risk and responded to ad hoc requests from the credit committee, demonstrates relevant exposure to credit risk and stakeholder communication. While not explicitly stated, her experience with loan data and regulatory reporting suggests familiarity with financial data.",
+      "raw_response": "YES\n\nGrace Muthoni is a strong candidate for the Senior Data Scientist role. She has over 5 years of experience in data analytics and business intelligence within the Kenyan banking and financial services sector, exceeding the 4+ years requirement. Her technical skills include Python, scikit-learn, XGBoost, gradient boosting, and neural networks, all of which are explicitly mentioned in the job description. Furthermore, her experience at KCB Bank, where she prepared reports for the Head of Risk and responded to ad hoc requests from the credit committee, demonstrates relevant exposure to credit risk and stakeholder communication. While not explicitly stated, her experience with loan data and regulatory reporting suggests familiarity with financial data.",
+      "latency_ms": 1532,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d04_skill_conflict"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nFelix Omondi is a strong candidate for the Senior Data Scientist role. He has 5 years of experience, exceeding the 4-year requirement, with a significant portion in financial services (Jubilee Insurance) and telecommunications (Safaricom, M-PESA), aligning well with the fintech focus. His experience includes building and deploying ML models to production (Flask microservice, LightGBM, Random Forest), which is a key requirement. He also demonstrates proficiency in Python (scikit-learn, pandas, XGBoost mentioned in skills) and SQL, and has experience with feature engineering from relevant data sources. His desire to deepen expertise in credit risk decisioning is also a plus.",
+      "raw_response": "YES\n\nFelix Omondi is a strong candidate for the Senior Data Scientist role. He has 5 years of experience, exceeding the 4-year requirement, with a significant portion in financial services (Jubilee Insurance) and telecommunications (Safaricom, M-PESA), aligning well with the fintech focus. His experience includes building and deploying ML models to production (Flask microservice, LightGBM, Random Forest), which is a key requirement. He also demonstrates proficiency in Python (scikit-learn, pandas, XGBoost mentioned in skills) and SQL, and has experience with feature engineering from relevant data sources. His desire to deepen expertise in credit risk decisioning is also a plus.",
+      "latency_ms": 2770,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d05_yes"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - Pauline has 4 years of experience, but it is primarily in research and data analysis within the academic and development sectors, not in building and deploying production-level ML models for credit risk. Her experience with Python and SQL is present but described as \"occasional research use\" or \"basic queries,\" which may not meet the \"Python proficiency\" and \"SQL proficiency\" requirements for a senior role. Furthermore, she lacks direct experience in credit risk, fintech, or alternative data sources in African markets, which are listed as \"nice to have\" but highly relevant to this specific role.",
+      "raw_response": "NO - Pauline has 4 years of experience, but it is primarily in research and data analysis within the academic and development sectors, not in building and deploying production-level ML models for credit risk. Her experience with Python and SQL is present but described as \"occasional research use\" or \"basic queries,\" which may not meet the \"Python proficiency\" and \"SQL proficiency\" requirements for a senior role. Furthermore, she lacks direct experience in credit risk, fintech, or alternative data sources in African markets, which are listed as \"nice to have\" but highly relevant to this specific role.",
+      "latency_ms": 1872,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d06_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO\n\nBrian's CV lacks the required 4+ years of professional data science or ML experience. His roles as a Data Scientist, Junior Data Analyst, Data Science Intern, and Business Intelligence Analyst do not clearly demonstrate the depth of experience needed for a Senior Data Scientist role, especially in building and deploying production-level credit risk models. Furthermore, there's no explicit mention of experience with alternative data sources or credit risk modeling, which are crucial for this position.",
+      "raw_response": "NO\n\nBrian's CV lacks the required 4+ years of professional data science or ML experience. His roles as a Data Scientist, Junior Data Analyst, Data Science Intern, and Business Intelligence Analyst do not clearly demonstrate the depth of experience needed for a Senior Data Scientist role, especially in building and deploying production-level credit risk models. Furthermore, there's no explicit mention of experience with alternative data sources or credit risk modeling, which are crucial for this position.",
+      "latency_ms": 1445,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d07_ambiguous"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "STRONG_YES\n\nSylvia possesses 5 years of direct experience building and deploying ML models for credit and financial risk, aligning perfectly with the core requirements. Her freelance work on a credit scoring API using M-PESA data and utility payments, serving Kenyan SACCOs, is highly relevant. She demonstrates proficiency in Python (FastAPI, XGBoost, pandas) and SQL, and has experience with alternative data sources in the African market, including M-PESA and USSD logs. Her experience with A/B testing and MLflow is also a significant plus.",
+      "raw_response": "STRONG_YES\n\nSylvia possesses 5 years of direct experience building and deploying ML models for credit and financial risk, aligning perfectly with the core requirements. Her freelance work on a credit scoring API using M-PESA data and utility payments, serving Kenyan SACCOs, is highly relevant. She demonstrates proficiency in Python (FastAPI, XGBoost, pandas) and SQL, and has experience with alternative data sources in the African market, including M-PESA and USSD logs. Her experience with A/B testing and MLflow is also a significant plus.",
+      "latency_ms": 1807,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "d08_non_traditional_yes"
+    }
+  ]
+}

@@ -17,6 +17,7 @@ about claim credibility, contradiction detection, and silence pattern recognitio
 The LLM output is validated against EvidenceBundle schema automatically.
 """
 
+import re
 import time
 from typing import Any
 
@@ -63,17 +64,63 @@ CLAIMS: Every material claim about skills, experience, or achievements.
   - is_verifiable_externally: True only if claim could be checked against public data
 
 CONTRADICTIONS: Look for:
-  - temporal: impossible date overlaps, working at company before it was founded
+  - temporal: working at a company before it was founded.
+    MANDATORY CHECK: If and ONLY IF the provided CV text itself explicitly states a
+    founding year for a company (e.g. "founded in 2019", "established 2020",
+    "DataSync was founded in 2021"), compare that year against the role start date.
+    A role start date BEFORE the explicitly-stated founding year is a CRITICAL
+    contradiction — set severity="critical" and has_critical_contradiction=True.
+    CRITICAL RULE: DO NOT use your own training knowledge of when real companies were
+    founded. If the CV does not explicitly state a founding year for a company, do NOT
+    create a temporal contradiction for that company — you have no verified data.
+    DO NOT flag as contradictions:
+    * Cases where the role start date is AFTER the founding year (this is consistent).
+    * Career transitions where consecutive roles overlap by ≤3 months.
+    * Career pivots or non-linear paths (e.g. teacher → software engineer).
+    * Gaps between roles — these are absence of data, not contradictions.
+
+  - skill_level: If a claimed Expert/Proficient skill is absent from every role's work
+    bullets, that is a skill_level contradiction. severity="critical", has_critical_contradiction=True.
+    Also set has_unverifiable_high_stakes_claim=True if that skill is required by the JD.
+    Apply this check to ALL claimed expertise including non-technical systems (ERP, CRM, WMS).
+    NOTE: The pre-computed facts block will list any detected skill-level conflicts — treat
+    those as confirmed contradictions and generate the appropriate EvidenceBundle entries.
+
   - scope_inflation: VP/Director title at 5-person startup managing stated 0 people
-  - skill_level: "Expert in X" with no demonstrated application of X anywhere
   - title_inflation: Senior title with only junior task descriptions
   - employment_gap: Unexplained gap between two stated dates
 
 SILENCE FLAGS: What's ABSENT that SHOULD be present given role type and seniority?
+
+  IMPORTANT: Deterministic pre-computed facts will appear in the input under
+  "DETERMINISTIC PRE-COMPUTED FACTS". Treat these as absolute ground truth.
+  Generate the appropriate silence flags or contradictions based on these facts:
+  - Supervision >70% → generate a "high" severity supervision dominance silence flag
+  - Production deployment NOT DETECTED → generate a "high" severity production silence flag
+  - Skill-level conflicts listed → generate a "critical" contradiction for each one,
+    set has_critical_contradiction=True
+  - Domain keywords = 0 → generate a "high" severity domain mismatch silence flag
+
   - Senior engineers: no architectural decisions mentioned? Flag it.
   - People managers: no team size ever stated? Flag it.
   - Product roles: no product launches, no metrics? Flag it.
   - Quantified outcomes: for senior+ roles, absence of numbers IS a signal.
+
+  OPERATIONS DOMAIN MISMATCH (operations/supply chain roles): The word "operations" covers
+  fundamentally different domains. Read the job description to identify the SPECIFIC
+  operations domain required (e.g. FMCG supply chain, warehousing, distribution, logistics,
+  3PL, fill rate, on-time delivery). Then read the candidate's ENTIRE work history.
+  If the candidate's experience is ENTIRELY in a DIFFERENT operations domain — for example:
+    - Events/hospitality operations (F&B, conferences, venue setup) vs supply chain
+    - Contact centre operations (SLA, AHT, agent management, IVR) vs supply chain
+    - Financial/payment operations (settlement, reconciliation, treasury) vs supply chain
+    - NGO/programme operations (M&E, donor reporting, beneficiary management) vs supply chain
+  ...and they have NO evidence of supply chain, warehousing, distribution, 3PL, logistics,
+  fill rate, inventory, or FMCG-specific skills anywhere — flag severity="high":
+  "Expected: [domain-specific skills]. Candidate's entire history is in [actual domain].
+   No supply chain or FMCG operations evidence found."
+  This is a critical signal — generic "operations management" experience in an unrelated
+  domain does not transfer to FMCG supply chain or distribution management.
 
 BUILDER vs MAINTAINER:
   Builder signals: "built from scratch", "launched", "zero to one", "architected X",
@@ -119,15 +166,27 @@ def _call_extract_evidence_llm(
     job_description: str,
     role_seniority: str,
     role_type: str,
+    cv_text_raw: str = "",
+    deterministic_facts: str = "",
 ) -> EvidenceBundle:
     """
     WHY: Isolated LLM call with retry. The profile_summary is a structured
-    text rendering of CandidateProfile — never raw CV text, maintaining the
-    data boundary established by parse_candidate.
+    text rendering of CandidateProfile — the primary input for evidence extraction.
+    cv_text_raw is passed as supplementary context ONLY for temporal contradiction
+    detection (e.g., detecting that a candidate claims employment before a company
+    was founded). The structured profile is the canonical source; raw text provides
+    context that structured extraction may have missed in the summary/cover sections.
 
     HOW: We pass both the structured profile and the job description so the
     LLM can reason about role-appropriate silences and high-stakes claims.
     """
+    raw_cv_section = (
+        f"\n--- ORIGINAL CV TEXT (use for contradiction cross-referencing: "
+        f"founding dates vs employment dates, skill proficiency levels claimed vs "
+        f"actual work evidence in role descriptions) ---\n"
+        f"{cv_text_raw}\n"
+    ) if cv_text_raw else ""
+
     messages = [
         SystemMessage(content=EXTRACT_EVIDENCE_SYSTEM_PROMPT),
         HumanMessage(
@@ -138,7 +197,9 @@ def _call_extract_evidence_llm(
                 f"--- CANDIDATE PROFILE (structured, anonymised) ---\n"
                 f"{profile_summary}\n\n"
                 f"--- JOB DESCRIPTION ---\n"
-                f"{job_description}\n\n"
+                f"{job_description}\n"
+                f"{raw_cv_section}\n"
+                f"{deterministic_facts}\n"
                 f"Extract the complete EvidenceBundle for this candidate."
             )
         ),
@@ -205,6 +266,197 @@ def _render_profile_for_llm(candidate_profile: CandidateProfile) -> str:
     return "\n".join(lines)
 
 
+def _compute_deterministic_signals(
+    candidate_profile: CandidateProfile,
+    screening_input,
+) -> dict:
+    """
+    WHY: Signals that LLMs compute inconsistently (30% miss rate) are computed
+    deterministically in Python here. The results are injected as hard facts into
+    the LLM prompt so the model only reasons about them, never detects them.
+
+    Computes:
+    - supervision_pct: fraction of role bullets using subordinate language
+    - has_production_deployment: bool | None (None if not ML/DS role)
+    - skill_conflicts: list of Expert/Proficient skills absent from ALL role bullets
+    - domain_keyword_count: # of supply-chain keywords in cv_text (operations roles only)
+    """
+    # ── Supervision language ──────────────────────────────────────────────────
+    SUPERVISION_PATTERNS = [
+        "assisted", "under supervision", "as directed", "participated in",
+        "supported the", "contributed to", "helped with", "shadowed",
+        "worked under", "reported to", "as instructed",
+    ]
+    all_bullets = [
+        ach.lower()
+        for role in candidate_profile.roles
+        for ach in role.achievements
+    ]
+    if all_bullets:
+        subordinate_count = sum(
+            1 for b in all_bullets
+            if any(p in b for p in SUPERVISION_PATTERNS)
+        )
+        supervision_pct = subordinate_count / len(all_bullets)
+    else:
+        supervision_pct = 0.0
+
+    # ── Production deployment (ML/DS roles only) ──────────────────────────────
+    role_type_lower = screening_input.role_type.lower()
+    is_ml_role = any(
+        kw in role_type_lower
+        for kw in ["data", "ml", "machine learning", "data science", "analytics", "ai"]
+    )
+    if is_ml_role:
+        PRODUCTION_KEYWORDS = [
+            "deployed", "in production", "model serving", "api endpoint",
+            "real-time inference", "batch prediction", "model monitoring",
+            "live system", "production system", "serving pipeline",
+        ]
+        all_role_text = " ".join(
+            ach.lower()
+            for role in candidate_profile.roles
+            for ach in role.achievements
+        )
+        has_production_deployment = any(kw in all_role_text for kw in PRODUCTION_KEYWORDS)
+    else:
+        has_production_deployment = None  # Not applicable
+
+    # ── Role type flags ──────────────────────────────────────────────────────
+    # WHY: Computed early so both skill-conflict and domain-keyword blocks can use it.
+    is_ops_role = "operations" in role_type_lower or "supply" in role_type_lower
+
+    # ── Skill-level conflicts ────────────────────────────────────────────────
+    # WHY: Skill conflict detection is SKIPPED for operations/supply-chain roles.
+    # Operations candidates write achievement bullets in outcome language:
+    #   "Reduced shrinkage by 23%", "Improved fill rate to 98%"
+    # They do NOT repeat tool names in every bullet even when genuinely using them.
+    # Checking "Expert: SAP, WMS, Odoo" against outcome bullets ALWAYS produces
+    # false conflicts — causing legitimate YES/STRONG_YES ops candidates to ESCALATE.
+    # Skill-level conflict detection is meaningful for tech roles (SWE, DS/ML) where
+    # engineers name the tools they use in every implementation bullet.
+    all_achievements_text = " ".join(
+        ach.lower()
+        for role in candidate_profile.roles
+        for ach in role.achievements
+    )
+    skill_conflicts: list[str] = []
+    if not is_ops_role:
+        PROFICIENCY_MARKERS = ["expert", "proficient", "advanced", "expert:", "proficient:"]
+        for skill in candidate_profile.skills_stated:
+            skill_lower = skill.lower()
+            is_high_proficiency = any(m in skill_lower for m in PROFICIENCY_MARKERS)
+            if is_high_proficiency:
+                # Extract the skill name (strip proficiency label and parentheses)
+                skill_name = re.sub(
+                    r"\b(expert|proficient|advanced|intermediate|beginner)\b[:\s]*",
+                    "",
+                    skill_lower,
+                    flags=re.IGNORECASE,
+                ).strip(" :()")
+                # WHY: Use regex word extraction, not .split() — split() leaves commas
+                # attached to tokens ("kubernetes," != "kubernetes"), causing false negatives
+                # when skills_stated contains comma-separated lists like
+                # "Expert: Kubernetes, Terraform, ML pipelines"
+                skill_tokens = re.findall(r'\b[a-z][a-z0-9\-\.]{2,}\b', skill_name)
+                # Filter generic English words that aren't skill names
+                _GENERIC_TOKENS = {"and", "the", "for", "with", "use", "all", "not", "any",
+                                   "python", "java", "sql"}  # common languages often implied
+                skill_tokens = [t for t in skill_tokens if t not in _GENERIC_TOKENS]
+                # WHY: Use missing-count not any/all — a grouped skill like
+                # "Expert: Python, Kubernetes, Terraform" should still be flagged
+                # if 2+ specific tools are absent, even if "python" is found.
+                missing_tokens = [t for t in skill_tokens if t not in all_achievements_text]
+                # WHY: Use a missing ratio (not absolute count) — a Proficient group
+                # where 50% of tools aren't mentioned is fine; one where 80%+ of Expert
+                # tools are absent is a real conflict. Threshold: ≥70% missing = conflict.
+                missing_ratio = len(missing_tokens) / len(skill_tokens) if skill_tokens else 0.0
+                found_in_work = missing_ratio < 0.70
+                if not found_in_work:
+                    skill_conflicts.append(skill)
+
+    # ── Operations domain keywords ───────────────────────────────────────────
+    if is_ops_role:
+        SUPPLY_CHAIN_KEYWORDS = [
+            "warehouse", "distribution", "logistics", "3pl", "supply chain",
+            "inventory", "fill rate", "on-time delivery", "fmcg", "distributor",
+            "dispatch", "freight", "last mile", "route planning", "shrinkage",
+            "stock", "inbound", "outbound", "fulfilment", "procurement",
+        ]
+        cv_lower = screening_input.cv_text.lower()
+        domain_keyword_count = sum(1 for kw in SUPPLY_CHAIN_KEYWORDS if kw in cv_lower)
+    else:
+        domain_keyword_count = None
+
+    return {
+        "supervision_pct": supervision_pct,
+        "supervision_bullet_count": len(all_bullets),
+        "has_production_deployment": has_production_deployment,
+        "skill_conflicts": skill_conflicts,
+        "domain_keyword_count": domain_keyword_count,
+        "is_ml_role": is_ml_role,
+        "is_ops_role": is_ops_role,
+    }
+
+
+def _render_deterministic_facts(signals: dict) -> str:
+    """
+    WHY: Formats pre-computed signals as a structured FACTS block for the LLM.
+    The LLM must treat these as ground truth — never re-derive them.
+    This eliminates the 30% miss rate from LLM-based detection.
+    """
+    lines = [
+        "--- DETERMINISTIC PRE-COMPUTED FACTS (ground truth — do NOT re-derive) ---"
+    ]
+
+    # Supervision language
+    pct = signals["supervision_pct"]
+    n = signals["supervision_bullet_count"]
+    pct_str = f"{pct:.0%}"
+    flag = " ← FLAG: >70% threshold exceeded" if pct > 0.70 else ""
+    lines.append(f"Supervision language: {pct_str} of {n} role bullets use subordinate language{flag}")
+
+    # Production deployment
+    if signals["has_production_deployment"] is not None:
+        if signals["has_production_deployment"]:
+            lines.append("Production deployment: DETECTED in role work bullets")
+        else:
+            lines.append(
+                "Production deployment: NOT DETECTED in any role work bullet "
+                "← FLAG: candidate has never deployed to production (critical for senior ML/DS role)"
+            )
+
+    # Skill conflicts
+    conflicts = signals["skill_conflicts"]
+    if conflicts:
+        lines.append(
+            f"Skill-level conflicts: {len(conflicts)} Expert/Proficient skill(s) appear in "
+            f"skills section but are ABSENT from ALL role work bullets:"
+        )
+        for s in conflicts:
+            lines.append(f"  • {s}")
+        lines.append(
+            "  → Each of these MUST be flagged as a skill_level contradiction "
+            "(severity=critical, has_critical_contradiction=True)"
+        )
+    else:
+        lines.append("Skill-level conflicts: None detected")
+
+    # Domain keywords (operations roles)
+    if signals["domain_keyword_count"] is not None:
+        n_kw = signals["domain_keyword_count"]
+        if n_kw == 0:
+            lines.append(
+                "Supply-chain/FMCG domain keywords: 0 found in entire CV "
+                "← FLAG: candidate has NO supply-chain vocabulary anywhere in their history"
+            )
+        else:
+            lines.append(f"Supply-chain/FMCG domain keywords: {n_kw} found in CV")
+
+    lines.append("--- END PRE-COMPUTED FACTS ---")
+    return "\n".join(lines)
+
+
 def extract_evidence_node(state: ScreeningState) -> dict[str, Any]:
     """
     WHY: This node produces the EvidenceBundle that drives all downstream scoring.
@@ -237,6 +489,10 @@ def extract_evidence_node(state: ScreeningState) -> dict[str, Any]:
 
     profile_text = _render_profile_for_llm(candidate_profile)
 
+    # Compute deterministic signals before LLM call
+    det_signals = _compute_deterministic_signals(candidate_profile, screening_input)
+    det_facts_text = _render_deterministic_facts(det_signals)
+
     try:
         evidence_bundle = _call_extract_evidence_llm(
             candidate_id=candidate_id,
@@ -244,6 +500,8 @@ def extract_evidence_node(state: ScreeningState) -> dict[str, Any]:
             job_description=screening_input.job_description,
             role_seniority=screening_input.role_seniority,
             role_type=screening_input.role_type,
+            cv_text_raw=screening_input.cv_text,
+            deterministic_facts=det_facts_text,
         )
     except Exception as exc:
         raise LLMCallError(node_name, str(exc)) from exc

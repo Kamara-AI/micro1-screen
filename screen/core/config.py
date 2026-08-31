@@ -146,7 +146,7 @@ class Settings(BaseSettings):
     # ── Confidence Thresholds ─────────────────────────────────────────────────
     # WHY: All thresholds live here so they can be adjusted without touching
     # node logic. The decision node reads from settings, not from literals.
-    strong_yes_threshold: float = Field(default=80.0, description="% — STRONG_YES floor")
+    strong_yes_threshold: float = Field(default=86.0, description="% — STRONG_YES floor")
     yes_threshold: float = Field(default=65.0, description="% — YES floor")
     ambiguous_threshold: float = Field(default=45.0, description="% — AMBIGUOUS floor")
     no_threshold: float = Field(default=25.0, description="% — NO floor; below = STRONG_NO")

@@ -294,8 +294,33 @@ def comparative_rank_node(state: ScreeningState) -> dict[str, Any]:
         raise StateTransitionError(node_name, "decision")
 
     fit_analysis = state.get("fit_analysis")
+
+    # WHY: Hard-rejected candidates (structural_precheck or tier1_prefilter) never
+    # run analyze_fit, so fit_analysis is always None for them. Ranking them against
+    # qualified candidates is meaningless — their STRONG_NO is deterministic, not scored.
+    # We skip ranking and return cleanly. The decision is still recorded in trajectory.
     if fit_analysis is None:
-        raise StateTransitionError(node_name, "fit_analysis")
+        trajectory_entry = make_trajectory_entry(
+            node=node_name,
+            start_time_ms=start_ms,
+            reasoning_summary=(
+                "Candidate was hard-rejected before fit analysis ran — "
+                "no FitAnalysis available. Comparative ranking skipped for this candidate."
+            ),
+            output_summary="Skipped — hard-rejected candidate (no fit_analysis)",
+            model_used=None,
+            cost_usd=0.0,
+        )
+        logger.info(
+            "comparative_rank skipped (hard-rejected candidate)",
+            node=node_name,
+            candidate_id=candidate_id,
+            verdict=decision.verdict,
+        )
+        return {
+            "trajectory": [trajectory_entry],
+            "total_cost_usd": 0.0,
+        }
 
     logger.info(
         "comparative_rank started",

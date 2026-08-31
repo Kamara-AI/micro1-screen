@@ -1,0 +1,38 @@
+================================================================================
+SCREEN vs BASELINE — EVALUATION REPORT
+================================================================================
+
+ACCURACY
+  SCREEN exact match:      62%  (5/8)
+  Baseline exact match:    50%  (4/8)
+  SCREEN directional:      75%  (6/8)
+  Baseline directional:    62%  (5/8)
+  Delta (exact):           +12%
+
+ESCALATION HANDLING
+  Ground truth escalations: 2/8
+  SCREEN escalations:       2 (precision=50%, recall=50%)
+  Baseline escalations:     0 (precision=100%, recall=0%)
+
+CALIBRATION (Brier-based, 1.0 = perfect, 0.75 = random)
+  SCREEN calibration score: 0.774
+  Baseline: N/A (no structured confidence output)
+
+ECONOMICS
+  SCREEN avg cost/candidate: $0.0053
+  Baseline avg cost/candidate: $0.0001
+  Cost multiplier: 38.1x
+
+PER-CANDIDATE RESULTS
+Candidate ID         Ground Truth SCREEN       Baseline     SCR OK     BAS OK     SCR Conf  
+--------------------------------------------------------------------------------------------
+d01_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        94%       
+d02_strong_no        STRONG_NO    STRONG_NO    NO           YES        NO         100%      
+d03_date_contradiction ESCALATE     ESCALATE     STRONG_YES   YES        NO         81%       
+d04_skill_conflict   ESCALATE     AMBIGUOUS    YES          NO         NO         58%       
+d05_yes              YES          YES          YES          YES        YES        82%       
+d06_no               NO           AMBIGUOUS    NO           NO         YES        63%       
+d07_ambiguous        AMBIGUOUS    AMBIGUOUS    NO           YES        NO         56%       
+d08_non_traditional_yes YES          ESCALATE     YES          NO         YES        90%       
+
+================================================================================

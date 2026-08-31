@@ -1,0 +1,220 @@
+{
+  "timestamp": "20260831T094300Z",
+  "n_candidates": 10,
+  "ground_truths": [
+    "STRONG_YES",
+    "STRONG_NO",
+    "ESCALATE",
+    "ESCALATE",
+    "YES",
+    "STRONG_YES",
+    "NO",
+    "YES",
+    "AMBIGUOUS",
+    "YES"
+  ],
+  "candidate_ids": [
+    "c01_strong_yes",
+    "c02_strong_no",
+    "c03_date_contradiction",
+    "c04_skill_conflict",
+    "c05_non_linear_path",
+    "c06_builder_signal",
+    "c07_weak_looks_strong",
+    "c08_strong_looks_weak",
+    "c09_incomplete_cv",
+    "c10_employment_gap"
+  ],
+  "screen": [
+    {
+      "candidate_id": "c01_strong_yes",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'Python or Go proficiency'",
+        "No evidence of 'Python or Go proficiency' found in profile",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c02_strong_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: '8+ years of software engineering experience'",
+        "Year requirement not met: 2.0 years < 8 years minimum",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c03_date_contradiction",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: '4+ years data engineering experience'",
+        "No evidence of 'data engineering experience' found in profile",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c04_skill_conflict",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'ML pipeline orchestrator experience'",
+        "No evidence of 'ML pipeline orchestrator experience' found in profile",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c05_non_linear_path",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'backend framework experience'",
+        "No evidence of 'backend framework experience' found in profile",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c06_builder_signal",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 91.4,
+      "cost_usd": 0.006342,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Built the first version of the merchant API from scratch using Node.js and PostgreSQL, onboarding the first 50 merchants in 6 weeks. [Role at Lipa Later, 2022-11 \u2014 Present, bullet 1]",
+        "Tier A evidence: Architected the instalment calculation engine that powers over 35,000 active loan accounts. [Role at Lipa Later, 2022-11 \u2014 Present, bullet 2]",
+        "Tier A evidence: Led a 3-person squad through a 4-month platform migration from a monolith to a service-oriented architecture with zero downtime. [Role at Lipa Later, 2022-11 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c07_weak_looks_strong",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: '8+ years software engineering'",
+        "Year requirement not met: 6.7 years < 8 years minimum",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c08_strong_looks_weak",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'strong analytical background'",
+        "No evidence of 'strong analytical background' found in profile",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c09_incomplete_cv",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 59.0,
+      "cost_usd": 0.0046689999999999995,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Quantified outcomes for mid-level role",
+        "Probe required: What specific projects or features have you owned from start to finish?"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "c10_employment_gap",
+      "verdict": "ESCALATE",
+      "confidence_pct": 90.7,
+      "cost_usd": 0.006532,
+      "processing_time_ms": 0,
+      "escalation_category": "bias_flag_detected",
+      "primary_evidence": [
+        "Silence flag (high): Architectural decisions mentioned for senior role",
+        "Probe required: Clarify the reasons for the employment gap and how skills were maintained or developed during that time."
+      ],
+      "error": null
+    }
+  ],
+  "baseline": [
+    {
+      "candidate_id": "c01_strong_yes",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c02_strong_no",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c03_date_contradiction",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c04_skill_conflict",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c05_non_linear_path",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c06_builder_signal",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c07_weak_looks_strong",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c08_strong_looks_weak",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c09_incomplete_cv",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    },
+    {
+      "candidate_id": "c10_employment_gap",
+      "verdict": "UNKNOWN",
+      "cost_usd": 0.0
+    }
+  ]
+}
