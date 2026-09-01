@@ -76,20 +76,20 @@ def _route_after_prefilter(state: ScreeningState) -> str:
     the rejection message against the structured profile).
     """
     if state.get("hard_rejected", False):
-        return "candidate_feedback"
+        return "generate_feedback"
     return "extract_evidence"
 
 
 def _route_after_decision(state: ScreeningState) -> str:
     """
     WHY: ESCALATE verdicts need a human brief before feedback is generated.
-    Non-escalate verdicts go directly to candidate_feedback.
+    Non-escalate verdicts go directly to generate_feedback.
 
     The should_escalate flag is set by make_decision_node — we trust it here.
     """
     if state.get("should_escalate", False):
         return "build_human_brief"
-    return "candidate_feedback"
+    return "generate_feedback"
 
 
 # ── Graph construction ─────────────────────────────────────────────────────────
@@ -114,7 +114,7 @@ def _build_screening_graph() -> StateGraph:
     graph.add_node("detect_bias", detect_bias_node)
     graph.add_node("make_decision", make_decision_node)
     graph.add_node("build_human_brief", build_human_brief_node)
-    graph.add_node("candidate_feedback", candidate_feedback_node)
+    graph.add_node("generate_feedback", candidate_feedback_node)
     graph.add_node("comparative_rank", comparative_rank_node)
 
     # ── Entry point ────────────────────────────────────────────────────────────
@@ -138,8 +138,8 @@ def _build_screening_graph() -> StateGraph:
         "tier1_prefilter",
         _route_after_prefilter,
         {
-            "candidate_feedback": "candidate_feedback",  # Hard reject path
-            "extract_evidence": "extract_evidence",       # Main analysis path
+            "generate_feedback": "generate_feedback",  # Hard reject path
+            "extract_evidence": "extract_evidence",    # Main analysis path
         },
     )
 
@@ -157,16 +157,16 @@ def _build_screening_graph() -> StateGraph:
         "make_decision",
         _route_after_decision,
         {
-            "build_human_brief": "build_human_brief",   # ESCALATE path
-            "candidate_feedback": "candidate_feedback",  # Standard path
+            "build_human_brief": "build_human_brief",  # ESCALATE path
+            "generate_feedback": "generate_feedback",  # Standard path
         },
     )
 
     # ── Escalation path: brief → feedback ─────────────────────────────────────
-    graph.add_edge("build_human_brief", "candidate_feedback")
+    graph.add_edge("build_human_brief", "generate_feedback")
 
     # ── All paths converge at comparative_rank → END ──────────────────────────
-    graph.add_edge("candidate_feedback", "comparative_rank")
+    graph.add_edge("generate_feedback", "comparative_rank")
     graph.add_edge("comparative_rank", END)
 
     return graph

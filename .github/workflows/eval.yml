@@ -1,0 +1,52 @@
+name: SCREEN Eval Suite
+
+# WHY: Runs on every push/PR to master/main to catch regressions before merge.
+# workflow_dispatch allows manual runs with a custom batch selection — useful for
+# running the expensive batch4 (33 candidates) on demand rather than every commit.
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      batches:
+        description: 'Batches to run (e.g. "1 2")'
+        required: false
+        default: "1 2 3"  # Skip batch4 in CI by default (expensive, 33 candidates)
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: pip install poetry==1.8.3
+
+      - name: Install deps
+        run: poetry install --no-root
+
+      # WHY: --fail-on-regression ensures the workflow exits 1 and blocks merges
+      # when SCREEN accuracy drops more than REGRESSION_THRESHOLD_PP below baseline.
+      # Batches 1-3 are run by default; batch4 is skipped in routine CI because its
+      # 33 candidates are expensive and batch4 baseline is still being calibrated.
+      - name: Run evals
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          poetry run python scripts/run_evals.py --batch 1 2 3 --fail-on-regression
+
+      # WHY: Upload the JSON summary even on failure so engineers can inspect
+      # regression details without needing to re-run the eval locally.
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results
+          path: evaluation/results/eval_summary_*.json

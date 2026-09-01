@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  screen_postgres:
+    image: postgres:16
+    container_name: screen_postgres
+    environment:
+      POSTGRES_DB: screen_db
+      POSTGRES_USER: screen_user
+      POSTGRES_PASSWORD: screen_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - screen_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U screen_user -d screen_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  screen_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: screen_api
+    ports:
+      - "8001:8001"
+    depends_on:
+      screen_postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://screen_user:screen_pass@screen_postgres:5432/screen_db
+      - ENV=production
+    volumes:
+      - ./reports:/app/reports
+      - ./evaluation/results:/app/evaluation/results
+    restart: unless-stopped
+
+volumes:
+  screen_postgres_data:
