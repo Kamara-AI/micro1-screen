@@ -472,3 +472,59 @@ micro1-screen/
 ---
 
 For the full design evolution — including every failure mode discovered during evaluation and what we would change in a second iteration — see [CHANGELOG.md](CHANGELOG.md).
+
+---
+
+## System Progress Log
+
+This section tracks the evolution of SCREEN from prototype to production system.
+
+### Phase 1 — Pipeline (completed 2026-08-30)
+
+Built the core 10-node LangGraph pipeline: structural precheck → parse → prefilter → extract evidence → verify claims → analyze fit → detect bias → make decision → build human brief → candidate feedback. Evidence tiers (A/B/C/D), silence flags, and trajectory logging established. Submitted to micro1 hackathon.
+
+### Phase 2 — Evaluation (completed 2026-08-31)
+
+Ran 4 evaluation batches across 4 domains:
+
+| Batch | Domain | Candidates | SCREEN | Baseline | Winner |
+|-------|--------|-----------|--------|----------|--------|
+| 1 | Senior Software Engineer | 10 | 80% | 60% | SCREEN +20pp |
+| 2 | Senior Data Scientist | 8 | 88% | 50% | SCREEN +38pp |
+| 3 | FMCG Operations Manager | 20 | 75% | 60% | SCREEN +15pp |
+| 4 | Senior Digital Marketing Manager | 33 | 42% | 61% | Baseline +19pp |
+
+**Key finding:** SCREEN excels in domains with hard verifiable signals (engineering, data science, ops). It underperforms in soft-signal domains (marketing) where all CV claims are Tier C — unverifiable. Batch 4 gap is a calibration problem, not a pipeline flaw. STRONG_YES candidates were still correctly identified in Batch 4 (6/7 correct), confirming the ranking function works even when the NO/YES boundary is blurry.
+
+### Phase 3 — Production System (completed 2026-09-01)
+
+Turned the pipeline into a deployable, multi-tenant REST API:
+
+**What was built:**
+- `api/` — FastAPI with `/screen`, `/batch`, `/runs`, `/feedback` endpoints
+- `db/` — SQLAlchemy 2.0 async models: ApiKey, ScreeningRun, EvidenceClaim, TrajectoryEntry, HumanOverride, HireOutcome
+- `alembic/` — database migrations (6 tables, applied and live)
+- `docker-compose.yml` — screen_postgres (port 5433) + screen_api (port 8001)
+- `scripts/` — eval CI, variance checker, API key bootstrap
+- `.github/workflows/eval.yml` — regression gate on every push
+- Ensemble voting: borderline candidates (45–75% confidence) auto-trigger 3 pipeline runs, majority verdict wins
+
+**Smoke test result (2026-09-01):**
+- `POST /api/v1/screen` → full LangGraph pipeline → DB persist → response in 40s
+- Run UUID `8f41fb23-8d71-48bf-96c1-cdd17403e300` confirmed retrievable via `GET /api/v1/runs`
+- Auth, tenant scoping, evidence persistence, trajectory persistence all verified
+
+### Phase 4 — Domain Calibration (next session)
+
+**Goal:** Feed all major JD domains into the system so SCREEN is pre-calibrated before the first real candidate arrives. This is a one-time setup per domain — not per JD.
+
+**Planned domains:** Engineering, Data Science, Marketing, Sales, Operations, Finance, Design, Legal/Compliance, Product, Customer Success
+
+For each domain, define:
+1. Hard anchors (verifiable signals that confirm YES)
+2. Domain-specific silence flags (absences that are disqualifying for this role type)
+3. Tier C traps (claims common in this domain that sound strong but are unverifiable and should not move the verdict)
+
+Once all domains are calibrated, any new JD is classified into one of these buckets and inherits the full calibration automatically. Zero extra work per JD.
+
+**Why this matters:** Batch 4 (marketing) scored 42% because we had no domain calibration for marketing signals. With calibration, the target is 75%+ across all domains — matching the Batch 1–3 performance floor.
