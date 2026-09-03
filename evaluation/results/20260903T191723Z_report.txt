@@ -1,0 +1,63 @@
+================================================================================
+SCREEN vs BASELINE — EVALUATION REPORT
+================================================================================
+
+ACCURACY
+  SCREEN exact match:      39%  (13/33)
+  Baseline exact match:    61%  (20/33)
+  SCREEN directional:      61%  (20/33)
+  Baseline directional:    73%  (24/33)
+  Delta (exact):           -21%
+
+ESCALATION HANDLING
+  Ground truth escalations: 2/33
+  SCREEN escalations:       1 (precision=100%, recall=50%)
+  Baseline escalations:     0 (precision=100%, recall=0%)
+
+CALIBRATION (Brier-based, 1.0 = perfect, 0.75 = random)
+  SCREEN calibration score: 0.661
+  Baseline: N/A (no structured confidence output)
+
+ECONOMICS
+  SCREEN avg cost/candidate: $0.0052
+  Baseline avg cost/candidate: $0.0001
+  Cost multiplier: 37.2x
+
+PER-CANDIDATE RESULTS
+Candidate ID         Ground Truth SCREEN       Baseline     SCR OK     BAS OK     SCR Conf  
+--------------------------------------------------------------------------------------------
+f01_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        93%       
+f02_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        87%       
+f03_strong_yes       STRONG_YES   YES          STRONG_YES   NO         YES        81%       
+f04_strong_yes       STRONG_YES   YES          STRONG_YES   NO         YES        80%       
+f05_yes              YES          YES          YES          YES        YES        74%       
+f06_yes              YES          YES          YES          YES        YES        76%       
+f07_yes              YES          YES          YES          YES        YES        74%       
+f08_yes              YES          YES          YES          YES        YES        74%       
+f09_ambiguous        AMBIGUOUS    AMBIGUOUS    YES          YES        NO         61%       
+f10_no               NO           STRONG_NO    NO           NO         YES        100%      
+f11_yes              YES          STRONG_YES   YES          NO         YES        89%       
+f12_yes              YES          YES          YES          YES        YES        67%       
+f13_ambiguous        AMBIGUOUS    YES          YES          NO         NO         67%       
+f14_ambiguous        AMBIGUOUS    YES          YES          NO         NO         68%       
+f15_ambiguous        AMBIGUOUS    YES          YES          NO         NO         66%       
+f16_no               NO           AMBIGUOUS    NO           NO         YES        62%       
+f17_no               NO           AMBIGUOUS    NO           NO         YES        64%       
+f18_no               NO           YES          YES          NO         NO         71%       
+f19_no               NO           AMBIGUOUS    NO           NO         YES        56%       
+f21_no               NO           YES          AMBIGUOUS    NO         NO         67%       
+f22_no               NO           YES          YES          NO         NO         68%       
+f23_strong_no        STRONG_NO    AMBIGUOUS    NO           NO         NO         52%       
+f24_strong_no        STRONG_NO    AMBIGUOUS    NO           NO         NO         64%       
+f25_strong_no        STRONG_NO    STRONG_NO    NO           YES        NO         100%      
+f26_date_contradiction ESCALATE     ESCALATE     YES          YES        NO         72%       
+f27_skill_conflict   ESCALATE     AMBIGUOUS    YES          NO         NO         64%       
+f31_no               NO           AMBIGUOUS    NO           NO         YES        63%       
+f32_no               NO           AMBIGUOUS    NO           NO         YES        62%       
+f33_no               NO           STRONG_NO    NO           NO         YES        100%      
+f34_strong_no        STRONG_NO    STRONG_NO    NO           YES        NO         100%      
+f41_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        88%       
+f42_strong_yes       STRONG_YES   STRONG_YES   STRONG_YES   YES        YES        88%       
+f43_strong_yes       STRONG_YES   YES          STRONG_YES   NO         YES        84%       
+
+================================================================================

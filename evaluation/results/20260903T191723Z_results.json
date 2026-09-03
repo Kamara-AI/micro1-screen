@@ -1,0 +1,861 @@
+{
+  "timestamp": "20260903T191723Z",
+  "n_candidates": 33,
+  "ground_truths": [
+    "STRONG_YES",
+    "STRONG_YES",
+    "STRONG_YES",
+    "STRONG_YES",
+    "YES",
+    "YES",
+    "YES",
+    "YES",
+    "AMBIGUOUS",
+    "NO",
+    "YES",
+    "YES",
+    "AMBIGUOUS",
+    "AMBIGUOUS",
+    "AMBIGUOUS",
+    "NO",
+    "NO",
+    "NO",
+    "NO",
+    "NO",
+    "NO",
+    "STRONG_NO",
+    "STRONG_NO",
+    "STRONG_NO",
+    "ESCALATE",
+    "ESCALATE",
+    "NO",
+    "NO",
+    "NO",
+    "STRONG_NO",
+    "STRONG_YES",
+    "STRONG_YES",
+    "STRONG_YES"
+  ],
+  "candidate_ids": [
+    "f01_strong_yes",
+    "f02_strong_yes",
+    "f03_strong_yes",
+    "f04_strong_yes",
+    "f05_yes",
+    "f06_yes",
+    "f07_yes",
+    "f08_yes",
+    "f09_ambiguous",
+    "f10_no",
+    "f11_yes",
+    "f12_yes",
+    "f13_ambiguous",
+    "f14_ambiguous",
+    "f15_ambiguous",
+    "f16_no",
+    "f17_no",
+    "f18_no",
+    "f19_no",
+    "f21_no",
+    "f22_no",
+    "f23_strong_no",
+    "f24_strong_no",
+    "f25_strong_no",
+    "f26_date_contradiction",
+    "f27_skill_conflict",
+    "f31_no",
+    "f32_no",
+    "f33_no",
+    "f34_strong_no",
+    "f41_strong_yes",
+    "f42_strong_yes",
+    "f43_strong_yes"
+  ],
+  "screen": [
+    {
+      "candidate_id": "f01_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 93.0,
+      "cost_usd": 0.006235999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 9M/month at Twiga Foods, allocating funds across Meta Ads, Google Ads, and TikTok for Business. [Role at Twiga Foods, 2022-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a cross-functional team of 6, including 4 digital marketing specialists, 1 data analyst, and 1 content creator at Twiga Foods. [Role at Twiga Foods, 2022-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved a return on advertising spend (ROAS) of 4.2x on Meta and 3.8x on Google for the Twiga Direct consumer app launch campaign. [Role at Twiga Foods, 2022-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f02_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 86.9,
+      "cost_usd": 0.006114,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of USD 42,000/month at Copia Global Kenya, leading to significant growth in ROAS and reduced CAC. [Role at Copia Global Kenya, 2021-02-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a 7-person growth team at Copia Global Kenya, including specialists in paid media, CRM/email, SEO, and data analysis. [Role at Copia Global Kenya, 2021-02-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved a ROAS of 5.1x across paid channels and reduced blended CAC by 34% in 18 months through creative testing and funnel optimisation at Copia Global Kenya. [Role at Copia Global Kenya, 2021-02-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f03_strong_yes",
+      "verdict": "YES",
+      "confidence_pct": 80.9,
+      "cost_usd": 0.005931,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 6.5M/month across various platforms including Google Ads and Meta Ads. [Role at Equity Bank Kenya, 2020-03 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a team of 5 digital marketing specialists including paid media specialists, an SEO analyst, and a CRM specialist. [Role at Equity Bank Kenya, 2020-03 \u2014 Present, bullet 2]",
+        "Tier A evidence: Spearheaded a digital acquisition strategy that grew the Equity Eazzy App from 1.1M to 3.2M active users. [Role at Equity Bank Kenya, 2020-03 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f04_strong_yes",
+      "verdict": "YES",
+      "confidence_pct": 80.5,
+      "cost_usd": 0.006624,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Led the restructure of KES 4M/month Meta and Google campaigns for Masoko, improving ROAS from 2.1x to 3.6x in 3 months. [Role at DMK Consulting, 2024-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Owned and scaled digital advertising budget from KES 4M to KES 12M/month across various platforms at Kilimall. [Role at Kilimall Kenya, 2019-06 \u2014 2023-12, bullet 1]",
+        "Tier A evidence: Delivered the 'Best Digital Campaign Kenya 2022' award for Kilimall's 7th Anniversary Sale campaign, achieving a ROAS of 6.2x. [Role at Kilimall Kenya, 2019-06 \u2014 2023-12, bullet 4]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f05_yes",
+      "verdict": "YES",
+      "confidence_pct": 74.2,
+      "cost_usd": 0.005529999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 5.5M/month at Safaricom PLC. [Role at Safaricom PLC, 2021-04-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a team of 3 digital marketing specialists at Safaricom PLC. [Role at Safaricom PLC, 2021-04-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Delivered a 3.2x ROAS on Meta campaigns for M-PESA merchant acquisition across multiple cities. [Role at Safaricom PLC, 2021-04-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f06_yes",
+      "verdict": "YES",
+      "confidence_pct": 76.1,
+      "cost_usd": 0.005371,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 5.2M/month across Meta Ads and Google Ads at Naivas Supermarkets. [Role at Naivas Supermarkets, 2021-03-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a team of 4 digital marketing specialists at Naivas Supermarkets. [Role at Naivas Supermarkets, 2021-03-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved an average ROAS of 3.0x across Meta and Google Ads in 2023, with a peak ROAS of 3.9x during festive season campaigns. [Role at Naivas Supermarkets, 2021-03-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f07_yes",
+      "verdict": "YES",
+      "confidence_pct": 74.2,
+      "cost_usd": 0.006135,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 5.8M/month across Meta Ads, Google Ads, and TikTok for Business at Glovo East Africa. [Role at Glovo East Africa, 2021-09 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a team of 3 performance marketers covering paid social, paid search, and TikTok campaigns at Glovo East Africa. [Role at Glovo East Africa, 2021-09 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved a blended CAC of KES 410 for new Glovo app installs and reduced CAC by 26% over 18 months through creative iteration and audience exclusion strategies. [Role at Glovo East Africa, 2021-09 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f08_yes",
+      "verdict": "YES",
+      "confidence_pct": 74.2,
+      "cost_usd": 0.005634999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Manages a portfolio of 4 e-commerce clients with a combined digital advertising budget of KES 15M/month across various platforms. [Role at WPP Scangroup, 2022-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Oversees a team of 5, including digital account managers, a paid media specialist, an SEO/content executive, and a data & reporting analyst. [Role at WPP Scangroup, 2022-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Delivers consistent ROAS of 3.5\u20134.5x across client e-commerce campaigns, with a highest single campaign ROAS of 5.2x for a festive season push. [Role at WPP Scangroup, 2022-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f09_ambiguous",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 61.4,
+      "cost_usd": 0.006092,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Team size stated for Ajira Digital role",
+        "Probe required: Clarify the size of the team managed at Ajira Digital to assess leadership experience."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f10_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 2,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'degree in marketing, business administration, communications, or related field'",
+        "No bachelor-level or higher degree found in education history \u2014 role requires a university degree",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f11_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 88.6,
+      "cost_usd": 0.005929,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 5.4M/month across Meta Ads and Google Ads at Maisha Mart. [Role at Maisha Mart, 2022-03 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a team of 3 digital marketing specialists at Maisha Mart. [Role at Maisha Mart, 2022-03 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved and maintained a ROAS of 2.9x on Meta Ads at Maisha Mart. [Role at Maisha Mart, 2022-03 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f12_yes",
+      "verdict": "YES",
+      "confidence_pct": 66.8,
+      "cost_usd": 0.005842999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of USD 36,000/month at HelloFood Kenya [Role at HelloFood Kenya, 2022-01-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved a consistent app install ROAS of 3.1x over the last 4 quarters at HelloFood Kenya [Role at HelloFood Kenya, 2022-01-01 \u2014 Present, bullet 4]",
+        "Tier A evidence: Reduced CAC for new app installs by 28% through creative iteration and audience exclusion strategies at HelloFood Kenya [Role at HelloFood Kenya, 2022-01-01 \u2014 Present, bullet 6]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f13_ambiguous",
+      "verdict": "YES",
+      "confidence_pct": 66.6,
+      "cost_usd": 0.005752,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Contributed to agency winning two PRSK Awards for Digital Campaign Excellence in 2022 and 2023. [Role at Pulse Digital Agency, 2020-02-01 \u2014 2024-08-01, bullet 6]",
+        "Tier B evidence: Led digital marketing strategy for a portfolio of 8\u201312 client accounts in FMCG, retail, and lifestyle sectors at Pulse Digital Agency. [Role at Pulse Digital Agency, 2020-02-01 \u2014 2024-08-01, bullet 1]",
+        "Tier B evidence: Oversaw client campaigns across Meta Ads, Google Ads, SEO, and email marketing with a combined digital ad spend exceeding several million shillings monthly. [Role at Pulse Digital Agency, 2020-02-01 \u2014 2024-08-01, bullet 2]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f14_ambiguous",
+      "verdict": "YES",
+      "confidence_pct": 67.7,
+      "cost_usd": 0.005258,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Grew combined social media following from 4,200 to 18,000 organically over 18 months at Kijiji Looks, August 2019 \u2014 February 2021, bullet 2 [Role at Kijiji Looks, 2019-08 \u2014 2021-02, bullet 2]",
+        "Tier B evidence: Promoted to Head of Digital following consistent performance as Digital Marketing Specialist at Vazi Nation, May 2022 \u2014 Present, bullet 1 [Role at Vazi Nation, 2022-05 \u2014 Present, bullet 1]",
+        "Tier B evidence: Oversee all digital marketing channels including social media, email, and paid advertising at Vazi Nation, May 2022 \u2014 Present, bullet 2 [Role at Vazi Nation, 2022-05 \u2014 Present, bullet 2]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f15_ambiguous",
+      "verdict": "YES",
+      "confidence_pct": 66.3,
+      "cost_usd": 0.005144999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a content team of 4, including content writers and a graphic designer, at KCB Group. [Role at KCB Group, 2020-04-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Oversaw SEO strategy that resulted in an 85% increase in organic traffic for KCB.co.ke over 3 years. [Role at KCB Group, 2020-04-01 \u2014 Present, bullet 3]",
+        "Tier A evidence: Managed a digital advertising budget of KES 2.5M/month for Meta Ads at KCB Group. [Role at KCB Group, 2020-04-01 \u2014 Present, bullet 5]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f16_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 61.8,
+      "cost_usd": 0.005255,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Management of a team of 4 digital marketing specialists and 1 data analyst",
+        "Probe required: Clarify the candidate's experience with managing a team and how they plan to scale their leadership skills to meet the role's requirements."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f17_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 63.6,
+      "cost_usd": 0.005334,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Domain-specific vocabulary",
+        "Probe required: Clarify the extent of team management experience and whether the candidate has led a team of 3+ direct reports."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f18_no",
+      "verdict": "YES",
+      "confidence_pct": 71.4,
+      "cost_usd": 0.006041,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Manages a KES 1.8M/month digital advertising budget across various platforms including LinkedIn and Google Search. [Role at Flutterwave, 2022-08-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Directly manages a team of 2, including a paid media specialist and a marketing operations/CRM specialist. [Role at Flutterwave, 2022-08-01 \u2014 Present, bullet 3]",
+        "Tier A evidence: Delivered 340 MQLs in Q1 2024 against a target of 280 for the enterprise sales team. [Role at Flutterwave, 2022-08-01 \u2014 Present, bullet 4]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f19_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 56.1,
+      "cost_usd": 0.005554999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Quantified outcomes for senior role",
+        "Probe required: Clarify the candidate's understanding and experience with digital advertising metrics and campaign management."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f21_no",
+      "verdict": "YES",
+      "confidence_pct": 67.3,
+      "cost_usd": 0.00604,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a monthly influencer budget of KES 4.5M across all clients, covering various expenses. [Role at Ogilvy Africa, 2021-02-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Supervised 2 Influencer Coordinators responsible for day-to-day creator communications and content scheduling. [Role at Ogilvy Africa, 2021-02-01 \u2014 Present, bullet 3]",
+        "Tier A evidence: Delivered an average Earned Media Value (EMV) of 3.2x on influencer spend across Q3 and Q4 2023. [Role at Ogilvy Africa, 2021-02-01 \u2014 Present, bullet 5]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f22_no",
+      "verdict": "YES",
+      "confidence_pct": 68.0,
+      "cost_usd": 0.006038,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 2.2M/month at Safari Link Aviation. [Role at Safari Link Aviation, 2021-04-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a team of 2 digital marketers at Safari Link Aviation. [Role at Safari Link Aviation, 2021-04-01 \u2014 Present, bullet 2]",
+        "Tier B evidence: Reduced cost per booking by 22% year-on-year through optimizations in Google Ads at Safari Link Aviation. [Role at Safari Link Aviation, 2021-04-01 \u2014 Present, bullet 6]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f23_strong_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 52.5,
+      "cost_usd": 0.005541,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): 3+ years of digital marketing experience and management of a team of 3+",
+        "Probe required: Clarify the candidate's understanding of key digital marketing metrics such as ROAS, CAC, and LTV, and how they have applied these in their roles."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f24_strong_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 63.6,
+      "cost_usd": 0.005982,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Quantified outcomes for senior role",
+        "Probe required: Clarify the candidate's experience with managing digital advertising budgets and specific digital marketing channels."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f25_strong_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'degree in marketing, business administration, communications, or related field'",
+        "No bachelor-level or higher degree found in education history \u2014 role requires a university degree",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f26_date_contradiction",
+      "verdict": "ESCALATE",
+      "confidence_pct": 72.2,
+      "cost_usd": 0.005648,
+      "processing_time_ms": 0,
+      "escalation_category": "critical_contradiction",
+      "primary_evidence": [
+        "Contradiction (critical): The candidate claims to have been working at AdPulse Kenya before the company was founded.",
+        "Silence flag (high): Supervision language indicating team management",
+        "Probe required: Clarify the timeline and details of the role at AdPulse Kenya to resolve the critical contradiction."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f27_skill_conflict",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 64.4,
+      "cost_usd": 0.006088999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Quantified outcomes for senior role",
+        "Probe required: Clarify the absence of experience with TikTok for Business and how they plan to adapt to this requirement."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f31_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 62.6,
+      "cost_usd": 0.005413,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Domain-specific practitioner phrases",
+        "Probe required: Clarify the candidate's experience with digital advertising budgets and campaigns, as well as any direct metrics achieved in previous roles."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f32_no",
+      "verdict": "AMBIGUOUS",
+      "confidence_pct": 62.3,
+      "cost_usd": 0.005254,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Silence flag (high): Team size stated for management roles",
+        "Probe required: Clarify the absence of experience managing a digital advertising budget of KES 5M+/month and leading a team of 3+ direct reports."
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f33_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 1,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'degree in marketing, business administration, communications, or related field'",
+        "No bachelor-level or higher degree found in education history \u2014 role requires a university degree",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f34_strong_no",
+      "verdict": "STRONG_NO",
+      "confidence_pct": 100.0,
+      "cost_usd": 0.0,
+      "processing_time_ms": 1,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Hard requirement not met: 'degree in marketing, business administration, communications, or related field'",
+        "No bachelor-level or higher degree found in education history \u2014 role requires a university degree",
+        "Tier 1 pre-filter: automatic rejection \u2014 no further analysis performed"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f41_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 88.1,
+      "cost_usd": 0.007343,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of KES 7.5M/month across multiple platforms including Meta Ads, Google Ads, and TikTok for Business. [Role at Lipa Later Limited, 2022-03-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a cross-functional growth team of 7, including specialists in paid media, CRM/email marketing, SEO, and data analysis. [Role at Lipa Later Limited, 2022-03-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved 2.1M app installs over 30 months at a blended CAC of KES 290, which is 18% below target. [Role at Lipa Later Limited, 2022-03-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f42_strong_yes",
+      "verdict": "STRONG_YES",
+      "confidence_pct": 88.2,
+      "cost_usd": 0.007659999999999999,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a KES 10M/month digital advertising budget across various platforms including Google Shopping and Meta Ads at Carrefour Kenya. [Digital Marketing Director at Carrefour Kenya, 2020-07 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a regional digital marketing team of 5 direct reports and had oversight of 3 additional specialists in Carrefour Uganda. [Digital Marketing Director at Carrefour Kenya, 2020-07 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved a Google Shopping ROAS of 5.2x, up from 3.1x in Year 1, and a Meta ROAS of 4.1x on Performance+ campaigns. [Digital Marketing Director at Carrefour Kenya, 2020-07 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    },
+    {
+      "candidate_id": "f43_strong_yes",
+      "verdict": "YES",
+      "confidence_pct": 83.7,
+      "cost_usd": 0.006975,
+      "processing_time_ms": 0,
+      "escalation_category": null,
+      "primary_evidence": [
+        "Tier A evidence: Managed a digital advertising budget of USD 45,000/month across various platforms including Meta Business Suite, Google Ads, and TikTok for Business. [Role at Wasoko, 2021-02-01 \u2014 Present, bullet 1]",
+        "Tier A evidence: Led a digital marketing team of 5 direct reports, including specialists in paid media, SEO/content, CRM/email marketing, and data analysis. [Role at Wasoko, 2021-02-01 \u2014 Present, bullet 2]",
+        "Tier A evidence: Achieved a 462% growth in the merchant base from 8,000 to 45,000 active merchants over 3 years. [Role at Wasoko, 2021-02-01 \u2014 Present, bullet 3]"
+      ],
+      "error": null
+    }
+  ],
+  "baseline": [
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "Verdict: STRONG_YES\n\nReasoning: Amara's CV aligns exceptionally well with the requirements of the Senior Digital Marketing Manager role. She possesses 8 years of digital marketing experience, exceeding the 5-year minimum, and has held management positions for over 2 years. Her current role at Twiga Foods involves managing a KES 9M/month ad budget, significantly higher than the KES 5M/month requirement, and she leads a team of 6, surpassing the 3-direct-report minimum. Her experience with D2C brands, performance marketing KPIs, and specific platforms like Meta, Google, and TikTok directly matches the job description.",
+      "raw_response": "Verdict: STRONG_YES\n\nReasoning: Amara's CV aligns exceptionally well with the requirements of the Senior Digital Marketing Manager role. She possesses 8 years of digital marketing experience, exceeding the 5-year minimum, and has held management positions for over 2 years. Her current role at Twiga Foods involves managing a KES 9M/month ad budget, significantly higher than the KES 5M/month requirement, and she leads a team of 6, surpassing the 3-direct-report minimum. Her experience with D2C brands, performance marketing KPIs, and specific platforms like Meta, Google, and TikTok directly matches the job description.",
+      "latency_ms": 1360,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f01_strong_yes"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "VERDICT: STRONG_YES\n\nREASONING:\nBrian's CV aligns exceptionally well with the requirements of the Senior Digital Marketing Manager role. He possesses 9 years of experience, exceeding the 5-year minimum, and has held management positions for a significant portion of that time. His experience managing a USD 42,000/month ad budget directly meets and exceeds the KES 5M+/month requirement. Furthermore, he has a proven track record of leading teams larger than the specified minimum and managing a comparable influencer/affiliate program. His background in D2C FMCG and fintech, coupled with his skills in key platforms like Meta, Google, and TikTok, makes him a highly qualified candidate.",
+      "raw_response": "VERDICT: STRONG_YES\n\nREASONING:\nBrian's CV aligns exceptionally well with the requirements of the Senior Digital Marketing Manager role. He possesses 9 years of experience, exceeding the 5-year minimum, and has held management positions for a significant portion of that time. His experience managing a USD 42,000/month ad budget directly meets and exceeds the KES 5M+/month requirement. Furthermore, he has a proven track record of leading teams larger than the specified minimum and managing a comparable influencer/affiliate program. His background in D2C FMCG and fintech, coupled with his skills in key platforms like Meta, Google, and TikTok, makes him a highly qualified candidate.",
+      "latency_ms": 1598,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f02_strong_yes"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "VERDICT: STRONG_YES\n\nREASONING:\nCynthia's CV aligns exceptionally well with the requirements of the Senior Digital Marketing Manager role. She possesses 7 years of digital marketing experience, exceeding the 5-year minimum, and has held management positions for the entirety of her career since 2020. Her experience managing a KES 6.5M/month digital advertising budget and leading a team of 5 directly matches and exceeds the job's hard requirements. Furthermore, her proven success in driving user acquisition and reducing CAC at Equity Bank, coupled with her experience across key platforms like Meta Ads, Google Ads, and CRM, makes her a highly qualified candidate.",
+      "raw_response": "VERDICT: STRONG_YES\n\nREASONING:\nCynthia's CV aligns exceptionally well with the requirements of the Senior Digital Marketing Manager role. She possesses 7 years of digital marketing experience, exceeding the 5-year minimum, and has held management positions for the entirety of her career since 2020. Her experience managing a KES 6.5M/month digital advertising budget and leading a team of 5 directly matches and exceeds the job's hard requirements. Furthermore, her proven success in driving user acquisition and reducing CAC at Equity Bank, coupled with her experience across key platforms like Meta Ads, Google Ads, and CRM, makes her a highly qualified candidate.",
+      "latency_ms": 1671,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f03_strong_yes"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "STRONG_YES\n\nDavid Muriithi Kariuki is an exceptionally strong candidate for the Senior Digital Marketing Manager role. He possesses over 10 years of relevant experience, significantly exceeding the 5-year minimum, and has held management positions for a substantial portion of that time. His experience managing digital advertising budgets (up to KES 12M/month) and leading teams (up to 8 direct reports) far surpasses the hard requirements. Furthermore, his background in D2C e-commerce, specific experience with platforms like Meta, Google, and TikTok, and proven success in driving key metrics like ROAS and LTV align perfectly with the job description. His awards and recognition further validate his expertise.",
+      "raw_response": "STRONG_YES\n\nDavid Muriithi Kariuki is an exceptionally strong candidate for the Senior Digital Marketing Manager role. He possesses over 10 years of relevant experience, significantly exceeding the 5-year minimum, and has held management positions for a substantial portion of that time. His experience managing digital advertising budgets (up to KES 12M/month) and leading teams (up to 8 direct reports) far surpasses the hard requirements. Furthermore, his background in D2C e-commerce, specific experience with platforms like Meta, Google, and TikTok, and proven success in driving key metrics like ROAS and LTV align perfectly with the job description. His awards and recognition further validate his expertise.",
+      "latency_ms": 1354,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f04_strong_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "VERDICT: YES\n\nREASONING:\nFaith meets all the hard requirements for the role, including 6 years of digital marketing experience, managing a KES 5.5M/month budget, and leading a team of 3 specialists. Her experience at Safaricom PLC, a large Kenyan organization, demonstrates her ability to handle significant budgets and drive performance metrics like ROAS and CAC. While she lacks direct D2C/e-commerce and TikTok experience, her transferable skills in paid media, SEM, email marketing, and influencer coordination are strong. Her stated desire to move into the D2C space is also a positive indicator.",
+      "raw_response": "VERDICT: YES\n\nREASONING:\nFaith meets all the hard requirements for the role, including 6 years of digital marketing experience, managing a KES 5.5M/month budget, and leading a team of 3 specialists. Her experience at Safaricom PLC, a large Kenyan organization, demonstrates her ability to handle significant budgets and drive performance metrics like ROAS and CAC. While she lacks direct D2C/e-commerce and TikTok experience, her transferable skills in paid media, SEM, email marketing, and influencer coordination are strong. Her stated desire to move into the D2C space is also a positive indicator.",
+      "latency_ms": 2380,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f05_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nGeorge Rotich is a strong candidate for the Senior Digital Marketing Manager role. He meets all the hard requirements, including 5+ years of experience, 3+ years in a management role, managing a budget of KES 5.2M/month, and leading a team of 4. His experience at Naivas Supermarkets, particularly in managing paid social and SEM campaigns, achieving a 3.0x ROAS, and growing online order volume, aligns well with the responsibilities outlined in the job description. While he lacks direct TikTok experience and experience with specific CRM tools like Klaviyo or HubSpot, his strong foundation in core digital marketing channels and his expressed desire to grow into a D2C role make him a promising fit.",
+      "raw_response": "YES\n\nGeorge Rotich is a strong candidate for the Senior Digital Marketing Manager role. He meets all the hard requirements, including 5+ years of experience, 3+ years in a management role, managing a budget of KES 5.2M/month, and leading a team of 4. His experience at Naivas Supermarkets, particularly in managing paid social and SEM campaigns, achieving a 3.0x ROAS, and growing online order volume, aligns well with the responsibilities outlined in the job description. While he lacks direct TikTok experience and experience with specific CRM tools like Klaviyo or HubSpot, his strong foundation in core digital marketing channels and his expressed desire to grow into a D2C role make him a promising fit.",
+      "latency_ms": 1500,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f06_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nHellen meets all the hard requirements for the role. She has 6 years of digital marketing experience, with over 2 years in a management role leading a team of 3. She also has direct experience managing a digital advertising budget of KES 5.8M/month, exceeding the KES 5M/month requirement. Her experience with Meta Ads, Google Ads, and TikTok for Business aligns perfectly with the job description, and she has a proven track record of optimizing campaigns for key metrics like CAC and ROAS. While her experience is primarily in the app-based D2C space, her transferable skills in performance marketing, budget management, and team leadership make her a strong candidate.",
+      "raw_response": "YES\n\nHellen meets all the hard requirements for the role. She has 6 years of digital marketing experience, with over 2 years in a management role leading a team of 3. She also has direct experience managing a digital advertising budget of KES 5.8M/month, exceeding the KES 5M/month requirement. Her experience with Meta Ads, Google Ads, and TikTok for Business aligns perfectly with the job description, and she has a proven track record of optimizing campaigns for key metrics like CAC and ROAS. While her experience is primarily in the app-based D2C space, her transferable skills in performance marketing, budget management, and team leadership make her a strong candidate.",
+      "latency_ms": 1561,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f07_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nIsaac has 7 years of digital marketing experience, exceeding the 5-year requirement, and has been in management roles for over 3 years. He currently manages a KES 15M/month digital ad spend across multiple platforms, significantly above the KES 5M/month requirement. He also leads a team of 5, surpassing the 3-direct-report minimum. His experience with e-commerce clients, influencer programs, and relevant tools aligns well with the job description.",
+      "raw_response": "YES\n\nIsaac has 7 years of digital marketing experience, exceeding the 5-year requirement, and has been in management roles for over 3 years. He currently manages a KES 15M/month digital ad spend across multiple platforms, significantly above the KES 5M/month requirement. He also leads a team of 5, surpassing the 3-direct-report minimum. His experience with e-commerce clients, influencer programs, and relevant tools aligns well with the job description.",
+      "latency_ms": 2151,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f08_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nJames Omondi Achieng meets most of the hard requirements for the Senior Digital Marketing Manager role. He has 5 years of digital marketing experience and has been in a team lead position since March 2023, fulfilling the management experience requirement. While the exact number of direct reports is not specified, his role as a \"Team Lead\" overseeing campaign execution and providing feedback suggests he likely manages a team. The candidate has experience managing significant digital ad budgets and has worked with Meta Ads and Google Ads, which are key platforms for the role. Although his degree is in Information Technology rather than a listed field, it is a related area. The primary gap is the lack of direct experience in D2C or consumer marketing, which would be a good point to explore further in an interview.",
+      "raw_response": "YES\n\nJames Omondi Achieng meets most of the hard requirements for the Senior Digital Marketing Manager role. He has 5 years of digital marketing experience and has been in a team lead position since March 2023, fulfilling the management experience requirement. While the exact number of direct reports is not specified, his role as a \"Team Lead\" overseeing campaign execution and providing feedback suggests he likely manages a team. The candidate has experience managing significant digital ad budgets and has worked with Meta Ads and Google Ads, which are key platforms for the role. Although his degree is in Information Technology rather than a listed field, it is a related area. The primary gap is the lack of direct experience in D2C or consumer marketing, which would be a good point to explore further in an interview.",
+      "latency_ms": 2334,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f09_ambiguous"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate does not meet the minimum experience requirements, specifically lacking the 5+ years of digital marketing experience and 2+ years in a management role. Furthermore, they have not managed the required KES 5M+/month advertising budget or held a degree in a relevant field. Their experience is primarily in execution and reporting rather than strategic budget management and team leadership.",
+      "raw_response": "NO - The candidate does not meet the minimum experience requirements, specifically lacking the 5+ years of digital marketing experience and 2+ years in a management role. Furthermore, they have not managed the required KES 5M+/month advertising budget or held a degree in a relevant field. Their experience is primarily in execution and reporting rather than strategic budget management and team leadership.",
+      "latency_ms": 1307,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f10_no"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nThe candidate is a strong fit for the Senior Digital Marketing Manager role. Amara possesses 6 years of digital marketing experience, exceeding the 5-year requirement, and has 2.5 years in a management role, meeting the 2-year minimum. She has directly managed a digital advertising budget of KES 5.4M/month, which aligns with the KES 7M/month budget for this role and exceeds the KES 5M/month hard requirement. Furthermore, she has experience leading a team of 3 specialists, meeting the requirement of managing 3+ direct reports. Her experience in D2C e-commerce, performance marketing, and managing key KPIs like ROAS and CAC is directly relevant to Kweli Commerce's business.",
+      "raw_response": "YES\n\nThe candidate is a strong fit for the Senior Digital Marketing Manager role. Amara possesses 6 years of digital marketing experience, exceeding the 5-year requirement, and has 2.5 years in a management role, meeting the 2-year minimum. She has directly managed a digital advertising budget of KES 5.4M/month, which aligns with the KES 7M/month budget for this role and exceeds the KES 5M/month hard requirement. Furthermore, she has experience leading a team of 3 specialists, meeting the requirement of managing 3+ direct reports. Her experience in D2C e-commerce, performance marketing, and managing key KPIs like ROAS and CAC is directly relevant to Kweli Commerce's business.",
+      "latency_ms": 1654,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f11_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nBrian Otieno Odhiambo is a strong candidate for the Senior Digital Marketing Manager role. He meets all the hard requirements, including 5+ years of digital marketing experience, 2+ years in a management role, managing a budget of approximately KES 5.1M/month, and managing a team of 3 direct reports. His experience at HelloFood Kenya directly aligns with the responsibilities outlined in the job description, particularly in managing digital advertising budgets across Meta, Google, and TikTok, leading a team, and focusing on key performance indicators like ROAS and CAC. His educational background and relevant certifications further strengthen his profile.",
+      "raw_response": "YES\n\nBrian Otieno Odhiambo is a strong candidate for the Senior Digital Marketing Manager role. He meets all the hard requirements, including 5+ years of digital marketing experience, 2+ years in a management role, managing a budget of approximately KES 5.1M/month, and managing a team of 3 direct reports. His experience at HelloFood Kenya directly aligns with the responsibilities outlined in the job description, particularly in managing digital advertising budgets across Meta, Google, and TikTok, leading a team, and focusing on key performance indicators like ROAS and CAC. His educational background and relevant certifications further strengthen his profile.",
+      "latency_ms": 1552,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f12_yes"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nCaroline has 7 years of marketing experience, exceeding the 5-year requirement, and her current role as Senior Digital Marketing Strategist for over 4 years includes managing digital marketing strategy and overseeing campaigns across Meta Ads and Google Ads. While the CV doesn't explicitly state the exact budget managed, it mentions \"combined client digital ad spend exceeds several million shillings monthly,\" which is likely to meet the KES 5M+/month requirement given the agency context. She also has experience working with junior staff and presenting to senior stakeholders, indicating leadership potential, though her direct report management experience isn't explicitly detailed.",
+      "raw_response": "YES\n\nCaroline has 7 years of marketing experience, exceeding the 5-year requirement, and her current role as Senior Digital Marketing Strategist for over 4 years includes managing digital marketing strategy and overseeing campaigns across Meta Ads and Google Ads. While the CV doesn't explicitly state the exact budget managed, it mentions \"combined client digital ad spend exceeds several million shillings monthly,\" which is likely to meet the KES 5M+/month requirement given the agency context. She also has experience working with junior staff and presenting to senior stakeholders, indicating leadership potential, though her direct report management experience isn't explicitly detailed.",
+      "latency_ms": 2340,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f13_ambiguous"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nDiana Muthoni Githinji meets the hard requirements for the Senior Digital Marketing Manager role. She has 5 years of digital marketing experience, with over 2 years in a management position as Head of Digital. She has experience managing digital marketing budgets and leading a team. Her experience in fashion e-commerce is transferable to Kweli Commerce's D2C model, and she has experience with key platforms like Meta Ads and TikTok.",
+      "raw_response": "YES\n\nDiana Muthoni Githinji meets the hard requirements for the Senior Digital Marketing Manager role. She has 5 years of digital marketing experience, with over 2 years in a management position as Head of Digital. She has experience managing digital marketing budgets and leading a team. Her experience in fashion e-commerce is transferable to Kweli Commerce's D2C model, and she has experience with key platforms like Meta Ads and TikTok.",
+      "latency_ms": 1312,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f14_ambiguous"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nThe candidate has 6 years of digital marketing experience, exceeding the 5-year requirement, and has been in a management role for 4 years, surpassing the 2-year minimum. They have managed a team of 4 direct reports and have experience with email marketing, SEO, and content strategy. While their direct management of paid advertising budgets (KES 2.5M/month) is below the KES 7M/month requirement, they have supported paid media teams and have exposure to Meta Ads. Their degree in Marketing also aligns with the job description.",
+      "raw_response": "YES\n\nThe candidate has 6 years of digital marketing experience, exceeding the 5-year requirement, and has been in a management role for 4 years, surpassing the 2-year minimum. They have managed a team of 4 direct reports and have experience with email marketing, SEO, and content strategy. While their direct management of paid advertising budgets (KES 2.5M/month) is below the KES 7M/month requirement, they have supported paid media teams and have exposure to Meta Ads. Their degree in Marketing also aligns with the job description.",
+      "latency_ms": 1593,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f15_ambiguous"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate does not meet the hard requirements for this role. While they have strong performance marketing experience and have managed significant budgets (KES 3M/month), they lack the required 5+ years of total digital marketing experience and, crucially, have not held a management role with direct reports. Their experience is as a specialist, not a manager of a team of 4 digital marketing specialists and 1 data analyst. Additionally, their degree is in Computer Science, not a related field like Marketing or Business Administration.",
+      "raw_response": "NO - The candidate does not meet the hard requirements for this role. While they have strong performance marketing experience and have managed significant budgets (KES 3M/month), they lack the required 5+ years of total digital marketing experience and, crucially, have not held a management role with direct reports. Their experience is as a specialist, not a manager of a team of 4 digital marketing specialists and 1 data analyst. Additionally, their degree is in Computer Science, not a related field like Marketing or Business Administration.",
+      "latency_ms": 1466,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f16_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO\n\nGrace has 6 years of marketing experience, exceeding the 5-year requirement. However, she lacks the required direct experience in managing a significant digital advertising budget (she manages KES 800K/month, far below the KES 5M+/month requirement) and has limited hands-on experience with digital marketing tools, primarily reviewing reports rather than actively managing campaigns. Furthermore, her experience is in ATL/BTL and brand management, with only \"growing exposure\" to digital channels, and she has not managed a digital marketing team directly.",
+      "raw_response": "NO\n\nGrace has 6 years of marketing experience, exceeding the 5-year requirement. However, she lacks the required direct experience in managing a significant digital advertising budget (she manages KES 800K/month, far below the KES 5M+/month requirement) and has limited hands-on experience with digital marketing tools, primarily reviewing reports rather than actively managing campaigns. Furthermore, her experience is in ATL/BTL and brand management, with only \"growing exposure\" to digital channels, and she has not managed a digital marketing team directly.",
+      "latency_ms": 1035,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f17_no"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nJames Mwangi Githuka meets the hard requirements for the Senior Digital Marketing Manager role. He has over 5 years of digital marketing experience, with 2 years in a management role at Flutterwave. He has managed a digital advertising budget of KES 1.8M/month, which is less than the KES 7M/month required, but he has experience with Google Ads and LinkedIn Ads, which are key platforms for the role. He also directly manages a team of 2, meeting the requirement of 3+ direct reports. His degree in Business Administration is also relevant.",
+      "raw_response": "YES\n\nJames Mwangi Githuka meets the hard requirements for the Senior Digital Marketing Manager role. He has over 5 years of digital marketing experience, with 2 years in a management role at Flutterwave. He has managed a digital advertising budget of KES 1.8M/month, which is less than the KES 7M/month required, but he has experience with Google Ads and LinkedIn Ads, which are key platforms for the role. He also directly manages a team of 2, meeting the requirement of 3+ direct reports. His degree in Business Administration is also relevant.",
+      "latency_ms": 1460,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f18_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO\n\nThe candidate has 5 years of experience in communications and PR, but lacks the required experience in managing paid digital advertising budgets and leading a digital marketing team. Her experience is primarily focused on organic social media and media relations, not the performance marketing metrics and channels (Meta Ads, Google Ads, TikTok) crucial for this role. She also does not meet the hard requirement of managing a digital advertising budget of KES 5M+/month or leading a team of 3+ direct reports in a digital marketing capacity.",
+      "raw_response": "NO\n\nThe candidate has 5 years of experience in communications and PR, but lacks the required experience in managing paid digital advertising budgets and leading a digital marketing team. Her experience is primarily focused on organic social media and media relations, not the performance marketing metrics and channels (Meta Ads, Google Ads, TikTok) crucial for this role. She also does not meet the hard requirement of managing a digital advertising budget of KES 5M+/month or leading a team of 3+ direct reports in a digital marketing capacity.",
+      "latency_ms": 1495,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f19_no"
+    },
+    {
+      "verdict": "AMBIGUOUS",
+      "reasoning": "**Verdict:** AMBIGUOUS\n\n**Reasoning:** The candidate has strong experience in influencer marketing and managing budgets within that specific domain (KES 4.5M/month). They also have experience managing a small team (2 direct reports). However, the job description requires extensive experience managing a broader digital advertising budget (KES 7M/month) across multiple platforms like Meta Ads, Google Ads, and TikTok, which is not explicitly detailed in the CV. While they have a Google Digital Marketing Fundamentals certification, their practical experience in paid social and SEM at the required scale is unclear.",
+      "raw_response": "**Verdict:** AMBIGUOUS\n\n**Reasoning:** The candidate has strong experience in influencer marketing and managing budgets within that specific domain (KES 4.5M/month). They also have experience managing a small team (2 direct reports). However, the job description requires extensive experience managing a broader digital advertising budget (KES 7M/month) across multiple platforms like Meta Ads, Google Ads, and TikTok, which is not explicitly detailed in the CV. While they have a Google Digital Marketing Fundamentals certification, their practical experience in paid social and SEM at the required scale is unclear.",
+      "latency_ms": 1500,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f21_no"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nBoniface has 6 years of digital marketing experience, exceeding the 5-year requirement, and has been in a management role for over 3 years. He has managed a digital advertising budget of KES 2.2M/month, which is below the KES 7M/month requirement but shows experience with significant budgets. He leads a team of 2, which is close to the required 3 direct reports. His experience in performance campaigns and optimisation aligns well with the role's KPIs.",
+      "raw_response": "YES\n\nBoniface has 6 years of digital marketing experience, exceeding the 5-year requirement, and has been in a management role for over 3 years. He has managed a digital advertising budget of KES 2.2M/month, which is below the KES 7M/month requirement but shows experience with significant budgets. He leads a team of 2, which is close to the required 3 direct reports. His experience in performance campaigns and optimisation aligns well with the role's KPIs.",
+      "latency_ms": 1385,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f22_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate does not meet the minimum experience requirements for this role. They have 1 year of experience, whereas the job requires 5+ years, including at least 2 years in a management role. Additionally, they have not managed a significant digital advertising budget or a team, both of which are hard requirements for this Senior Digital Marketing Manager position.",
+      "raw_response": "NO - The candidate does not meet the minimum experience requirements for this role. They have 1 year of experience, whereas the job requires 5+ years, including at least 2 years in a management role. Additionally, they have not managed a significant digital advertising budget or a team, both of which are hard requirements for this Senior Digital Marketing Manager position.",
+      "latency_ms": 1280,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f23_strong_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate has extensive marketing experience, including budget management and team leadership, but their experience is heavily focused on traditional media (TV, radio, OOH) and they explicitly state that digital marketing activations are handled by an external agency. The role requires direct ownership and optimization of digital advertising budgets and platforms, which the candidate does not demonstrate.",
+      "raw_response": "NO - The candidate has extensive marketing experience, including budget management and team leadership, but their experience is heavily focused on traditional media (TV, radio, OOH) and they explicitly state that digital marketing activations are handled by an external agency. The role requires direct ownership and optimization of digital advertising budgets and platforms, which the candidate does not demonstrate.",
+      "latency_ms": 1095,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f24_strong_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate does not meet the hard requirements for this role. They have 3 years of experience, not 5+, and have only managed a very small advertising budget (KES 80,000/month total) compared to the KES 7M/month required. Additionally, they have not held a management role with direct reports, nor have they managed a budget of KES 5M+/month.",
+      "raw_response": "NO - The candidate does not meet the hard requirements for this role. They have 3 years of experience, not 5+, and have only managed a very small advertising budget (KES 80,000/month total) compared to the KES 7M/month required. Additionally, they have not held a management role with direct reports, nor have they managed a budget of KES 5M+/month.",
+      "latency_ms": 1208,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f25_strong_no"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nDiana's experience aligns well with the requirements of the Senior Digital Marketing Manager role. She has over 5 years of digital marketing experience, including 5+ years in a Director role where she managed a KES 6M/month advertising budget and led a team of 5. Her expertise in Meta Ads, Google Ads, ROAS, CAC, and LTV directly matches the job description's needs. She also has experience with D2C brands in the beauty and wellness sectors, which is highly relevant to Kweli Commerce.",
+      "raw_response": "YES\n\nDiana's experience aligns well with the requirements of the Senior Digital Marketing Manager role. She has over 5 years of digital marketing experience, including 5+ years in a Director role where she managed a KES 6M/month advertising budget and led a team of 5. Her expertise in Meta Ads, Google Ads, ROAS, CAC, and LTV directly matches the job description's needs. She also has experience with D2C brands in the beauty and wellness sectors, which is highly relevant to Kweli Commerce.",
+      "latency_ms": 2175,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f26_date_contradiction"
+    },
+    {
+      "verdict": "YES",
+      "reasoning": "YES\n\nSamuel Ochieng Onyango is a strong candidate for the Senior Digital Marketing Manager role. He meets all the hard requirements, including 7 years of digital marketing experience, 4+ years in a management role, and managing a monthly budget of KES 5.5M, exceeding the KES 5M requirement. He also has experience leading a team of 3 specialists, aligning with the job's need for managing 4 specialists and 1 data analyst. His experience in the fintech sector and managing campaigns across Kenya and Uganda is highly relevant to Kweli Commerce's expansion plans.",
+      "raw_response": "YES\n\nSamuel Ochieng Onyango is a strong candidate for the Senior Digital Marketing Manager role. He meets all the hard requirements, including 7 years of digital marketing experience, 4+ years in a management role, and managing a monthly budget of KES 5.5M, exceeding the KES 5M requirement. He also has experience leading a team of 3 specialists, aligning with the job's need for managing 4 specialists and 1 data analyst. His experience in the fintech sector and managing campaigns across Kenya and Uganda is highly relevant to Kweli Commerce's expansion plans.",
+      "latency_ms": 1576,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f27_skill_conflict"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO\n\nThe candidate's experience is heavily focused on trade marketing and BTL activations within the FMCG sector. While they have management experience and a relevant degree, their CV does not demonstrate experience with the core digital marketing channels (Meta Ads, Google Ads, TikTok, SEO, email/CRM) or managing a significant digital advertising budget (KES 7M/month) as required by the job description. Their skills and experience are not aligned with the requirements of a Senior Digital Marketing Manager role in an e-commerce context.",
+      "raw_response": "NO\n\nThe candidate's experience is heavily focused on trade marketing and BTL activations within the FMCG sector. While they have management experience and a relevant degree, their CV does not demonstrate experience with the core digital marketing channels (Meta Ads, Google Ads, TikTok, SEO, email/CRM) or managing a significant digital advertising budget (KES 7M/month) as required by the job description. Their skills and experience are not aligned with the requirements of a Senior Digital Marketing Manager role in an e-commerce context.",
+      "latency_ms": 2242,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f31_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate's experience is heavily focused on email marketing and lacks the required experience in managing significant digital advertising budgets (KES 7M/month) across platforms like Meta Ads, Google Ads, and TikTok. While she has management experience and a relevant degree, her budget management and multi-channel campaign experience do not align with the core responsibilities of this Senior Digital Marketing Manager role.",
+      "raw_response": "NO - The candidate's experience is heavily focused on email marketing and lacks the required experience in managing significant digital advertising budgets (KES 7M/month) across platforms like Meta Ads, Google Ads, and TikTok. While she has management experience and a relevant degree, her budget management and multi-channel campaign experience do not align with the core responsibilities of this Senior Digital Marketing Manager role.",
+      "latency_ms": 2021,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f32_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO.\n\nThe candidate has 6 years of experience, but only 1 year and 8 months in a digital marketing role, which is significantly less than the required 5+ years. While they have supported ad campaigns, they have not managed a budget of the required KES 5M+/month, nor have they managed a team of 3+ direct reports. Their experience is primarily as a coordinator, not a manager, and their skills in key platforms like Google Ads are listed as basic.",
+      "raw_response": "NO.\n\nThe candidate has 6 years of experience, but only 1 year and 8 months in a digital marketing role, which is significantly less than the required 5+ years. While they have supported ad campaigns, they have not managed a budget of the required KES 5M+/month, nor have they managed a team of 3+ direct reports. Their experience is primarily as a coordinator, not a manager, and their skills in key platforms like Google Ads are listed as basic.",
+      "latency_ms": 1416,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f33_no"
+    },
+    {
+      "verdict": "NO",
+      "reasoning": "NO - The candidate lacks the required experience in managing digital advertising budgets, leading a digital marketing team, and a formal marketing education. While she has strong experience in content creation and influencer marketing, her background is as a creator and brand ambassador, not as a manager of paid media campaigns or a team responsible for overall digital strategy and execution. The CV does not demonstrate experience with specific platforms like Meta Ads or Google Ads in a managerial capacity, nor does it show experience managing a large advertising budget or a team of specialists and analysts.",
+      "raw_response": "NO - The candidate lacks the required experience in managing digital advertising budgets, leading a digital marketing team, and a formal marketing education. While she has strong experience in content creation and influencer marketing, her background is as a creator and brand ambassador, not as a manager of paid media campaigns or a team responsible for overall digital strategy and execution. The CV does not demonstrate experience with specific platforms like Meta Ads or Google Ads in a managerial capacity, nor does it show experience managing a large advertising budget or a team of specialists and analysts.",
+      "latency_ms": 1220,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f34_strong_no"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "VERDICT: STRONG_YES\n\nREASONING:\nAmara Muthoni is an exceptionally strong candidate who meets and exceeds all hard requirements for the Senior Digital Marketing Manager role. She has 7 years of digital marketing experience, with over 4 years in management roles, surpassing the 5 and 2-year minimums respectively. Her experience managing a KES 7.5M/month budget at Lipa Later directly aligns with the KES 7M/month requirement, and she has managed teams of 7, exceeding the 3-direct-report minimum. Her skills in Meta Ads, Google Ads, TikTok, CRM, influencer marketing, and data analysis are directly relevant to the job description, and her experience in the Kenyan market and with D2C acquisition models makes her a highly suitable fit.",
+      "raw_response": "VERDICT: STRONG_YES\n\nREASONING:\nAmara Muthoni is an exceptionally strong candidate who meets and exceeds all hard requirements for the Senior Digital Marketing Manager role. She has 7 years of digital marketing experience, with over 4 years in management roles, surpassing the 5 and 2-year minimums respectively. Her experience managing a KES 7.5M/month budget at Lipa Later directly aligns with the KES 7M/month requirement, and she has managed teams of 7, exceeding the 3-direct-report minimum. Her skills in Meta Ads, Google Ads, TikTok, CRM, influencer marketing, and data analysis are directly relevant to the job description, and her experience in the Kenyan market and with D2C acquisition models makes her a highly suitable fit.",
+      "latency_ms": 1846,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f41_strong_yes"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "VERDICT: STRONG_YES\n\nREASONING:\nDavid Otieno Ochieng is an exceptionally strong candidate for this role. He possesses 9 years of digital marketing experience, exceeding the 5-year requirement, and has held management positions for a significant portion of that time, including his current role as Digital Marketing Director. His experience managing a KES 10M/month budget directly aligns with and surpasses the KES 7M/month requirement, and he has a proven track record of leading teams larger than the specified minimum. Furthermore, his experience with Meta Ads, Google Ads, and TikTok for Business, along with his success in improving key KPIs like ROAS and CAC, makes him a highly qualified candidate.",
+      "raw_response": "VERDICT: STRONG_YES\n\nREASONING:\nDavid Otieno Ochieng is an exceptionally strong candidate for this role. He possesses 9 years of digital marketing experience, exceeding the 5-year requirement, and has held management positions for a significant portion of that time, including his current role as Digital Marketing Director. His experience managing a KES 10M/month budget directly aligns with and surpasses the KES 7M/month requirement, and he has a proven track record of leading teams larger than the specified minimum. Furthermore, his experience with Meta Ads, Google Ads, and TikTok for Business, along with his success in improving key KPIs like ROAS and CAC, makes him a highly qualified candidate.",
+      "latency_ms": 1575,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f42_strong_yes"
+    },
+    {
+      "verdict": "STRONG_YES",
+      "reasoning": "STRONG_YES\n\nFaith Njeri Kamau is an exceptionally strong candidate for the Senior Digital Marketing Manager role. Her 6 years of experience, including over 2 years in a management capacity, directly align with the requirements. She has a proven track record of managing digital advertising budgets exceeding the KES 5M/month threshold (USD 45,000/month) and has successfully led teams of 5 direct reports, surpassing the minimum requirement of 3. Her experience at Wasoko, a D2C-adjacent e-commerce platform, and her specific achievements in ROAS, CAC, LTV (implied through merchant growth and activation), and multi-channel campaign management (paid social, SEM, SEO, email/CRM) are highly relevant to Kweli Commerce's needs. Furthermore, her technical skills in building attribution dashboards and her experience with influencer programs are significant advantages.",
+      "raw_response": "STRONG_YES\n\nFaith Njeri Kamau is an exceptionally strong candidate for the Senior Digital Marketing Manager role. Her 6 years of experience, including over 2 years in a management capacity, directly align with the requirements. She has a proven track record of managing digital advertising budgets exceeding the KES 5M/month threshold (USD 45,000/month) and has successfully led teams of 5 direct reports, surpassing the minimum requirement of 3. Her experience at Wasoko, a D2C-adjacent e-commerce platform, and her specific achievements in ROAS, CAC, LTV (implied through merchant growth and activation), and multi-channel campaign management (paid social, SEM, SEO, email/CRM) are highly relevant to Kweli Commerce's needs. Furthermore, her technical skills in building attribution dashboards and her experience with influencer programs are significant advantages.",
+      "latency_ms": 1784,
+      "model": "google/gemini-2.5-flash-lite",
+      "error": null,
+      "cost_usd": 0.00014,
+      "candidate_id": "f43_strong_yes"
+    }
+  ]
+}
