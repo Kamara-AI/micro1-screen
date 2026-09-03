@@ -29,6 +29,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
+from screen.core.domain_calibration import get_calibration
 from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
@@ -45,24 +46,31 @@ ANALYZE_FIT_SYSTEM_PROMPT = """You are a senior technical recruiter. Produce a F
 
 ━━━ PRIORITY ZERO — CHECK BEFORE ALL SCORING ━━━
 
-P0. DOMAIN MISMATCH (operations/supply-chain roles):
-Apply the hard cap ONLY if the candidate's ENTIRE career is in one of these
-FUNDAMENTALLY DIFFERENT operations domains (these do NOT transfer to FMCG supply chain):
-  - Events/conferences/venue operations
-  - Contact centre / customer service operations
-  - NGO / programme management / M&E
-  - Financial / payment / settlement operations
-  - Banking branch operations
+P0. DOMAIN MISMATCH (ALL DOMAINS):
+A domain mismatch hard cap applies when BOTH conditions are met:
+  (a) The evidence bundle contains a domain mismatch silence flag at severity="high" OR
+      hard_anchor_count = 0 AND domain keywords found < minimum threshold
+  AND
+  (b) The candidate's entire career is in a domain listed as "Non-transferable backgrounds"
+      in the DOMAIN CALIBRATION BLOCK (injected below the JD)
 
-If their background is in ANY of those domains with zero supply-chain vocabulary:
+If BOTH conditions are met:
   • technical_fit = 0.05
   • experience_level_fit = 0.15
   • These are hard caps — not starting points. Do not round up.
   State the domain gap explicitly in technical_fit_rationale.
 
-NOTE: Hotel/hospitality operations is NOT a hard-cap domain — it has some management
-transferability. Score it naturally but apply a proportionate domain gap penalty.
-A supply-chain keywords = 0 silence flag signals a gap but does NOT alone trigger the hard cap.
+NOTE: A single domain keyword absence flag does NOT alone trigger the hard cap.
+The hard cap requires a clear non-transferable background pattern confirmed by
+the evidence bundle AND matching a listed alien domain description.
+Hotel/hospitality operations is NOT a hard-cap alien domain for supply-chain roles —
+score naturally but apply a proportionate domain gap penalty.
+
+P0 EXAMPLES BY DOMAIN:
+  Supply chain role: Events coordinator whose entire history is conferences/F&B → hard cap
+  Marketing role: Lab scientist with zero campaign, channel, or digital exposure → hard cap
+  Software engineering: HR manager with no coding, scripting, or system-building → hard cap
+  Finance: Marketing manager with no P&L, financial model, or audit exposure → hard cap
 
 P1. PRE-COMPUTED FACTS (appear in evidence bundle):
 The evidence bundle may contain "DETERMINISTIC PRE-COMPUTED FACTS" from Python analysis.
@@ -116,6 +124,46 @@ Look for what ATS would miss:
 - Building track record without matching titles
 - Community signals: open source, writing, talks
 
+━━━ DOMAIN-SPECIFIC SCORING ANCHORS ━━━
+
+A DOMAIN CALIBRATION BLOCK will be injected below the JD with the detected domain,
+tier_c_traps, and hard_cap_alien_domains. Use it to apply domain-specific weighting.
+
+When you see these evidence patterns, weight them heavily for technical_fit
+and experience_level_fit:
+
+  Software Engineering: production system ownership, architecture decisions, scale metrics
+    (requests/day, uptime %, users served). "Built from scratch" > "contributed to".
+  Data Science / ML / AI: model deployed to production, business impact quantified,
+    A/B test methodology, recall/precision trade-off stated. Academic research without
+    deployment = max experience_level_fit 0.25 for senior roles.
+  DevOps / Platform / SRE: CI/CD pipeline owned, incident response with SLA metrics,
+    infrastructure cost reduced, kubernetes cluster managed. On-call experience = strong signal.
+  Cybersecurity: compliance framework implemented (SOC 2, ISO 27001, NIST), incident led,
+    specific CVE or vulnerability type. Certifications (CISSP, CEH) = Tier B anchor.
+  Digital Marketing: ROAS, CAC, conversion rate with before/after, managed budget with spend,
+    owned specific channel (not just "managed social media"). Revenue-attributed = Tier A.
+  Sales / Business Development: quota attainment % (relative to target), ARR/TCV closed,
+    deal cycle length, named enterprise accounts. "Exceeded quota" without a number = Tier C.
+  Finance / Accounting / FP&A: P&L ownership with dollar amount, financial model built (DCF,
+    LBO), audit completed, specific regulation complied with. "Financial analysis" alone = Tier C.
+  Product Management: product shipped + DAU/MAU or retention metric, roadmap owned with
+    stakeholder count, A/B test driving feature decision. "Managed backlog" alone = Tier C.
+  HR / People Operations: headcount managed, time-to-hire improvement with baseline,
+    retention rate improved, HRIS system implemented. "Passionate about people" = Tier C.
+  Customer Success / CX: ARR retained/expanded in $, NPS/CSAT score with delta, churn rate
+    managed, portfolio size in accounts or ARR. "Built relationships" = Tier C.
+  Legal / Compliance: regulation named (GDPR, PCI-DSS, IFRS, local law), transaction closed
+    with complexity stated, compliance programme delivered, audit led. Generic "legal knowledge" = Tier C.
+  Design: shipped product with user count or metric, A/B tested design with outcome, portfolio
+    link to live product, design system built. "Eye for design" = Tier C.
+  Project / Programme Management: on-time delivery rate, budget managed with overrun prevention,
+    programme scope (headcount, duration, budget). "Managed projects" alone = Tier C.
+  Strategy / Consulting: recommendation adopted at C-suite/board level, market entry executed,
+    revenue impact quantified, M&A due diligence led. "Strategic thinker" = Tier C.
+  Communications / PR: named media placement, crisis comms led, executive speechwriting,
+    readership/engagement growth quantified. "Excellent written communication" = Tier C.
+
 ━━━ PROBE POINTS ━━━
 
 State the single most material gap to verify in an interview.
@@ -150,6 +198,7 @@ def _call_analyze_fit_llm(
     job_description: str,
     role_seniority: str,
     role_type: str,
+    domain_calibration_block: str = "",
 ) -> FitAnalysis:
     """
     WHY: Isolated LLM call with retry. Passes both the structured profile and
@@ -158,6 +207,9 @@ def _call_analyze_fit_llm(
 
     HOW: The evidence_summary provides the quality-weighted claim picture.
     The profile_summary provides the structural/trajectory context.
+    The domain_calibration_block injects detected domain, tier_c_traps, and
+    hard_cap_alien_domains so the LLM can apply P0 hard caps correctly across
+    all 20 domains (not just operations/supply-chain).
     Together they give the LLM everything a senior recruiter would have.
     """
     messages = [
@@ -168,6 +220,7 @@ def _call_analyze_fit_llm(
                 f"ROLE SENIORITY: {role_seniority}\n"
                 f"ROLE TYPE: {role_type}\n\n"
                 f"--- JOB DESCRIPTION ---\n{job_description}\n\n"
+                f"{domain_calibration_block}"
                 f"--- CANDIDATE PROFILE (structured, anonymised) ---\n{profile_summary}\n\n"
                 f"--- EVIDENCE BUNDLE (extracted claims with tiers) ---\n{evidence_summary}\n\n"
                 f"Produce the complete FitAnalysis for this candidate."
@@ -176,6 +229,54 @@ def _call_analyze_fit_llm(
     ]
     result: FitAnalysis = _structured_llm.invoke(messages)
     return result
+
+
+def _build_domain_calibration_block(role_type: str) -> str:
+    """
+    WHY: The domain calibration block is injected into the fit analysis prompt
+    between the JD and the candidate profile. This gives the LLM explicit,
+    domain-specific context for P0 hard cap decisions and scoring anchors —
+    without relying on the LLM to infer domain norms from the JD alone.
+
+    Including tier_c_traps directly in the prompt prevents the LLM from
+    scoring common empty phrases (e.g. "drove growth", "built relationships")
+    as Tier B evidence — which was the root cause of the Batch 4 Marketing failure.
+
+    Args:
+        role_type: The role type string from the screening input.
+
+    Returns:
+        A formatted string block to insert into the LLM prompt, or empty string
+        if the generic calibration has no meaningful domain-specific guidance.
+    """
+    calibration = get_calibration(role_type)
+
+    lines = [
+        "--- DOMAIN CALIBRATION BLOCK ---",
+        f"Detected domain: {calibration.name}",
+        "",
+    ]
+
+    if calibration.tier_c_traps:
+        lines.append(
+            f"Common Tier-C trap phrases in {calibration.name} "
+            f"(generic — do NOT treat as Tier B evidence):"
+        )
+        for trap in calibration.tier_c_traps[:8]:  # Cap at 8 to keep prompt concise
+            lines.append(f"  • \"{trap}\"")
+        lines.append("")
+
+    if calibration.hard_cap_alien_domains:
+        lines.append(
+            f"Non-transferable backgrounds for {calibration.name} "
+            f"(trigger P0 hard cap if candidate's entire history matches):"
+        )
+        for alien in calibration.hard_cap_alien_domains:
+            lines.append(f"  • {alien}")
+        lines.append("")
+
+    lines.append("--- END DOMAIN CALIBRATION BLOCK ---\n")
+    return "\n".join(lines)
 
 
 def _render_evidence_for_llm(evidence_bundle: EvidenceBundle) -> str:
@@ -298,6 +399,7 @@ def analyze_fit_node(state: ScreeningState) -> dict[str, Any]:
 
     profile_text = _render_profile_summary_for_llm(candidate_profile)
     evidence_text = _render_evidence_for_llm(evidence_bundle)
+    domain_block = _build_domain_calibration_block(screening_input.role_type)
 
     try:
         fit_analysis = _call_analyze_fit_llm(
@@ -307,6 +409,7 @@ def analyze_fit_node(state: ScreeningState) -> dict[str, Any]:
             job_description=screening_input.job_description,
             role_seniority=screening_input.role_seniority,
             role_type=screening_input.role_type,
+            domain_calibration_block=domain_block,
         )
     except Exception as exc:
         raise LLMCallError(node_name, str(exc)) from exc

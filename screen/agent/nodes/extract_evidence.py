@@ -25,6 +25,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
+from screen.core.domain_calibration import get_calibration
 from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
@@ -106,21 +107,63 @@ SILENCE FLAGS: What's ABSENT that SHOULD be present given role type and seniorit
   - Product roles: no product launches, no metrics? Flag it.
   - Quantified outcomes: for senior+ roles, absence of numbers IS a signal.
 
-  OPERATIONS DOMAIN MISMATCH (operations/supply chain roles): The word "operations" covers
-  fundamentally different domains. Read the job description to identify the SPECIFIC
-  operations domain required (e.g. FMCG supply chain, warehousing, distribution, logistics,
-  3PL, fill rate, on-time delivery). Then read the candidate's ENTIRE work history.
-  If the candidate's experience is ENTIRELY in a DIFFERENT operations domain — for example:
-    - Events/hospitality operations (F&B, conferences, venue setup) vs supply chain
-    - Contact centre operations (SLA, AHT, agent management, IVR) vs supply chain
-    - Financial/payment operations (settlement, reconciliation, treasury) vs supply chain
-    - NGO/programme operations (M&E, donor reporting, beneficiary management) vs supply chain
-  ...and they have NO evidence of supply chain, warehousing, distribution, 3PL, logistics,
-  fill rate, inventory, or FMCG-specific skills anywhere — flag severity="high":
-  "Expected: [domain-specific skills]. Candidate's entire history is in [actual domain].
-   No supply chain or FMCG operations evidence found."
-  This is a critical signal — generic "operations management" experience in an unrelated
-  domain does not transfer to FMCG supply chain or distribution management.
+DOMAIN CALIBRATION (read before extracting evidence):
+  The DETERMINISTIC PRE-COMPUTED FACTS block includes domain-calibration signals:
+    - Detected domain: the auto-classified hiring domain for this JD
+    - Domain keywords found: count of domain-specific vocabulary in the entire CV
+    - Hard anchor signals found: count of specific phrases proving real domain experience
+    - Tier-C trap phrases found: count of unverifiable generic claims common in this domain
+
+  Use these facts as follows:
+    1. If hard_anchor_count = 0 AND domain_keyword_count < minimum threshold:
+       generate a domain mismatch silence flag at severity="high":
+       "Expected: [domain-specific vocabulary]. Found 0 hard anchors and fewer than
+       [threshold] domain keywords. Candidate may not have genuine [domain] experience."
+    2. If tier_c_trap_count > 3: add a yellow-flag silence flag at severity="low":
+       "High proportion of generic/unverifiable claim language for [domain]. Recommend
+       probing for specific metrics and outcomes in interview."
+       Do NOT automatically penalise — let the tier assignments carry the weight.
+
+  DOMAIN-SPECIFIC SILENCE PATTERNS (generate these when the detected domain matches):
+    Software Engineering / DevOps / Cybersecurity:
+      → No architecture decisions for a senior candidate? Flag it.
+      → No production deployment evidence for a senior role? Flag it.
+    Data Science / ML / AI:
+      → No model deployed to production for a senior role? Flag it.
+      → No business impact metric for any model or analysis? Flag it.
+      → No experimental methodology (A/B test, holdout, validation)? Flag it.
+    Digital Marketing:
+      → No conversion rate, ROAS, CAC, or CPC metric anywhere? Flag it.
+      → No specific channel ownership with budget control? Flag it.
+    Sales / Business Development:
+      → No quota attainment figure? Flag it.
+      → No deal size, ARR closed, or pipeline value? Flag it.
+    Finance / Accounting / FP&A:
+      → No P&L ownership, budget size, or financial model? Flag it.
+      → No specific regulation, filing, or instrument? Flag it.
+    Product Management:
+      → No product shipped with real user metrics? Flag it.
+      → No roadmap ownership or launch described? Flag it.
+    HR / People Operations:
+      → No retention rate, time-to-hire, or headcount managed? Flag it.
+    Customer Success:
+      → No NPS, CSAT, churn rate, or ARR retained metric? Flag it.
+    Legal / Compliance:
+      → No specific regulation, jurisdiction, or transaction type? Flag it.
+    Design (UX / UI / Brand):
+      → No portfolio link or named shipped product for a senior role? Flag it.
+    Project / Programme Management:
+      → No budget managed or on-time delivery rate? Flag it.
+    Cybersecurity:
+      → No specific framework (SOC 2, ISO 27001, NIST) implemented? Flag it.
+
+  DOMAIN MISMATCH (ALL DOMAINS): A candidate whose ENTIRE career is in a fundamentally
+  different domain should receive a domain mismatch silence flag at severity="high".
+  The hard_cap_alien_domains list (in the domain calibration block) specifies which
+  backgrounds are non-transferable for the detected domain.
+  Operations mismatch: Events/hospitality, contact centre, NGO programme ops,
+  financial/payment ops, and banking branch ops are NOT transferable to FMCG supply
+  chain management.
 
 BUILDER vs MAINTAINER:
   Builder signals: "built from scratch", "launched", "zero to one", "architected X",
@@ -275,12 +318,27 @@ def _compute_deterministic_signals(
     deterministically in Python here. The results are injected as hard facts into
     the LLM prompt so the model only reasons about them, never detects them.
 
+    Now domain-calibration-aware: all domain-specific checks (production deployment,
+    skill conflict, domain keywords) are driven by the domain registry rather than
+    hardcoded role-type strings. This is what enables accurate screening across
+    20+ domains without per-domain code changes.
+
     Computes:
     - supervision_pct: fraction of role bullets using subordinate language
-    - has_production_deployment: bool | None (None if not ML/DS role)
+    - has_production_deployment: bool | None (None if domain has no production check)
     - skill_conflicts: list of Expert/Proficient skills absent from ALL role bullets
-    - domain_keyword_count: # of supply-chain keywords in cv_text (operations roles only)
+    - domain_keyword_count: # of calibrated domain keywords found in full CV text
+    - hard_anchor_count: # of domain-specific hard anchor phrases found in role bullets
+    - tier_c_trap_count: # of domain-specific Tier C trap phrases found in role bullets
+    - detected_domain: canonical domain name from calibration registry
+
+    WHY backwards-compat keys are preserved:
+    - is_ml_role and is_ops_role are derived from the detected domain name so that
+      any downstream code still referencing these keys continues to work without changes.
     """
+    # ── Domain calibration ────────────────────────────────────────────────────
+    calibration = get_calibration(screening_input.role_type)
+
     # ── Supervision language ──────────────────────────────────────────────────
     SUPERVISION_PATTERNS = [
         "assisted", "under supervision", "as directed", "participated in",
@@ -301,47 +359,31 @@ def _compute_deterministic_signals(
     else:
         supervision_pct = 0.0
 
-    # ── Production deployment (ML/DS roles only) ──────────────────────────────
-    role_type_lower = screening_input.role_type.lower()
-    is_ml_role = any(
-        kw in role_type_lower
-        for kw in ["data", "ml", "machine learning", "data science", "analytics", "ai"]
-    )
-    if is_ml_role:
-        PRODUCTION_KEYWORDS = [
-            "deployed", "in production", "model serving", "api endpoint",
-            "real-time inference", "batch prediction", "model monitoring",
-            "live system", "production system", "serving pipeline",
-        ]
-        all_role_text = " ".join(
-            ach.lower()
-            for role in candidate_profile.roles
-            for ach in role.achievements
+    # ── All role bullets as single text (used by multiple checks below) ───────
+    all_achievements_text = " ".join(all_bullets)
+
+    # ── Production deployment (domain-calibrated) ─────────────────────────────
+    # WHY: Previously hardcoded for ML/DS only. Now any domain with
+    # production_check_enabled=True (engineering, devops, cybersecurity, design,
+    # product management) triggers this check. Domains like Marketing, Sales, HR
+    # have production_check_enabled=False — the concept does not apply to them.
+    if calibration.production_check_enabled:
+        has_production_deployment = any(
+            kw in all_achievements_text
+            for kw in calibration.production_check_keywords
         )
-        has_production_deployment = any(kw in all_role_text for kw in PRODUCTION_KEYWORDS)
     else:
-        has_production_deployment = None  # Not applicable
+        has_production_deployment = None  # Not applicable for this domain
 
-    # ── Role type flags ──────────────────────────────────────────────────────
-    # WHY: Computed early so both skill-conflict and domain-keyword blocks can use it.
-    is_ops_role = "operations" in role_type_lower or "supply" in role_type_lower
-
-    # ── Skill-level conflicts ────────────────────────────────────────────────
-    # WHY: Skill conflict detection is SKIPPED for operations/supply-chain roles.
-    # Operations candidates write achievement bullets in outcome language:
-    #   "Reduced shrinkage by 23%", "Improved fill rate to 98%"
-    # They do NOT repeat tool names in every bullet even when genuinely using them.
-    # Checking "Expert: SAP, WMS, Odoo" against outcome bullets ALWAYS produces
-    # false conflicts — causing legitimate YES/STRONG_YES ops candidates to ESCALATE.
-    # Skill-level conflict detection is meaningful for tech roles (SWE, DS/ML) where
-    # engineers name the tools they use in every implementation bullet.
-    all_achievements_text = " ".join(
-        ach.lower()
-        for role in candidate_profile.roles
-        for ach in role.achievements
-    )
+    # ── Skill-level conflicts (domain-calibrated) ─────────────────────────────
+    # WHY: Skill conflict detection is enabled only for tech domains where engineers
+    # name specific tools in every role bullet (Python, Kubernetes, TensorFlow).
+    # For outcome-language domains (Sales, Marketing, HR, Operations, Finance) this
+    # check produces systematic false positives — e.g. "Expert: Salesforce" fails
+    # conflict check because a sales rep writes "closed $2M ARR" not "used Salesforce
+    # to close $2M ARR". calibration.skill_conflict_check_enabled handles this.
     skill_conflicts: list[str] = []
-    if not is_ops_role:
+    if calibration.skill_conflict_check_enabled:
         PROFICIENCY_MARKERS = ["expert", "proficient", "advanced", "expert:", "proficient:"]
         for skill in candidate_profile.skills_stated:
             skill_lower = skill.lower()
@@ -375,18 +417,38 @@ def _compute_deterministic_signals(
                 if not found_in_work:
                     skill_conflicts.append(skill)
 
-    # ── Operations domain keywords ───────────────────────────────────────────
-    if is_ops_role:
-        SUPPLY_CHAIN_KEYWORDS = [
-            "warehouse", "distribution", "logistics", "3pl", "supply chain",
-            "inventory", "fill rate", "on-time delivery", "fmcg", "distributor",
-            "dispatch", "freight", "last mile", "route planning", "shrinkage",
-            "stock", "inbound", "outbound", "fulfilment", "procurement",
-        ]
-        cv_lower = screening_input.cv_text.lower()
-        domain_keyword_count = sum(1 for kw in SUPPLY_CHAIN_KEYWORDS if kw in cv_lower)
-    else:
-        domain_keyword_count = None
+    # ── Domain keyword count (domain-calibrated, applied to all domains) ──────
+    # WHY: Previously only computed for operations/supply-chain roles. Now computed
+    # for every domain using calibrated keyword lists. This enables domain mismatch
+    # detection across all 20 domains, not just operations.
+    cv_lower = screening_input.cv_text.lower()
+    domain_keyword_count = sum(
+        1 for kw in calibration.domain_keywords if kw in cv_lower
+    )
+
+    # ── Hard anchor count ────────────────────────────────────────────────────
+    # WHY: Hard anchors are domain-specific phrases that indicate Tier A or B evidence.
+    # A candidate with zero hard anchors in a domain is highly suspicious — these are
+    # the phrases that real practitioners use naturally. Counting them in role bullets
+    # (not the full CV) prevents keyword-stuffing in skills/summary sections.
+    hard_anchor_count = sum(
+        1 for pattern in calibration.hard_anchor_patterns
+        if pattern in all_achievements_text
+    )
+
+    # ── Tier C trap count ────────────────────────────────────────────────────
+    # WHY: These are the generic phrases that look professional but carry no signal.
+    # A high count (>3) is a yellow flag — the candidate writes well but says nothing.
+    # Counted in full CV text (not just bullets) because they often appear in summaries.
+    tier_c_trap_count = sum(
+        1 for trap in calibration.tier_c_traps if trap in cv_lower
+    )
+
+    # ── Backwards-compatible role type flags ─────────────────────────────────
+    # WHY: Preserving these keys so any downstream code referencing is_ml_role or
+    # is_ops_role continues to work. Derived from detected domain name.
+    is_ml_role = "data science" in calibration.name.lower() or "ml" in calibration.name.lower()
+    is_ops_role = "operations" in calibration.name.lower() or "supply chain" in calibration.name.lower()
 
     return {
         "supervision_pct": supervision_pct,
@@ -394,6 +456,13 @@ def _compute_deterministic_signals(
         "has_production_deployment": has_production_deployment,
         "skill_conflicts": skill_conflicts,
         "domain_keyword_count": domain_keyword_count,
+        "hard_anchor_count": hard_anchor_count,
+        "tier_c_trap_count": tier_c_trap_count,
+        "detected_domain": calibration.name,
+        "minimum_domain_keyword_count": calibration.minimum_domain_keyword_count,
+        "hard_cap_alien_domains": calibration.hard_cap_alien_domains,
+        "tier_c_traps_list": calibration.tier_c_traps,
+        # Backwards-compat keys — derived from domain calibration
         "is_ml_role": is_ml_role,
         "is_ops_role": is_ops_role,
     }
@@ -404,29 +473,38 @@ def _render_deterministic_facts(signals: dict) -> str:
     WHY: Formats pre-computed signals as a structured FACTS block for the LLM.
     The LLM must treat these as ground truth — never re-derive them.
     This eliminates the 30% miss rate from LLM-based detection.
+
+    Now includes domain calibration signals (detected_domain, hard_anchor_count,
+    tier_c_trap_count) and the hard_cap_alien_domains list for domain mismatch
+    detection across all 20 registered domains.
     """
     lines = [
         "--- DETERMINISTIC PRE-COMPUTED FACTS (ground truth — do NOT re-derive) ---"
     ]
 
-    # Supervision language
+    # ── Domain calibration ────────────────────────────────────────────────────
+    detected_domain = signals.get("detected_domain", "General / Unknown")
+    min_kw = signals.get("minimum_domain_keyword_count", 2)
+    lines.append(f"Detected domain: {detected_domain}")
+
+    # ── Supervision language ──────────────────────────────────────────────────
     pct = signals["supervision_pct"]
     n = signals["supervision_bullet_count"]
     pct_str = f"{pct:.0%}"
     flag = " ← FLAG: >70% threshold exceeded" if pct > 0.70 else ""
     lines.append(f"Supervision language: {pct_str} of {n} role bullets use subordinate language{flag}")
 
-    # Production deployment
+    # ── Production deployment ─────────────────────────────────────────────────
     if signals["has_production_deployment"] is not None:
         if signals["has_production_deployment"]:
             lines.append("Production deployment: DETECTED in role work bullets")
         else:
             lines.append(
                 "Production deployment: NOT DETECTED in any role work bullet "
-                "← FLAG: candidate has never deployed to production (critical for senior ML/DS role)"
+                f"← FLAG: candidate has never deployed to production (critical for senior {detected_domain} role)"
             )
 
-    # Skill conflicts
+    # ── Skill conflicts ───────────────────────────────────────────────────────
     conflicts = signals["skill_conflicts"]
     if conflicts:
         lines.append(
@@ -442,16 +520,47 @@ def _render_deterministic_facts(signals: dict) -> str:
     else:
         lines.append("Skill-level conflicts: None detected")
 
-    # Domain keywords (operations roles)
-    if signals["domain_keyword_count"] is not None:
-        n_kw = signals["domain_keyword_count"]
-        if n_kw == 0:
-            lines.append(
-                "Supply-chain/FMCG domain keywords: 0 found in entire CV "
-                "← FLAG: candidate has NO supply-chain vocabulary anywhere in their history"
-            )
-        else:
-            lines.append(f"Supply-chain/FMCG domain keywords: {n_kw} found in CV")
+    # ── Domain keywords ───────────────────────────────────────────────────────
+    n_kw = signals["domain_keyword_count"]
+    if n_kw == 0:
+        lines.append(
+            f"{detected_domain} domain keywords: 0 found in entire CV "
+            f"← FLAG: candidate has NO {detected_domain} vocabulary anywhere in their history"
+        )
+    elif n_kw < min_kw:
+        lines.append(
+            f"{detected_domain} domain keywords: {n_kw} found (minimum threshold: {min_kw}) "
+            f"← LOW: candidate has limited {detected_domain} vocabulary"
+        )
+    else:
+        lines.append(f"{detected_domain} domain keywords: {n_kw} found in CV")
+
+    # ── Hard anchor count ─────────────────────────────────────────────────────
+    hard_anchor_count = signals.get("hard_anchor_count", 0)
+    if hard_anchor_count == 0:
+        lines.append(
+            f"Hard anchor signals found: 0 "
+            f"← FLAG: no specific {detected_domain} practitioner phrases detected in role bullets"
+        )
+    else:
+        lines.append(f"Hard anchor signals found: {hard_anchor_count}")
+
+    # ── Tier C trap count ─────────────────────────────────────────────────────
+    tier_c_trap_count = signals.get("tier_c_trap_count", 0)
+    if tier_c_trap_count > 3:
+        lines.append(
+            f"Tier-C trap phrases found: {tier_c_trap_count} "
+            f"← YELLOW FLAG: high proportion of generic/unverifiable language for {detected_domain}"
+        )
+    else:
+        lines.append(f"Tier-C trap phrases found: {tier_c_trap_count}")
+
+    # ── Hard cap alien domains ─────────────────────────────────────────────────
+    alien_domains = signals.get("hard_cap_alien_domains", [])
+    if alien_domains:
+        lines.append(f"Non-transferable backgrounds for {detected_domain} (hard-cap triggers):")
+        for ad in alien_domains:
+            lines.append(f"  • {ad}")
 
     lines.append("--- END PRE-COMPUTED FACTS ---")
     return "\n".join(lines)

@@ -4,6 +4,74 @@ This document traces the design evolution from the first naive approach to the S
 
 ---
 
+## Phase 4 — Full Domain Calibration System (2026-09-03)
+
+### Trigger
+Batch 4 (Senior Digital Marketing Manager, n=33) produced 42% accuracy vs 61% baseline — a 19pp loss.
+Root cause: SCREEN had domain-aware logic for only 3 domains (Engineering, Data Science,
+Operations/Supply Chain) hardcoded in `extract_evidence.py`. All other domains received generic
+treatment with no domain-appropriate silence flags, no hard anchor detection, and no Tier C trap
+awareness. Marketing candidates could write "drove growth" and "increased brand awareness" with no
+metrics and receive the same treatment as a candidate who cited ROAS, CAC, and conversion rates.
+
+### Solution
+
+**New module: `screen/core/domain_calibration.py`**
+A fully typed domain registry covering **20 hiring domains**:
+
+| # | Domain | prod_check | skill_conflict |
+|---|---|---|---|
+| 1 | Data Science / ML / AI | ✓ | ✓ |
+| 2 | DevOps / Platform Engineering / SRE | ✓ | ✓ |
+| 3 | Cybersecurity / Information Security | ✓ | ✓ |
+| 4 | Software Engineering | ✓ | ✓ |
+| 5 | Digital Marketing | ✗ | ✗ |
+| 6 | Sales / Business Development | ✗ | ✗ |
+| 7 | Operations / Supply Chain / Logistics | ✗ | ✗ |
+| 8 | Finance / Accounting / FP&A | ✗ | ✗ |
+| 9 | Product Management | ✓ | ✗ |
+| 10 | Customer Success / Support / CX | ✗ | ✗ |
+| 11 | HR / People Operations / Talent | ✗ | ✗ |
+| 12 | Design (UX / UI / Brand) | ✓ | ✗ |
+| 13 | Legal / Compliance / Risk | ✗ | ✗ |
+| 14 | Project / Programme Management | ✗ | ✗ |
+| 15 | Communications / PR / Content | ✗ | ✗ |
+| 16 | Strategy / Consulting / Business Analysis | ✗ | ✗ |
+| 17 | Research & Development | ✗ | ✗ |
+| 18 | Healthcare / Clinical / Medical | ✗ | ✗ |
+| 19 | Education / Learning & Development | ✗ | ✗ |
+| 20 | Executive / General Management / C-Suite | ✗ | ✗ |
+| — | General / Unknown (fallback) | ✗ | ✗ |
+
+Each domain carries: 15+ `domain_keywords`, 6+ `hard_anchor_patterns`, 5+ `tier_c_traps`,
+`hard_cap_alien_domains`, and flags controlling which deterministic checks apply.
+
+**Refactored: `extract_evidence.py`**
+- `_compute_deterministic_signals()` now calls `get_calibration(role_type)` at the top
+  and derives all domain-specific checks from the registry (production keywords, skill
+  conflict flag, domain keyword list)
+- Two new signals injected into LLM facts: `hard_anchor_count` (specific practitioner
+  phrases found in role bullets) and `tier_c_trap_count` (empty claim patterns found in full CV)
+- `detected_domain` injected as a fact so LLM receives the domain classification explicitly
+- System prompt updated: operations-specific mismatch section replaced with a generalised
+  domain calibration section covering all 20 domains with domain-specific silence patterns
+
+**Refactored: `analyze_fit.py`**
+- `_build_domain_calibration_block()` builds a per-screening prompt injection with
+  detected domain, tier_c_traps (cap 8), and hard_cap_alien_domains
+- P0 hard cap section generalised from operations-only to all domains
+- Domain-specific scoring anchors added for 15 major domain families
+- `_call_analyze_fit_llm()` accepts and injects the domain calibration block
+
+### Expected impact
+- Marketing accuracy: 42% → target 75%+ (Tier C traps now explicitly identified;
+  ROAS/CAC/conversion absence now flagged as silence)
+- All new domains (Legal, HR, Finance, Design, etc.) now receive calibrated treatment
+  rather than generic screening
+- Engineering/DS/Ops: no regression expected (calibrations are identical to previous logic)
+
+---
+
 ## The Problem with Naive AI Screening
 
 The simplest possible AI screening implementation is this:
