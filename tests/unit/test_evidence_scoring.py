@@ -73,10 +73,10 @@ class TestClaimWeights:
         claim = _make_claim("B")
         assert claim.confidence_weight == pytest.approx(0.7)
 
-    def test_tier_c_claim_has_weight_0_3(self) -> None:
-        """Tier C (VAGUE) claims have confidence_weight=0.3."""
+    def test_tier_c_claim_has_weight_0_1(self) -> None:
+        """Tier C (VAGUE) claims have confidence_weight=0.1 — minimal floor signal only."""
         claim = _make_claim("C")
-        assert claim.confidence_weight == pytest.approx(0.3)
+        assert claim.confidence_weight == pytest.approx(0.1)
 
 
 # ── total_weighted_score Property Tests ───────────────────────────────────────
@@ -88,13 +88,13 @@ class TestTotalWeightedScore:
     """
 
     def test_total_weighted_score_sums_all_claims(self) -> None:
-        """Three claims A(1.0) + B(0.7) + C(0.3) sum to exactly 2.0."""
+        """Three claims A(1.0) + B(0.7) + C(0.1) sum to exactly 1.8."""
         bundle = _make_bundle(claims=[
             _make_claim("A"),
             _make_claim("B"),
             _make_claim("C"),
         ])
-        assert bundle.total_weighted_score == pytest.approx(2.0)
+        assert bundle.total_weighted_score == pytest.approx(1.8)
 
     def test_contradicted_claim_reduces_total_score(self) -> None:
         """Adding a Tier D claim (weight -1.5) pulls the total score down."""

@@ -278,8 +278,11 @@ class TestCalibrationFlags:
         assert cal.skill_conflict_check_enabled is True
 
     def test_marketing_skill_conflict_disabled(self):
-        # WHY: Marketers write "grew organic traffic by 45%", not "used Google Analytics
-        # to grow traffic". Skill conflict check would wrongly penalise them.
+        # WHY: Disabled. Senior marketers write outcome-language bullets ("grew traffic
+        # 45%") without naming every tool in every line. The conflict check produces
+        # systematic false positives: "Expert: GA4" + outcome bullets → wrongly ESCALATED.
+        # Domain calibration catches weak candidates via 0 hard anchors + high Tier-C
+        # trap count in the deterministic facts block instead.
         cal = get_calibration("Marketing Manager")
         assert cal.skill_conflict_check_enabled is False
 

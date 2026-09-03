@@ -30,10 +30,19 @@ class SignalTier(StrEnum):
 
 
 # Weight map — deterministic, not LLM-determined
+#
+# WHY Tier C = 0.1 (not 0.3):
+# Tier C claims are "vague and unverifiable" — they carry minimal confirmatory signal.
+# The normalization formula (per_claim + 1.5) / 2.5 anchors at D=0 and A=1. With
+# C=0.3, pure Tier C evidence normalises to 0.72 → blends into borderline YES territory.
+# With C=0.1, pure Tier C evidence normalises to 0.64 — below the YES threshold (0.65)
+# with neutral fit, preventing vague-claim inflation. The non-zero floor (vs 0.0) avoids
+# catastrophically deflating strong candidates whose minor achievements get reclassified
+# from B to C by the 2-element minimum rule for Tier B.
 SIGNAL_WEIGHTS: dict[str, float] = {
     "A": 1.0,
     "B": 0.7,
-    "C": 0.3,
+    "C": 0.1,   # Vague claims contribute minimal positive signal (floor effect only)
     "D": -1.5,
 }
 

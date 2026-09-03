@@ -48,6 +48,17 @@ class ScreeningInput(BaseModel):
         ...,
         description="Broad role category — used for role-specific silence flag detection.",
     )
+    role_description: Optional[str] = Field(
+        default=None,
+        description=(
+            "Free-form role title used for fine-grained domain calibration "
+            "(e.g. 'Senior Digital Marketing Manager', 'DevOps Engineer'). "
+            "When set, domain calibration (domain keywords, hard anchors, skill conflict check) "
+            "is driven by this string instead of the broad role_type. "
+            "If absent, role_type is used as a fallback."
+        ),
+        max_length=128,
+    )
     batch_id: Optional[str] = Field(
         default=None,
         description="Groups candidates for the same role. Set to enable comparative ranking.",

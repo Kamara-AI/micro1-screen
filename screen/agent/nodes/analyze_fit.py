@@ -399,7 +399,12 @@ def analyze_fit_node(state: ScreeningState) -> dict[str, Any]:
 
     profile_text = _render_profile_summary_for_llm(candidate_profile)
     evidence_text = _render_evidence_for_llm(evidence_bundle)
-    domain_block = _build_domain_calibration_block(screening_input.role_type)
+    # WHY: Use role_description for domain calibration when available — it carries
+    # the fine-grained role title (e.g. "Senior Digital Marketing Manager") needed to
+    # select the correct domain. role_type is the broad 6-way category; role_description
+    # is the recruiter-supplied free-form title that maps to a specific calibration.
+    domain_str = screening_input.role_description or screening_input.role_type
+    domain_block = _build_domain_calibration_block(domain_str)
 
     try:
         fit_analysis = _call_analyze_fit_llm(
@@ -408,7 +413,7 @@ def analyze_fit_node(state: ScreeningState) -> dict[str, Any]:
             evidence_summary=evidence_text,
             job_description=screening_input.job_description,
             role_seniority=screening_input.role_seniority,
-            role_type=screening_input.role_type,
+            role_type=domain_str,
             domain_calibration_block=domain_block,
         )
     except Exception as exc:

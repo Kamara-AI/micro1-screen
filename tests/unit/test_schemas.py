@@ -163,10 +163,13 @@ class TestSignalWeightsMap:
     """
 
     def test_signal_weights_map_has_correct_values(self) -> None:
-        """SIGNAL_WEIGHTS must contain A=1.0, B=0.7, C=0.3, D=-1.5."""
+        """SIGNAL_WEIGHTS must contain A=1.0, B=0.7, C=0.1, D=-1.5.
+        WHY C=0.1: vague claims carry minimal positive signal (floor effect only).
+        They should not move a candidate upward meaningfully — only prevent a
+        full zero-contribution floor when the candidate has some effort visible."""
         assert SIGNAL_WEIGHTS["A"] == pytest.approx(1.0)
         assert SIGNAL_WEIGHTS["B"] == pytest.approx(0.7)
-        assert SIGNAL_WEIGHTS["C"] == pytest.approx(0.3)
+        assert SIGNAL_WEIGHTS["C"] == pytest.approx(0.1)
         assert SIGNAL_WEIGHTS["D"] == pytest.approx(-1.5)
 
     def test_signal_weights_map_has_exactly_four_tiers(self) -> None:
@@ -174,7 +177,7 @@ class TestSignalWeightsMap:
         assert set(SIGNAL_WEIGHTS.keys()) == {"A", "B", "C", "D"}
 
     def test_tier_d_is_the_only_negative_weight(self) -> None:
-        """Only Tier D has a negative weight — all others are positive."""
+        """Only Tier D has a negative weight — C is zero (neutral), not negative."""
         negative_tiers = [k for k, v in SIGNAL_WEIGHTS.items() if v < 0]
         assert negative_tiers == ["D"]
 

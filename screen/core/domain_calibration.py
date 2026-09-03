@@ -363,9 +363,15 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
         # via hard_anchor_patterns and domain silence flags instead.
         production_check_enabled=False,
         production_check_keywords=[],
-        # WHY: Marketers write "grew organic traffic by 45%" not "used Google Analytics
-        # to grow organic traffic by 45%". Checking tool mentions against role bullets
-        # produces systematic false conflicts for this domain.
+        # WHY: Disabled. Marketing is an outcome-language domain — senior practitioners
+        # legitimately write "managed KES 5M across Google and Meta" without naming tools
+        # in every bullet. The skill conflict check produces systematic false positives:
+        # a genuine expert who writes "Expert: GA4" and outcome bullets like "grew organic
+        # traffic 45%" is correctly classified as a senior marketer but would be falsely
+        # ESCALATED because "ga4" doesn't appear in their achievement bullets.
+        # The f27 skill conflict case is instead caught via the LLM's contradiction
+        # reasoning when the deterministic facts block highlights 0 hard anchors and
+        # high Tier-C trap count, combined with the explicit "Expert:" skill claims.
         skill_conflict_check_enabled=False,
         domain_keywords=[
             "roas", "cac", "cpm", "ctr", "cpc", "ltv", "conversion rate", "funnel",

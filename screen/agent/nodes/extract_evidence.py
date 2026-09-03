@@ -6,7 +6,7 @@ we extract structured evidence with quality tiers attached to each claim.
 The distinction:
   - ATS: "Python mentioned 5 times → +5 points"
   - SCREEN: "Led Python backend serving 1M+ requests/day (Tier A, weight 1.0);
-             'Proficient in Python' on skills list with no demonstrated projects (Tier C, weight 0.3)"
+             'Proficient in Python' on skills list with no demonstrated projects (Tier C, weight 0.1)"
 
 The evidence quality tier (A/B/C/D) is what makes the downstream confidence
 calculation defensible. A candidate with 3 Tier A claims outscores one with
@@ -45,17 +45,39 @@ and extract an EvidenceBundle — structured evidence with quality tiers.
 SIGNAL TIER DEFINITIONS (assign these to every Claim):
   A (weight: 1.0)  — VERIFIED: Publicly cross-referenceable (GitHub repo URL, company still operating,
                      award with public record, named product). The claim CAN be checked independently.
-  B (weight: 0.7)  — STATED: Specific, plausible, internally consistent, no contradictions.
-                     Not externally verifiable but well-evidenced (named project with team + outcome).
-  C (weight: 0.3)  — VAGUE: Generic language. "Worked on projects", "collaborated with teams",
-                     "responsible for", "helped with" — no specifics, no numbers, no outcomes.
+
+  B (weight: 0.7)  — STATED: A specific claim that names AT LEAST TWO of the following:
+                     (1) the employer / client / product where the work happened
+                     (2) a specific tool, platform, or technology actually used to do the work
+                     (3) a quantified outcome with a clear before→after or against a benchmark
+                         ("from 8% to 23%", "against a 280% target", not just "by 45%")
+                     (4) a named collaborator, team size, or reporting structure
+
+                     TIER B EXAMPLES (2+ named elements):
+                       "Managed KES 5M Google Ads budget at Safaricom, achieving 340% ROAS" ✓ (tool + metric)
+                       "Led 8-person team to migrate 3 microservices from monolith to Kubernetes" ✓ (tool + team)
+                       "Built HubSpot email sequences that moved MQL→SQL rate from 8% to 23%" ✓ (tool + baseline→result)
+
+                     NOT TIER B — assign Tier C instead:
+                       "Grew organic traffic by 45%" ✗ — one percentage, no named tool, no baseline, no client
+                       "Increased revenue by 30%" ✗ — percentage only, no context
+                       "Managed social media accounts" ✗ — no metrics, no named platform specifics
+                       "Improved team efficiency" ✗ — no tool, no metric, no scope
+
+  C (weight: 0.1)  — VAGUE: Generic or single-element claims. No named tools, no named employers in context,
+                     no baselines for metrics. Includes: outcome-only language ("drove growth",
+                     "improved performance", "increased by X%" with no named tool or client context),
+                     responsibility descriptions without specifics ("managed campaigns", "oversaw strategy"),
+                     generic collaboration ("worked with cross-functional teams").
+                     A single number without context (who, what tool, what baseline) is STILL Tier C.
+
   D (weight: -1.5) — CONTRADICTED: This claim conflicts with another claim in the CV
                      (impossible dates, scope that exceeds company size, expert claim with no application).
 
 SIGNAL_WEIGHTS map (you MUST assign confidence_weight from this map based on tier):
   "A" -> 1.0
   "B" -> 0.7
-  "C" -> 0.3
+  "C" -> 0.1
   "D" -> -1.5
 
 WHAT TO EXTRACT:
@@ -337,7 +359,12 @@ def _compute_deterministic_signals(
       any downstream code still referencing these keys continues to work without changes.
     """
     # ── Domain calibration ────────────────────────────────────────────────────
-    calibration = get_calibration(screening_input.role_type)
+    # WHY: role_description (free-form title) is preferred over broad role_type for
+    # domain detection. This allows fine-grained calibration (e.g. "Senior Digital
+    # Marketing Manager" → Digital Marketing) without changing the broad role_type
+    # enum used by other parts of the pipeline.
+    domain_str = screening_input.role_description or screening_input.role_type
+    calibration = get_calibration(domain_str)
 
     # ── Supervision language ──────────────────────────────────────────────────
     SUPERVISION_PATTERNS = [

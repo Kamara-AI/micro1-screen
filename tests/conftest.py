@@ -7,10 +7,11 @@ HOW: All fixtures use pytest's function scope by default so each test gets
 a fresh object. Models are frozen (immutable) so there is no risk of
 cross-test contamination from shared mutable state.
 
-IMPORTANT: screen.core.config.Settings() runs at *module import time* and
-requires GEMINI_API_KEY as a mandatory env var. We must set it in os.environ
-HERE, at conftest.py module level, BEFORE any `screen.*` import happens.
-The monkeypatch autouse fixture keeps it set for each test function as well.
+IMPORTANT: screen.core.config.Settings() runs at *module import time*. All API
+keys default to "" (no mandatory key), but we set a sentinel value for GEMINI_API_KEY
+here so any code path that checks for a non-empty key gets a predictable test value.
+Set BEFORE any `screen.*` import — pydantic-settings reads os.environ at class
+instantiation time. The monkeypatch autouse fixture keeps it set for each test function.
 """
 
 import os
@@ -179,8 +180,8 @@ def sample_evidence_bundle_weak() -> EvidenceBundle:
     WHY: Poor-quality evidence — all Tier C claims with one moderate contradiction.
     Used when testing paths that should produce NO or AMBIGUOUS verdicts.
 
-    HOW: Three Tier C claims (0.3 each) and one moderate contradiction.
-    total_weighted_score = 0.3 + 0.3 + 0.3 = 0.9
+    HOW: Three Tier C claims (0.1 each) and one moderate contradiction.
+    total_weighted_score = 0.1 + 0.1 + 0.1 = 0.3
     silence_penalty = 0.15 (one medium-severity silence flag)
     """
     return EvidenceBundle(
@@ -189,21 +190,21 @@ def sample_evidence_bundle_weak() -> EvidenceBundle:
             Claim(
                 text="Worked on backend projects",
                 tier="C",
-                confidence_weight=0.3,
+                confidence_weight=0.1,
                 source_location="Role at Unknown Co, bullet 1",
                 is_verifiable_externally=False,
             ),
             Claim(
                 text="Managed various engineering tasks",
                 tier="C",
-                confidence_weight=0.3,
+                confidence_weight=0.1,
                 source_location="Role at Unknown Co, bullet 2",
                 is_verifiable_externally=False,
             ),
             Claim(
                 text="Led team on unspecified initiatives",
                 tier="C",
-                confidence_weight=0.3,
+                confidence_weight=0.1,
                 source_location="Role at Unknown Co, bullet 3",
                 is_verifiable_externally=False,
             ),

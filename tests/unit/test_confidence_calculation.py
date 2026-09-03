@@ -11,9 +11,10 @@ Where:
   evidence_score = (total_weighted_score - silence_penalty) / normaliser
   fit_score      = FitAnalysis.composite_fit_score  (already 0.0–1.0)
 
-Because the make_decision node is not yet implemented as a standalone node,
-we test the formula directly as a pure function defined in this module.
-This ensures the formula contract is locked down before the node is built.
+The make_decision node is fully implemented in screen/agent/nodes/make_decision.py.
+We test the formula here as a pure function to lock down the mathematical contract
+independently of LLM calls, state wiring, and pipeline overhead. The formula in
+_calculate_confidence() below must stay in sync with make_decision_node logic.
 """
 
 import pytest
@@ -124,20 +125,30 @@ class TestConfidenceFormula:
 
     def test_many_vague_claims_do_not_produce_high_confidence(self) -> None:
         """
-        Ten Tier-C claims (score 3.0) with mediocre fit must not exceed STRONG_YES
-        threshold (80%). Quantity of vague claims must not substitute for quality.
-        raw=3.0, per_claim=0.3, normalised=(0.3+1.5)/2.5=0.72, evidence=0.72.
-        fit=0.5. confidence=(0.72*0.6+0.5*0.4)*100=63.2%.
+        Ten Tier-C claims (weight=0.1 each) with mediocre fit must not exceed the
+        YES threshold (65%). Quantity of vague claims must not substitute for quality.
+
+        WHY: Tier C = 0.1 (vague claims carry minimal floor signal). Pure Tier-C
+        evidence normalises to: raw=1.0, per_claim=0.1, (0.1+1.5)/2.5=0.64 —
+        below the 65% YES threshold with neutral fit.
+
+        raw=1.0, per_claim=0.1, normalised=0.64, evidence=0.64.
+        fit=0.5. confidence=(0.64*0.6+0.5*0.4)*100=58.4%.
         """
         bundle = _make_bundle(claims=[_make_claim("C") for _ in range(10)])
         fit = _make_fit(technical=0.5, experience=0.5, learning=0.5, builder=0.5)
         confidence = _calculate_confidence(bundle, fit)
-        assert confidence < 80.0, f"Expected <80%, got {confidence}%"
+        # Pure Tier-C must land in AMBIGUOUS (< 65%), not YES
+        assert confidence < 65.0, f"Expected <65%, got {confidence}%"
+        # But must be above NO threshold (> 25%) — neutral, not negative
+        assert confidence >= 25.0, f"Expected >=25%, got {confidence}%"
 
     def test_single_verified_claim_outweighs_three_vague_claims(self) -> None:
         """
         One Tier-A claim (weight 1.0) must produce a higher evidence score
-        than three Tier-C claims (3 × 0.3 = 0.9). Quality beats quantity.
+        than three Tier-C claims (3 × 0.1 = 0.3). Quality beats quantity.
+        Tier A alone: per_claim=1.0, evidence=1.0, ~80% confidence.
+        3×Tier C: per_claim=0.1, normalised=0.64, ~58% confidence.
         """
         bundle_a = _make_bundle(claims=[_make_claim("A")])
         bundle_c = _make_bundle(claims=[_make_claim("C"), _make_claim("C"), _make_claim("C")])
@@ -209,22 +220,24 @@ class TestConfidenceFormula:
 
     def test_confidence_formula_is_60_40_blend_of_evidence_and_fit(self) -> None:
         """
-        With 3 Tier-C claims: raw=0.9, per_claim=0.3, normalised=(0.3+1.5)/2.5=0.72,
-        evidence_score=0.72. fit=0.5 (all dims at 0.5).
-          confidence = (0.72 * 0.60 + 0.5 * 0.40) * 100 = (0.432 + 0.20) * 100 = 63.2%
+        With 3 Tier-C claims (weight=0.1 each): raw=0.3, per_claim=0.1,
+        normalised=(0.1+1.5)/2.5=0.64, evidence_score=0.64. fit=0.5 (all dims at 0.5).
+          confidence = (0.64 * 0.60 + 0.5 * 0.40) * 100 = (0.384 + 0.20) * 100 = 58.4%
 
         This test locks down the exact 60/40 blend ratio using the per-claim normalisation.
+        Tier C = 0.1 (vague claims carry minimal floor signal — slightly above zero claims
+        baseline of 0.60 but well below YES threshold of 65%).
         """
-        # 3 Tier-C claims: raw=0.9, per_claim=0.3, normalised=0.72
+        # 3 Tier-C claims: raw=0.3, per_claim=0.1, normalised=0.64
         bundle = _make_bundle(claims=[_make_claim("C"), _make_claim("C"), _make_claim("C")])
         # fit: 0.5*0.35 + 0.5*0.25 + 0.5*0.25 + 0.5*0.15 = 0.5 composite
         fit = _make_fit(technical=0.5, experience=0.5, learning=0.5, builder=0.5)
 
         confidence = _calculate_confidence(bundle, fit)
 
-        # per_claim = 0.3, normalised = (0.3 + 1.5) / 2.5 = 0.72
-        # confidence = (0.72 * 0.60 + 0.5 * 0.40) * 100 = 63.2
-        expected = round((0.72 * 0.60 + 0.5 * 0.40) * 100, 1)
+        # per_claim = 0.1, normalised = (0.1 + 1.5) / 2.5 = 0.64
+        # confidence = (0.64 * 0.60 + 0.5 * 0.40) * 100 = 58.4
+        expected = round((0.64 * 0.60 + 0.5 * 0.40) * 100, 1)
         assert confidence == pytest.approx(expected, abs=0.1)
 
     def test_formula_is_deterministic_same_inputs_same_output(self) -> None:
