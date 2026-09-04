@@ -104,33 +104,27 @@ async def _run_screen_candidate(candidate_dict: dict) -> Optional[dict]:
             "error": f"SCREEN import failed: {exc}",
         }
 
-    def _invoke() -> dict:
-        """
-        WHY: The synchronous LangGraph invoke call lives in a nested function
-        so asyncio.to_thread can run it without the runner knowing about the
-        threading details. The try/except ensures a single candidate failure
-        does not abort the whole evaluation run.
-        """
-        start = time.monotonic()
+    def _run_once() -> tuple[dict, object]:
+        """Run one pipeline pass. Returns (result_dict, decision_object)."""
         state = initial_state(candidate_input)
-        try:
-            result = screening_graph.invoke(state)
-            elapsed_ms = int((time.monotonic() - start) * 1000)
-
-            decision = result.get("decision")
-            if decision is None:
-                return {
+        result = screening_graph.invoke(state)
+        decision = result.get("decision")
+        if decision is None:
+            return (
+                {
                     "candidate_id": candidate_input.candidate_id,
                     "verdict": "UNKNOWN",
                     "confidence_pct": 0.0,
                     "cost_usd": result.get("total_cost_usd", 0.0),
-                    "processing_time_ms": elapsed_ms,
+                    "processing_time_ms": 0,
                     "escalation_category": None,
                     "primary_evidence": [],
                     "error": "Pipeline completed but decision is None",
-                }
-
-            return {
+                },
+                None,
+            )
+        return (
+            {
                 "candidate_id": candidate_input.candidate_id,
                 "verdict": decision.verdict,
                 "confidence_pct": decision.confidence_pct,
@@ -139,15 +133,83 @@ async def _run_screen_candidate(candidate_dict: dict) -> Optional[dict]:
                 "escalation_category": decision.escalation_category,
                 "primary_evidence": list(decision.primary_evidence),
                 "error": None,
-            }
+            },
+            decision,
+        )
+
+    def _invoke() -> dict:
+        """
+        WHY: Ensemble voting is applied to candidates in the 45–92% confidence band.
+        Previously the upper bound was 75%, which left STRONG_YES/YES boundary
+        candidates (75–92%) on single-run scoring — LLM temperature fluctuations
+        of ±5pp flipped their verdict between YES and STRONG_YES every run.
+
+        Extending to 92% captures all threshold-adjacent verdicts:
+          - 45–65%: AMBIGUOUS/YES boundary
+          - 65–75%: YES borderline
+          - 75–92%: YES/STRONG_YES boundary (new — was previously unprotected)
+
+        Candidates outside this band (hard rejects at 100%, clear STRONG_NO <45%)
+        are deterministic — ensemble adds no value and wastes cost.
+        """
+        # WHY: Ensemble band now spans 45–92% to cover the YES/STRONG_YES boundary.
+        ENSEMBLE_LOW = 45.0
+        ENSEMBLE_HIGH = 92.0
+        ENSEMBLE_RUNS = 3
+
+        start = time.monotonic()
+        try:
+            r1, d1 = _run_once()
+            if d1 is None or r1["error"]:
+                r1["processing_time_ms"] = int((time.monotonic() - start) * 1000)
+                return r1
+
+            conf1 = d1.confidence_pct
+
+            # Outside ensemble band — single run is reliable
+            if conf1 < ENSEMBLE_LOW or conf1 >= ENSEMBLE_HIGH:
+                r1["processing_time_ms"] = int((time.monotonic() - start) * 1000)
+                return r1
+
+            # Inside band — run 2 more times, take majority verdict
+            extra_results = []
+            for _ in range(ENSEMBLE_RUNS - 1):
+                try:
+                    r_extra, d_extra = _run_once()
+                    if d_extra is not None and not r_extra["error"]:
+                        extra_results.append((r_extra, d_extra))
+                except Exception:
+                    pass  # Partial ensemble failure — use what we have
+
+            all_pairs = [(r1, d1)] + extra_results
+            verdicts = [r["verdict"] for r, _ in all_pairs]
+
+            from collections import Counter
+            counter = Counter(verdicts)
+            top_verdict, top_count = counter.most_common(1)[0]
+
+            if top_count >= 2:
+                # Majority found — pick highest-confidence run with that verdict
+                # WHY: explicit key= prevents dict comparison when confidence_pct values
+                # are tied — default tuple sort falls through to dict.__lt__ which fails.
+                majority = [(r["confidence_pct"], r) for r, _ in all_pairs if r["verdict"] == top_verdict]
+                majority.sort(key=lambda x: x[0], reverse=True)
+                winner = majority[0][1]
+            else:
+                # No majority — pick median confidence run
+                sorted_by_conf = sorted(all_pairs, key=lambda x: x[0]["confidence_pct"])
+                winner = sorted_by_conf[len(sorted_by_conf) // 2][0]
+
+            winner["processing_time_ms"] = int((time.monotonic() - start) * 1000)
+            return winner
+
         except Exception as exc:
-            elapsed_ms = int((time.monotonic() - start) * 1000)
             return {
                 "candidate_id": candidate_input.candidate_id,
                 "verdict": "UNKNOWN",
                 "confidence_pct": 0.0,
                 "cost_usd": 0.0,
-                "processing_time_ms": elapsed_ms,
+                "processing_time_ms": int((time.monotonic() - start) * 1000),
                 "escalation_category": None,
                 "primary_evidence": [],
                 "error": str(exc),

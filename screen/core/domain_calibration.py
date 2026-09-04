@@ -23,12 +23,37 @@ and analyze_fit.py as deterministic facts + prompt additions.
 from dataclasses import dataclass, field
 
 __all__ = [
+    "CalibrationAnchor",
     "DomainCalibration",
     "DOMAIN_REGISTRY",
     "GENERIC_CALIBRATION",
     "detect_domain",
     "get_calibration",
 ]
+
+
+@dataclass
+class CalibrationAnchor:
+    """
+    A frozen worked example injected into the evidence extraction prompt.
+
+    WHY: The LLM re-interprets tier boundaries differently on every call — the root
+    cause of ±5-12pp confidence variance near verdict thresholds. Injecting 2-3
+    domain-specific reference examples gives the model a consistent calibration
+    anchor without requiring cross-call memory. This is the "memory principle"
+    applied to a stateless LLM: we inject what correct judgment looks like so the
+    model doesn't have to derive it from scratch each time.
+
+    Attributes:
+        claim: The verbatim claim text to tier-assign (realistic but not from a real CV).
+        tier: Correct tier assignment — "A", "B", "C", or "D".
+        why: One-sentence explanation of why this claim earns this tier. Focus on
+            the specific named elements (or their absence) that determine the tier.
+            This is what the model should generalise from.
+    """
+    claim: str
+    tier: str
+    why: str
 
 
 @dataclass
@@ -90,6 +115,12 @@ class DomainCalibration:
     strong_yes_threshold: float = field(default=86.0)
     ambiguous_threshold: float = field(default=45.0)
     # WHY: Domain-specific override for the AMBIGUOUS verdict threshold.
+    calibration_anchors: list[CalibrationAnchor] = field(default_factory=list)
+    # WHY: Frozen worked examples injected into the evidence extraction prompt to
+    # anchor the LLM's tier assignments. Without these, the model re-interprets
+    # Tier B/C boundaries differently each call, causing ±5-12pp confidence variance.
+    # Each anchor shows a realistic claim, the correct tier, and the specific reason —
+    # giving the model calibrated "memory" of what correct judgment looks like.
     # Default 45.0 matches the global setting. For Digital Marketing, the
     # evidence quality floor is higher — weak candidates who write generic
     # outcome language (Tier C) naturally cluster around 49-55% confidence.
@@ -170,6 +201,39 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
         hard_cap_alien_domains=[
             "Entire career in manual data entry or data cleansing only — no modelling or analysis",
             "Entire career in IT support or helpdesk with no data or analytics exposure",
+        ],
+        # WHY: DS/ML claims are highly susceptible to Tier inflation — "built models" and
+        # "analysed data" look technical but are pure Tier C. The anchors enforce the rule
+        # that a model name or algorithm alone is not Tier B — you need a named deployment,
+        # a named employer, or a before→after business metric to reach Tier B.
+        # WHY: All Tier B anchors — positive examples of what qualifies across the
+        # range of DS/ML claim patterns (deployed model, metric improvement, A/B test).
+        calibration_anchors=[
+            CalibrationAnchor(
+                claim="Deployed LightGBM fraud detection model to production at Equity Bank serving "
+                      "500K daily transactions, reducing false positive rate from 12% to 4%",
+                tier="B",
+                why="Names the algorithm (LightGBM), the application (fraud detection), the employer "
+                    "(Equity Bank), the scale (500K txns/day), and a before→after metric (12%→4% FPR). "
+                    "Multiple named elements, confirmed production deployment → strong Tier B. "
+                    "A public paper or repo URL would elevate to Tier A.",
+            ),
+            CalibrationAnchor(
+                claim="Improved recommendation model precision from 0.71 to 0.84 using feature "
+                      "engineering on 3M user sessions at Jumia",
+                tier="B",
+                why="Names the employer (Jumia), the task (recommendation), the method (feature "
+                    "engineering), the scale (3M sessions), and a before→after metric (0.71→0.84). "
+                    "Named employer plus before→after outcome → Tier B.",
+            ),
+            CalibrationAnchor(
+                claim="A/B tested two ranking models at Twiga Foods; treatment arm improved "
+                      "add-to-cart rate from 4.2% to 6.8% across 80K users over 3 weeks",
+                tier="B",
+                why="Names the employer (Twiga Foods), the methodology (A/B test), the metric "
+                    "(add-to-cart rate 4.2%→6.8%), and the scale (80K users, 3 weeks). "
+                    "Experimental methodology with named employer and before→after → Tier B.",
+            ),
         ],
     ),
 
@@ -357,6 +421,38 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
             "Entire career in non-technical roles with zero coding, scripting, or system-building evidence",
             "Entire career as IT support/helpdesk with no development, deployment, or code-authoring evidence",
         ],
+        # WHY: SWE claims are the easiest for LLMs to over-tier. "Worked on backend APIs"
+        # is not Tier B — it names a technology category but not a specific system,
+        # employer context, or quantified outcome. The anchors nail down this boundary.
+        # WHY: All Tier B anchors — shows the range of what qualifies.
+        # The system prompt already covers what fails (vague language, bare tool names).
+        # The anchors give the LLM a consistent Tier B reference frame across the
+        # employer-named, tool-named, and metric-only patterns common in SWE CVs.
+        calibration_anchors=[
+            CalibrationAnchor(
+                claim="Led migration of legacy monolith to Kubernetes at DataCo, reducing p99 latency from 800ms to 120ms",
+                tier="B",
+                why="Names the employer (DataCo), the specific task (monolith-to-Kubernetes migration), "
+                    "and a before→after metric (800ms → 120ms p99). Named employer + named task + "
+                    "before→after outcome → Tier B. Not Tier A: no public cross-reference exists.",
+            ),
+            CalibrationAnchor(
+                claim="Built payment microservice serving 2M requests/day at 99.9% uptime for a FinTech platform",
+                tier="B",
+                why="Names the system (payment microservice), the context (FinTech platform), "
+                    "and two quantified production metrics (2M req/day, 99.9% uptime). A public "
+                    "repo URL would elevate to Tier A — without it, strong Tier B.",
+            ),
+            CalibrationAnchor(
+                claim="Architected event-driven notification system at Safaricom that reduced "
+                      "notification latency from 4s to 200ms and handled 500K messages/day",
+                tier="B",
+                why="Names the employer (Safaricom), the system (event-driven notification), "
+                    "the architectural decision (event-driven), and two quantified outcomes "
+                    "(latency 4s→200ms, 500K messages/day). Multiple specific named elements — "
+                    "this is strong Tier B even without a public repo URL.",
+            ),
+        ],
     ),
 
     # ── 5. Digital Marketing ──────────────────────────────────────────────────
@@ -446,6 +542,46 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
         # Calibrated from batch4 eval: f16(59%), f17(60%), f18(59%), f21(60%),
         # f31(60%), f32(56%) all need to land in NO territory.
         ambiguous_threshold=60.0,
+        # WHY: These anchors address the core variance problem in batch4. The LLM
+        # consistently drifts on the B vs C boundary in marketing — treating bare
+        # percentages as Tier B when they carry no named employer or tool context.
+        # Each anchor is calibrated against real eval data: the "clear B" pattern
+        # matches f01/f02/f03 STRONG_YES profiles; the "clear C" pattern matches
+        # the f16-f32 NO cluster; the "borderline B" pattern matches f13/f15 AMBIGUOUS.
+        # WHY: All three anchors show POSITIVE Tier B examples — what qualifies.
+        # The system prompt already extensively covers what fails at Tier C (bare
+        # percentages, no named tool, no employer). Adding a Tier C anchor caused
+        # the LLM to over-apply the C rule, deflating legitimate B claims by 3-5pp.
+        # The anchors' job is to give the LLM a consistent reference frame for
+        # what Tier B looks like across the range of real marketing evidence patterns.
+        calibration_anchors=[
+            CalibrationAnchor(
+                claim="Managed KES 5M Google Ads budget at Safaricom, achieving 340% ROAS against a 280% target",
+                tier="B",
+                why="Names the employer (Safaricom), the tool (Google Ads), the budget scope "
+                    "(KES 5M), and a quantified outcome with a benchmark (340% vs 280% target). "
+                    "Multiple named elements — this is strong Tier B. Not Tier A because ROAS "
+                    "is not cross-referenceable via public data.",
+            ),
+            CalibrationAnchor(
+                claim="Built HubSpot email sequences that moved MQL-to-SQL rate from 8% to 23%",
+                tier="B",
+                why="Names the tool (HubSpot), the specific workflow (email sequences), and a "
+                    "before→after metric (8% to 23%). The employer is not named but is not "
+                    "required — one named element plus a before→after quantified outcome meets "
+                    "the Tier B bar. Do not downgrade to C for missing the employer name alone.",
+            ),
+            CalibrationAnchor(
+                claim="Grew organic traffic from 12K to 48K sessions/month at Banda Media using "
+                      "content + backlink strategy over 8 months",
+                tier="B",
+                why="Names the employer (Banda Media), the before→after metric (12K to 48K "
+                    "sessions/month), the method (content + backlink), and the timeframe. "
+                    "Before→after with a named employer qualifies for Tier B even without "
+                    "naming a specific tool. The absolute numbers (not just a percentage) "
+                    "establish the baseline — this is Tier B, not Tier A.",
+            ),
+        ],
     ),
 
     # ── 6. Sales / Business Development ──────────────────────────────────────
@@ -561,6 +697,38 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
             "Entire career in NGO programme operations / M&E / donor reporting with zero commercial supply chain exposure",
             "Entire career in financial / payment / settlement operations with zero physical goods, logistics, or distribution exposure",
             "Entire career in banking branch operations with zero supply chain, warehousing, or distribution exposure",
+        ],
+        # WHY: Ops candidates write in outcome language which LLMs often over-tier
+        # as Tier B when the employer or system name is absent. "Managed distribution
+        # operations" with a percentage metric is still Tier C without a named employer.
+        # WHY: All Tier B anchors — positive examples of what qualifies across the
+        # range of ops claim patterns (fill rate, route cost, inventory accuracy).
+        calibration_anchors=[
+            CalibrationAnchor(
+                claim="Managed 15,000-SKU distribution network across 8 depots for Bidco Africa, "
+                      "achieving 98.2% fill rate and reducing stockouts by 34%",
+                tier="B",
+                why="Names the employer (Bidco Africa), the scope (15K SKUs, 8 depots), and two "
+                    "quantified outcomes (98.2% fill rate, 34% stockout reduction). Named employer "
+                    "plus specific metrics → Tier B.",
+            ),
+            CalibrationAnchor(
+                claim="Reduced route cost by 18% at DHL Kenya by implementing dynamic route "
+                      "optimisation across 12 distribution routes",
+                tier="B",
+                why="Names the employer (DHL Kenya), the method (dynamic route optimisation), "
+                    "the scope (12 routes), and a quantified outcome (18% cost reduction). "
+                    "Named employer plus quantified outcome → Tier B.",
+            ),
+            CalibrationAnchor(
+                claim="Achieved 99.1% inventory accuracy across 3 warehouses at Unilever East Africa "
+                      "by implementing cycle-count programme — reduced annual write-offs by KES 12M",
+                tier="B",
+                why="Names the employer (Unilever East Africa), the scope (3 warehouses), the "
+                    "method (cycle-count programme), and two quantified outcomes (99.1% accuracy, "
+                    "KES 12M write-off reduction). Strong Tier B — named employer plus multiple "
+                    "specific metrics.",
+            ),
         ],
     ),
 

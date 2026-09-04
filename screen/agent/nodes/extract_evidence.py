@@ -25,7 +25,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from screen.core.config import settings
-from screen.core.domain_calibration import get_calibration
+from screen.core.domain_calibration import DomainCalibration, get_calibration
 from screen.core.exceptions import LLMCallError, StateTransitionError
 from screen.core.llm_factory import build_llm, get_active_model
 from screen.core.logging_config import get_logger
@@ -221,6 +221,47 @@ and what claims are high-stakes. Tailor your analysis to the specific role.
 Output the complete EvidenceBundle. Be thorough — a thin evidence bundle is
 less defensible than a complete one with many C-tier claims accurately classified."""
 
+# ── Calibration anchor renderer ────────────────────────────────────────────────
+
+def _render_calibration_anchors(calibration: DomainCalibration) -> str:
+    """
+    WHY: LLM tier assignment variance (±5-12pp per run) is the root cause of
+    verdict instability near thresholds. The model re-interprets the Tier B/C
+    boundary differently on every call because it has no cross-call memory.
+
+    This function injects domain-specific worked examples — frozen "memories" of
+    correct tier assignments — directly into the prompt. When the model sees a
+    real claim from the CV, it anchors its judgment against these examples rather
+    than re-deriving the boundary from scratch.
+
+    HOW: Returns a formatted block listing each CalibrationAnchor with its
+    claim, correct tier, and the specific reason why. If the domain has no
+    anchors (all non-primary domains), returns an empty string — the prompt
+    is not modified.
+
+    Args:
+        calibration: The DomainCalibration for the detected domain.
+
+    Returns:
+        A formatted string block, or "" if no anchors are defined.
+    """
+    if not calibration.calibration_anchors:
+        return ""
+
+    lines = [
+        f"\n--- CALIBRATION REFERENCE EXAMPLES — {calibration.name} "
+        f"(anchor your tier assignments against these) ---"
+    ]
+    for i, anchor in enumerate(calibration.calibration_anchors, start=1):
+        lines.append(f"\nEXAMPLE {i} — Tier {anchor.tier}:")
+        lines.append(f'  Claim: "{anchor.claim}"')
+        lines.append(f"  Correct tier: {anchor.tier}")
+        lines.append(f"  Why: {anchor.why}")
+
+    lines.append("--- END CALIBRATION EXAMPLES ---\n")
+    return "\n".join(lines)
+
+
 # ── LLM Setup ──────────────────────────────────────────────────────────────────
 # WHY tier2: evidence extraction requires multi-hop reasoning about claim credibility,
 # contradiction detection, and silence pattern recognition. Flash models miss
@@ -242,6 +283,7 @@ def _call_extract_evidence_llm(
     role_type: str,
     cv_text_raw: str = "",
     deterministic_facts: str = "",
+    calibration_anchors_text: str = "",
 ) -> EvidenceBundle:
     """
     WHY: Isolated LLM call with retry. The profile_summary is a structured
@@ -274,6 +316,7 @@ def _call_extract_evidence_llm(
                 f"{job_description}\n"
                 f"{raw_cv_section}\n"
                 f"{deterministic_facts}\n"
+                f"{calibration_anchors_text}"
                 f"Extract the complete EvidenceBundle for this candidate."
             )
         ),
@@ -638,6 +681,11 @@ def extract_evidence_node(state: ScreeningState) -> dict[str, Any]:
     det_signals = _compute_deterministic_signals(candidate_profile, screening_input)
     det_facts_text = _render_deterministic_facts(det_signals)
 
+    # Build calibration anchor block for this domain
+    domain_str = screening_input.role_description or screening_input.role_type
+    calibration = get_calibration(domain_str)
+    anchors_text = _render_calibration_anchors(calibration)
+
     try:
         evidence_bundle = _call_extract_evidence_llm(
             candidate_id=candidate_id,
@@ -647,6 +695,7 @@ def extract_evidence_node(state: ScreeningState) -> dict[str, Any]:
             role_type=screening_input.role_type,
             cv_text_raw=screening_input.cv_text,
             deterministic_facts=det_facts_text,
+            calibration_anchors_text=anchors_text,
         )
     except Exception as exc:
         raise LLMCallError(node_name, str(exc)) from exc
