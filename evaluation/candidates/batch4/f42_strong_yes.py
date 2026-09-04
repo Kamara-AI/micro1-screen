@@ -107,6 +107,7 @@ CANDIDATE_INPUT = ScreeningInput(
     candidate_id="f42_strong_yes",
     role_seniority="senior",
     role_type="other",
+    role_description="Senior Digital Marketing Manager",
     batch_id="eval_batch_004",
     hard_requirements=[
         "5+ years digital marketing experience, at least 2 years in a management role",

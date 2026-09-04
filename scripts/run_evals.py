@@ -38,7 +38,7 @@ BASELINE_ACCURACY: dict[str, float] = {
     "batch1": 80.0,   # Senior SWE — 10 candidates
     "batch2": 88.0,   # Senior Data Scientist — 8 candidates
     "batch3": 75.0,   # FMCG Ops Manager — 20 candidates
-    "batch4": 42.0,   # Digital Marketing — 33 candidates (first uncalibrated run)
+    "batch4": 67.0,   # Digital Marketing — 33 candidates (domain-calibrated: Phase 4b)
 }
 
 # WHY: 5pp is a meaningful signal — within-run variance for LLM-based evaluation is

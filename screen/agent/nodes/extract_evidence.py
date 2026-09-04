@@ -46,21 +46,23 @@ SIGNAL TIER DEFINITIONS (assign these to every Claim):
   A (weight: 1.0)  — VERIFIED: Publicly cross-referenceable (GitHub repo URL, company still operating,
                      award with public record, named product). The claim CAN be checked independently.
 
-  B (weight: 0.7)  — STATED: A specific claim that names AT LEAST TWO of the following:
-                     (1) the employer / client / product where the work happened
-                     (2) a specific tool, platform, or technology actually used to do the work
-                     (3) a quantified outcome with a clear before→after or against a benchmark
-                         ("from 8% to 23%", "against a 280% target", not just "by 45%")
-                     (4) a named collaborator, team size, or reporting structure
+  B (weight: 0.7)  — STATED: A specific, attributable claim. Names at least ONE of:
+                     (1) the employer / client / product where the work happened,
+                         with a specific task or outcome in that context
+                     (2) a specific tool, platform, or technology used to do the work,
+                         with enough context to be credible (not just listed in a skills section)
+                     (3) a quantified outcome with a clear before→after or named benchmark
+                         ("from 8% to 23%", "against a 280% target", "12K to 48K sessions/month")
 
-                     TIER B EXAMPLES (2+ named elements):
-                       "Managed KES 5M Google Ads budget at Safaricom, achieving 340% ROAS" ✓ (tool + metric)
-                       "Led 8-person team to migrate 3 microservices from monolith to Kubernetes" ✓ (tool + team)
-                       "Built HubSpot email sequences that moved MQL→SQL rate from 8% to 23%" ✓ (tool + baseline→result)
+                     TIER B EXAMPLES (one or more named elements):
+                       "Managed KES 5M Google Ads budget at Safaricom, achieving 340% ROAS" ✓
+                       "Led 8-person team to migrate 3 microservices from monolith to Kubernetes" ✓
+                       "Built HubSpot email sequences that moved MQL→SQL rate from 8% to 23%" ✓
+                       "Grew organic traffic from 12K to 48K sessions/month at Banda Media" ✓
 
                      NOT TIER B — assign Tier C instead:
-                       "Grew organic traffic by 45%" ✗ — one percentage, no named tool, no baseline, no client
-                       "Increased revenue by 30%" ✗ — percentage only, no context
+                       "Grew organic traffic by 45%" ✗ — bare percentage, no named tool, no baseline, no client
+                       "Increased revenue by 30%" ✗ — percentage only, zero context
                        "Managed social media accounts" ✗ — no metrics, no named platform specifics
                        "Improved team efficiency" ✗ — no tool, no metric, no scope
 
@@ -205,6 +207,13 @@ DO NOT:
   - Use prestige heuristics (Tier A universities, brand-name employers)
   - Generate claims not in the profile
   - Include raw CV text in source_location (paraphrase only)
+  - Extract education credentials or certifications as standalone evidence claims.
+    Degrees and certifications establish baseline qualifications — they are prerequisites,
+    not performance evidence. A BSc from Strathmore and a HubSpot certification tell us
+    the candidate CAN do the job; they do NOT demonstrate that they HAVE done it.
+    Do not create Claim objects for "holds degree in X", "certified in Y", or
+    "attended university Z". Reference them only as context within a work-performance
+    claim if directly tied to a measured outcome at a specific employer.
 
 The job description context is used to determine what silences are meaningful
 and what claims are high-stakes. Tailor your analysis to the specific role.

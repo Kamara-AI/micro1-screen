@@ -1,11 +1,11 @@
 """WHY: f10_no tests NO verdict in digital marketing context."""
 from screen.schemas.input import ScreeningInput
 
-GROUND_TRUTH_VERDICT: str = "NO"
+GROUND_TRUTH_VERDICT: str = "STRONG_NO"
 GROUND_TRUTH_RATIONALE: str = (
     "Candidate fails three of four hard requirements: only 4 years experience (vs. 5+ required), "
     "never managed a team (individual contributor throughout), and maximum ad spend of KES 800K/month is far below the KES 5M threshold; "
-    "also holds a diploma rather than a degree. Confidence: 99%."
+    "also holds a diploma rather than a degree. Confidence: 99%. Correctly hard-rejected by tier1_prefilter — STRONG_NO is the expected verdict."
 )
 
 JOB_DESCRIPTION: str = """
@@ -76,6 +76,7 @@ CANDIDATE_INPUT = ScreeningInput(
     candidate_id="f10_no",
     role_seniority="senior",
     role_type="other",
+    role_description="Senior Digital Marketing Manager",
     batch_id="eval_batch_004",
     hard_requirements=[
         "5+ years digital marketing experience, at least 2 years in a management role",

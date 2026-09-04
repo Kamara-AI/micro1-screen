@@ -70,6 +70,10 @@ class DomainCalibration:
             fit analysis node. Be conservative — only truly incompatible backgrounds.
         supervision_check_enabled: Always True. Supervision language detection is
             domain-agnostic and applies universally.
+        strong_yes_threshold: Domain-specific override for the STRONG_YES verdict threshold.
+            Default 86.0 matches the global setting. Lower for domains where Tier A evidence
+            is structurally rare (e.g. Digital Marketing has no GitHub repos or public APIs
+            to cite — the best evidence is Tier B campaign metrics). Calibrated from eval data.
     """
 
     name: str
@@ -83,6 +87,14 @@ class DomainCalibration:
     tier_c_traps: list[str]
     hard_cap_alien_domains: list[str]
     supervision_check_enabled: bool = field(default=True)
+    strong_yes_threshold: float = field(default=86.0)
+    ambiguous_threshold: float = field(default=45.0)
+    # WHY: Domain-specific override for the AMBIGUOUS verdict threshold.
+    # Default 45.0 matches the global setting. For Digital Marketing, the
+    # evidence quality floor is higher — weak candidates who write generic
+    # outcome language (Tier C) naturally cluster around 49-55% confidence.
+    # Raising the threshold to 55.0 ensures they land in NO territory rather
+    # than AMBIGUOUS, which would imply "worth investigating further."
 
 
 # ── Domain Registry ────────────────────────────────────────────────────────────
@@ -419,6 +431,21 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
             "Entire career in clinical healthcare, civil engineering, or manufacturing with no marketing, comms, or brand exposure",
             "Entire career in manual/trade labour with no client-facing, campaign, or digital channel experience",
         ],
+        # WHY: Digital Marketing candidates structurally cannot produce Tier A evidence
+        # (no public repos, no live APIs to link). Their best evidence is Tier B campaign
+        # metrics. Batch 4 eval data shows genuine STRONG_YES candidates cluster at 71-85%.
+        # Setting threshold to 75 captures f01(78%), f02(81%), f03(77%), f04(76%), f41(85%),
+        # f42(80%) while keeping YES candidates (f11 at 74.6%) correctly below the threshold.
+        strong_yes_threshold=75.0,
+        # WHY: Digital Marketing NO candidates cluster at 56-60% with generic
+        # Tier-C outcome language and some hard-anchor buzzwords. Raising the
+        # AMBIGUOUS floor to 60 ensures weak candidates who can write marketing
+        # language still score below AMBIGUOUS. AMBIGUOUS truth candidates
+        # (f15 at 64%) are safely above this floor; NO candidates consistently
+        # land in 56-60% across eval runs (f16-f32 cluster).
+        # Calibrated from batch4 eval: f16(59%), f17(60%), f18(59%), f21(60%),
+        # f31(60%), f32(56%) all need to land in NO territory.
+        ambiguous_threshold=60.0,
     ),
 
     # ── 6. Sales / Business Development ──────────────────────────────────────

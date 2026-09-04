@@ -205,19 +205,34 @@ def _compute_confidence_pct(
     return round((adjusted_evidence * 0.6 + adjusted_fit * 0.4) * 100, 1)
 
 
-def _map_confidence_to_verdict(confidence_pct: float) -> str:
+def _map_confidence_to_verdict(
+    confidence_pct: float,
+    strong_yes_threshold: float | None = None,
+    ambiguous_threshold: float | None = None,
+) -> str:
     """
     WHY: Threshold mapping lives in settings so it can be adjusted for different
     hiring standards (e.g., a safety-critical role might raise STRONG_YES to 90%).
+    Domain-specific overrides allow domains where evidence quality is structurally
+    different (e.g. Digital Marketing, where Tier A evidence is rare) to use
+    calibrated thresholds without touching the global setting.
+
+    Domain-specific thresholds currently in use:
+      - strong_yes_threshold: Digital Marketing uses 75 (vs global 86), because
+        Tier A evidence (GitHub repos, public APIs) is structurally absent.
+      - ambiguous_threshold: Digital Marketing uses 55 (vs global 45), because
+        weak candidates who write generic outcome language cluster at 49-55%.
 
     HOW: Priority order from highest to lowest band. The first threshold that
     confidence_pct exceeds wins.
     """
-    if confidence_pct >= settings.strong_yes_threshold:
+    sy_threshold = strong_yes_threshold if strong_yes_threshold is not None else settings.strong_yes_threshold
+    amb_threshold = ambiguous_threshold if ambiguous_threshold is not None else settings.ambiguous_threshold
+    if confidence_pct >= sy_threshold:
         return "STRONG_YES"
     elif confidence_pct >= settings.yes_threshold:
         return "YES"
-    elif confidence_pct >= settings.ambiguous_threshold:
+    elif confidence_pct >= amb_threshold:
         return "AMBIGUOUS"
     elif confidence_pct >= settings.no_threshold:
         return "NO"
@@ -338,6 +353,7 @@ def make_decision_node(state: ScreeningState) -> dict[str, Any]:
     # WHY: role_description provides the fine-grained domain title for calibration;
     # fall back to broad role_type if not set.
     domain_str = screening_input.role_description or screening_input.role_type
+    domain_calibration = get_calibration(domain_str)
     evidence_relevance, fit_relevance = _compute_domain_relevance(
         role_type=domain_str,
         cv_text=screening_input.cv_text,
@@ -400,7 +416,11 @@ def make_decision_node(state: ScreeningState) -> dict[str, Any]:
         escalation_category = "unverifiable_high_stakes_claim"
 
     else:
-        verdict = _map_confidence_to_verdict(confidence_pct)
+        verdict = _map_confidence_to_verdict(
+            confidence_pct,
+            strong_yes_threshold=domain_calibration.strong_yes_threshold,
+            ambiguous_threshold=domain_calibration.ambiguous_threshold,
+        )
         should_escalate = False
 
     # ── Build primary evidence ──────────────────────────────────────────────────
@@ -436,6 +456,9 @@ def make_decision_node(state: ScreeningState) -> dict[str, Any]:
             f"Fit score: {fit_score:.3f} "
             f"(fit_rel={fit_relevance:.2f}, adjusted={fit_score * fit_relevance:.3f}). "
             f"Confidence: {confidence_pct}%. "
+            f"STRONG_YES threshold: {domain_calibration.strong_yes_threshold}, "
+            f"AMBIGUOUS threshold: {domain_calibration.ambiguous_threshold} "
+            f"(domain: {domain_calibration.name}). "
             f"Escalation triggers checked: "
             f"critical_contradiction={evidence_bundle.has_critical_contradiction}, "
             f"bias_flag={fit_analysis.has_bias_flag}, "
