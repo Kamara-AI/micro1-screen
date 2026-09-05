@@ -87,6 +87,7 @@ CANDIDATE_INPUT = ScreeningInput(
     candidate_id="d07_ambiguous",
     role_seniority="senior",
     role_type="data",
+    role_description="Senior Data Scientist",
     batch_id="eval_batch_002",
     hard_requirements=[
         "4+ years professional data science or ML experience",

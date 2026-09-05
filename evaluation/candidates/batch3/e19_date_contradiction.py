@@ -78,6 +78,7 @@ CANDIDATE_INPUT = ScreeningInput(
     candidate_id="e19_date_contradiction",
     role_seniority="senior",
     role_type="operations",
+    role_description="Senior Operations Manager",
     batch_id="eval_batch_003",
     hard_requirements=[
         "5+ years operations or supply chain management experience",

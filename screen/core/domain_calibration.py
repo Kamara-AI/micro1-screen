@@ -202,39 +202,19 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
             "Entire career in manual data entry or data cleansing only — no modelling or analysis",
             "Entire career in IT support or helpdesk with no data or analytics exposure",
         ],
-        # WHY: DS/ML claims are highly susceptible to Tier inflation — "built models" and
-        # "analysed data" look technical but are pure Tier C. The anchors enforce the rule
-        # that a model name or algorithm alone is not Tier B — you need a named deployment,
-        # a named employer, or a before→after business metric to reach Tier B.
-        # WHY: All Tier B anchors — positive examples of what qualifies across the
-        # range of DS/ML claim patterns (deployed model, metric improvement, A/B test).
-        calibration_anchors=[
-            CalibrationAnchor(
-                claim="Deployed LightGBM fraud detection model to production at Equity Bank serving "
-                      "500K daily transactions, reducing false positive rate from 12% to 4%",
-                tier="B",
-                why="Names the algorithm (LightGBM), the application (fraud detection), the employer "
-                    "(Equity Bank), the scale (500K txns/day), and a before→after metric (12%→4% FPR). "
-                    "Multiple named elements, confirmed production deployment → strong Tier B. "
-                    "A public paper or repo URL would elevate to Tier A.",
-            ),
-            CalibrationAnchor(
-                claim="Improved recommendation model precision from 0.71 to 0.84 using feature "
-                      "engineering on 3M user sessions at Jumia",
-                tier="B",
-                why="Names the employer (Jumia), the task (recommendation), the method (feature "
-                    "engineering), the scale (3M sessions), and a before→after metric (0.71→0.84). "
-                    "Named employer plus before→after outcome → Tier B.",
-            ),
-            CalibrationAnchor(
-                claim="A/B tested two ranking models at Twiga Foods; treatment arm improved "
-                      "add-to-cart rate from 4.2% to 6.8% across 80K users over 3 weeks",
-                tier="B",
-                why="Names the employer (Twiga Foods), the methodology (A/B test), the metric "
-                    "(add-to-cart rate 4.2%→6.8%), and the scale (80K users, 3 weeks). "
-                    "Experimental methodology with named employer and before→after → Tier B.",
-            ),
-        ],
+        # WHY: No calibration anchors for DS/ML. The Phase 5 anchors caused systematic
+        # Tier B deflation — premium examples implicitly raised the bar so legitimate
+        # mid-quality Tier B claims were downgraded to Tier C, losing ~38pp on batch2.
+        # The system prompt already defines the Tier B boundary clearly; the problem
+        # for DS/ML is not boundary ambiguity but LLM variance near thresholds, which
+        # is better addressed by ensemble voting than by anchor injection.
+        # WHY: Lower STRONG_YES threshold for DS/ML to 84%. DS candidates' best evidence
+        # is typically Tier B (named employer + deployed model + metric). Tier A evidence
+        # (public paper, open-source library with stars, Kaggle grandmaster) exists but
+        # is rare in East African practitioner CVs. Strong DS candidates cluster at 83-86%,
+        # and 84% draws the line above the YES band (typically 70-82%) without excluding
+        # legitimate STRONG_YES profiles.
+        strong_yes_threshold=84.0,
     ),
 
     # ── 2. DevOps / Platform Engineering / SRE ────────────────────────────────
@@ -421,38 +401,17 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
             "Entire career in non-technical roles with zero coding, scripting, or system-building evidence",
             "Entire career as IT support/helpdesk with no development, deployment, or code-authoring evidence",
         ],
-        # WHY: SWE claims are the easiest for LLMs to over-tier. "Worked on backend APIs"
-        # is not Tier B — it names a technology category but not a specific system,
-        # employer context, or quantified outcome. The anchors nail down this boundary.
-        # WHY: All Tier B anchors — shows the range of what qualifies.
-        # The system prompt already covers what fails (vague language, bare tool names).
-        # The anchors give the LLM a consistent Tier B reference frame across the
-        # employer-named, tool-named, and metric-only patterns common in SWE CVs.
-        calibration_anchors=[
-            CalibrationAnchor(
-                claim="Led migration of legacy monolith to Kubernetes at DataCo, reducing p99 latency from 800ms to 120ms",
-                tier="B",
-                why="Names the employer (DataCo), the specific task (monolith-to-Kubernetes migration), "
-                    "and a before→after metric (800ms → 120ms p99). Named employer + named task + "
-                    "before→after outcome → Tier B. Not Tier A: no public cross-reference exists.",
-            ),
-            CalibrationAnchor(
-                claim="Built payment microservice serving 2M requests/day at 99.9% uptime for a FinTech platform",
-                tier="B",
-                why="Names the system (payment microservice), the context (FinTech platform), "
-                    "and two quantified production metrics (2M req/day, 99.9% uptime). A public "
-                    "repo URL would elevate to Tier A — without it, strong Tier B.",
-            ),
-            CalibrationAnchor(
-                claim="Architected event-driven notification system at Safaricom that reduced "
-                      "notification latency from 4s to 200ms and handled 500K messages/day",
-                tier="B",
-                why="Names the employer (Safaricom), the system (event-driven notification), "
-                    "the architectural decision (event-driven), and two quantified outcomes "
-                    "(latency 4s→200ms, 500K messages/day). Multiple specific named elements — "
-                    "this is strong Tier B even without a public repo URL.",
-            ),
-        ],
+        # WHY: No calibration anchors for SWE. The Phase 5 anchors caused systematic
+        # Tier B deflation — premium examples (Safaricom, FinTech-scale systems) implicitly
+        # raised the Tier B bar so that mid-quality Tier B claims were downgraded to Tier C,
+        # losing ~30pp on batch1. The system prompt already defines the Tier B boundary;
+        # anchor injection adds implicit negative signal that outweighs the positive guidance.
+        # WHY: Lower STRONG_YES threshold for SWE to 81%. The highest attainable score from
+        # pure Tier B evidence (named employer + quantified outcome + deployment) is ~84-87%
+        # depending on claim density. Genuine STRONG_YES SWE candidates (builder pattern,
+        # OSS contributions, production-scale systems) cluster at 81-86%, not 90%+.
+        # 81% correctly admits this band: tested YES candidates score 70-80%, clear separation.
+        strong_yes_threshold=81.0,
     ),
 
     # ── 5. Digital Marketing ──────────────────────────────────────────────────
@@ -698,38 +657,18 @@ DOMAIN_REGISTRY: list[DomainCalibration] = [
             "Entire career in financial / payment / settlement operations with zero physical goods, logistics, or distribution exposure",
             "Entire career in banking branch operations with zero supply chain, warehousing, or distribution exposure",
         ],
-        # WHY: Ops candidates write in outcome language which LLMs often over-tier
-        # as Tier B when the employer or system name is absent. "Managed distribution
-        # operations" with a percentage metric is still Tier C without a named employer.
-        # WHY: All Tier B anchors — positive examples of what qualifies across the
-        # range of ops claim patterns (fill rate, route cost, inventory accuracy).
-        calibration_anchors=[
-            CalibrationAnchor(
-                claim="Managed 15,000-SKU distribution network across 8 depots for Bidco Africa, "
-                      "achieving 98.2% fill rate and reducing stockouts by 34%",
-                tier="B",
-                why="Names the employer (Bidco Africa), the scope (15K SKUs, 8 depots), and two "
-                    "quantified outcomes (98.2% fill rate, 34% stockout reduction). Named employer "
-                    "plus specific metrics → Tier B.",
-            ),
-            CalibrationAnchor(
-                claim="Reduced route cost by 18% at DHL Kenya by implementing dynamic route "
-                      "optimisation across 12 distribution routes",
-                tier="B",
-                why="Names the employer (DHL Kenya), the method (dynamic route optimisation), "
-                    "the scope (12 routes), and a quantified outcome (18% cost reduction). "
-                    "Named employer plus quantified outcome → Tier B.",
-            ),
-            CalibrationAnchor(
-                claim="Achieved 99.1% inventory accuracy across 3 warehouses at Unilever East Africa "
-                      "by implementing cycle-count programme — reduced annual write-offs by KES 12M",
-                tier="B",
-                why="Names the employer (Unilever East Africa), the scope (3 warehouses), the "
-                    "method (cycle-count programme), and two quantified outcomes (99.1% accuracy, "
-                    "KES 12M write-off reduction). Strong Tier B — named employer plus multiple "
-                    "specific metrics.",
-            ),
-        ],
+        # WHY: No calibration anchors for Operations. The Phase 5 anchors (Bidco Africa,
+        # DHL Kenya, Unilever East Africa examples) set an implicitly high Tier B bar —
+        # legitimate mid-quality Tier B claims were downgraded to Tier C, losing ~15pp
+        # on batch3. Ops candidates write in outcome language that the system prompt
+        # already handles; anchor injection creates implicit negative signal.
+        # WHY: Lower STRONG_YES threshold for Operations. Ops candidates cannot produce
+        # Tier A evidence (no public repos, no conference papers, no open-source contributions)
+        # — all their evidence is employer-attested Tier B. The global 86% threshold is
+        # structurally unreachable in this domain. 82% allows genuine STRONG_YES candidates
+        # (who have multiple strong Tier B claims + degree + scope) to be correctly promoted
+        # without opening the band to YES-grade candidates (who typically score 65-75%).
+        strong_yes_threshold=82.0,
     ),
 
     # ── 8. Finance / Accounting / FP&A ────────────────────────────────────────

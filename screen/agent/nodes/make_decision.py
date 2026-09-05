@@ -415,6 +415,21 @@ def make_decision_node(state: ScreeningState) -> dict[str, Any]:
         )
         escalation_category = "unverifiable_high_stakes_claim"
 
+    elif (
+        evidence_bundle.builder_maintainer_verdict == "insufficient_data"
+        and confidence_pct < settings.yes_threshold
+    ):
+        # WHY: A candidate whose CV provides insufficient evidence to classify as
+        # builder or maintainer is by definition an unknown — the right verdict is
+        # AMBIGUOUS (phone screen needed), not NO/STRONG_NO (rejection). Without
+        # the phone screen, we cannot distinguish a genuine weak candidate from one
+        # who simply writes very sparse CVs. The AMBIGUOUS verdict preserves
+        # optionality; NO discards candidates who might be strong.
+        # GATE: only applies below YES threshold — if confidence is already above
+        # YES, the LLM found enough evidence to act, so no override is needed.
+        verdict = "AMBIGUOUS"
+        should_escalate = False
+
     else:
         verdict = _map_confidence_to_verdict(
             confidence_pct,
